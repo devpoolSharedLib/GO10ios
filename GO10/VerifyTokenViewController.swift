@@ -1,0 +1,157 @@
+//
+//  VerifyTokenViewController.swift
+//  GO10
+//
+//  Created by Go10Application on 6/13/2559 BE.
+//  Copyright © 2559 Gosoft. All rights reserved.
+//
+
+import UIKit
+import CoreData
+import MRProgress
+
+class VerifyTokenViewController: UIViewController {
+
+    @IBOutlet weak var painTxt: UILabel!
+    @IBOutlet weak var tokenTxtV: UITextView!
+    @IBOutlet weak var verifyBtn: UIButton!
+    
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var profile = [NSDictionary]();
+    var activate: Bool!
+    var modelName: String!
+    @IBOutlet var verifyView: UIView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        print("*** VerifyTokenVC Viewdidload ***")
+        //Radius verify textview Border
+        tokenTxtV.layer.cornerRadius = 5
+        modelName = UIDevice.currentDevice().modelName
+        if(modelName.rangeOfString("ipad Mini") != nil){
+            print("SIMULATOR")
+            painTxt.font = FontModel.ipadminiPainText
+            tokenTxtV.font = FontModel.ipadminiPainText
+            verifyBtn.titleLabel?.font = FontModel.ipadminiPainText
+        }
+        
+        MRProgressOverlayView.showOverlayAddedTo(self.verifyView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        MRProgressOverlayView.dismissOverlayForView(self.verifyView, animated: true)
+    }
+    
+    @IBAction func verifyToken(sender: AnyObject) {
+        let token = self.tokenTxtV.text
+        print("xxxxx \(token)")
+        if((token == "") || checkSpace(token!)) {
+            let alert = UIAlertController(title: "Alert", message: "The token is empty. Please enter the invitation code.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            
+        }else{
+            checkToken()
+            
+        }
+    }
+    
+    
+    func checkToken(){
+        print("\(NSDate().formattedISO8601) token : \(tokenTxtV.text)")
+        print("\(NSDate().formattedISO8601) getTokenWebservice")
+        let url = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByToken?token=\(tokenTxtV.text)"
+        let urlWs = NSURL(string: url)
+        print("\(NSDate().formattedISO8601) URL : \(url)")
+        let urlsession = NSURLSession.sharedSession()
+        
+        let request = urlsession.dataTaskWithURL(urlWs!) { (data, response, error) in
+            do{
+
+                self.profile = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
+                print("\(NSDate().formattedISO8601) profile : \(self.profile)")
+                self.activate = self.profile[0].valueForKey("activate") as! Bool
+                print("\(NSDate().formattedISO8601) status :\(self.activate)")
+                if(self.profile.isEmpty){
+                    print("Profile is Empty")
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                        let alert = UIAlertController(title: "Alert", message: "The invitation code is invalid.", preferredStyle: UIAlertControllerStyle.Alert)
+                        alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                        self.presentViewController(alert, animated: true, completion: nil)
+                    }
+                }else if((self.activate) == true){
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                        let alert = UIAlertController(title: "Alert", message: "This invitation code is activated.", preferredStyle: UIAlertControllerStyle.Alert)
+                        alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                        self.presentViewController(alert, animated: true, completion: nil)
+                    }
+                }else{
+//                    self.saveTokenToCoredata()
+                    // Write Data into CoreData
+                    let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
+                    do{
+                        let fetchReq = NSFetchRequest(entityName: "User_Info");
+                        let result = try context.executeFetchRequest(fetchReq);
+                        result[0].setValue(self.tokenTxtV.text, forKey: "token");
+                        result[0].setValue(self.profile[0].valueForKey("empName"), forKey: "empName")
+                        result[0].setValue(self.profile[0].valueForKey("empEmail"), forKey: "empEmail")
+                        result[0].setValue(self.profile[0].valueForKey("type"), forKey: "type")
+                        result[0].setValue(self.profile[0].valueForKey("activate"), forKey: "activate")
+                        result[0].setValue(self.profile[0].valueForKey("_id"), forKey: "id_")
+                        result[0].setValue(self.profile[0].valueForKey("_rev"), forKey: "rev_")
+                        try context.save();
+                        print("\(NSDate().formattedISO8601) Save Data Success")
+                        NSOperationQueue.mainQueue().addOperationWithBlock {
+                            self.performSegueWithIdentifier("gotoSetting", sender:nil)
+                        }
+                        
+                    }catch{
+                        print("\(NSDate().formattedISO8601) Error Saving Profile Data");
+                    }
+
+                }
+                
+            }catch let error as NSError{
+                print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
+            }
+        }
+        request.resume()
+    }
+    
+    
+    func saveTokenToCoredata(){
+        // Write Data into CoreData
+        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+        do{
+            let fetchReq = NSFetchRequest(entityName: "User_Info");
+            let result = try context.executeFetchRequest(fetchReq);
+            result[0].setValue(self.tokenTxtV.text, forKey: "token");
+            result[0].setValue(self.profile[0].valueForKey("empName"), forKey: "empName")
+            result[0].setValue(self.profile[0].valueForKey("empEmail"), forKey: "empEmail")
+            result[0].setValue(self.profile[0].valueForKey("type"), forKey: "type")
+            result[0].setValue(self.profile[0].valueForKey("activate"), forKey: "activate")
+            result[0].setValue(self.profile[0].valueForKey("_id"), forKey: "id_")
+            result[0].setValue(self.profile[0].valueForKey("_rev"), forKey: "rev_")
+            try context.save();
+            print("\(NSDate().formattedISO8601) Save Data Success")
+            self.performSegueWithIdentifier("gotoSetting", sender:nil)
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Saving Profile Data");
+        }
+        
+    }
+    
+    func checkSpace(strCheck: String) -> Bool {
+        let trimmedString = strCheck.stringByTrimmingCharactersInSet(
+            NSCharacterSet.whitespaceAndNewlineCharacterSet()
+        )
+        if trimmedString.characters.count == 0 {
+            return true
+        }else{
+            return false
+        }
+    }
+
+}
