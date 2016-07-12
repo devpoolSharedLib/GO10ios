@@ -58,10 +58,13 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     
     func getTopicWebService(){
         print("\(NSDate().formattedISO8601) getTopicWebService");
-        let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gethottopiclist?xxx=1234")
+        let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gethottopiclist")
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+        let request = NSMutableURLRequest(URL: urlWs!)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         let urlsession = NSURLSession.sharedSession()
-        let request = urlsession.dataTaskWithURL(urlWs!) { (data, response, error) in
+        
+        let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
             do{
                 self.topicList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
                 print("\(NSDate().formattedISO8601) Hot Topic Size : \(self.topicList.count)")
@@ -70,15 +73,18 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
                 print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
             }
         }
-        request.resume()
+        requestSent.resume()
     }
     
     func getRoomsWebService(){
         print("\(NSDate().formattedISO8601) getRoomsWebService")
         let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/room/get")
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+        let request = NSMutableURLRequest(URL: urlWs!)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        
         let urlsession = NSURLSession.sharedSession()
-        let request = urlsession.dataTaskWithURL(urlWs!) { (data, response, error) in
+        let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
             do{
                 self.roomList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
                print("\(NSDate().formattedISO8601) Rooms Size \(self.roomList.count)")
@@ -87,7 +93,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
                 print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
             }
         }
-        request.resume()
+        requestSent.resume()
     }
     
     

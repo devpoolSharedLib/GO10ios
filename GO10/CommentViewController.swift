@@ -94,6 +94,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
         requestPost.setValue("application/json", forHTTPHeaderField: "Content-Type")
         requestPost.setValue("application/json",forHTTPHeaderField: "Accept")
+//        requestPost.timeoutInterval = 30
         requestPost.HTTPMethod = "POST"
         let urlsession = NSURLSession.sharedSession()
         let request = urlsession.dataTaskWithRequest(requestPost) { (data, response, error) in
@@ -173,16 +174,16 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         // Generate Request
         print("\(NSDate().formattedISO8601) Upload Image")
-//        let url = NSURL(string: "http://localhost:9080/GO10WebService/UploadServlet")
+//        let url = NSURL(string: "http://10.37.54.253:9080/GO10WebService/UploadServlet")
         let url = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet")
         print("\(NSDate().formattedISO8601) url request image : \(url)")
         let request = NSMutableURLRequest(URL: url!)
         request.HTTPMethod = "POST"
-        
+        request.timeoutInterval = 30
         // Define the multipart request type
         let boundary = "Boundary-\(NSUUID().UUIDString)"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-
+        //requestPost.timeoutInterval = 30
         let fileName = "\(objImage)upload001.jpg"
         let mimeType = "image/jpg"
         
@@ -208,7 +209,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
                     let responseUrl = jsonData.valueForKey("imgUrl") as! String
                     
                     let imgUrl = "http://go10webservice.au-syd.mybluemix.net\(responseUrl)"
-//                     let imgUrl = "http://10.37.98.235:9080\(responseUrl)"
+//                     let imgUrl = "http://10.37.54.253:9080\(responseUrl)"
                     
                     print("\(NSDate().formattedISO8601) imgUrl: \(imgUrl)")
                     dispatch_async(dispatch_get_main_queue(), {

@@ -58,8 +58,10 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         print("\(NSDate().formattedISO8601) getBoardContentWebService")
         let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopicbyid?topicId=\(topicId)")
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+        let request = NSMutableURLRequest(URL: urlWs!)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         let urlsession = NSURLSession.sharedSession()
-        let request = urlsession.dataTaskWithURL(urlWs!) { (data, response, error) in
+        let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
             do{
                 self.BoardContentList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
 //                self.cache.setValue(self.BoardContentList , forKey: "boardCache")
@@ -82,7 +84,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 print("\(NSDate().formattedISO8601)  error : \(error.localizedDescription)")
             }
         }
-        request.resume()
+        requestSent.resume()
         
     }
     
