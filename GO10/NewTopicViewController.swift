@@ -82,6 +82,8 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         editor.delegate = self
         editor.inputAccessoryView = toolbar
         
+        //setPlaceholderText
+        editor.setPlaceholderText(" Write something ...")
     }
 
     

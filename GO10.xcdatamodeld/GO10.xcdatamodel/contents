@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15F34" minimumToolsVersion="Xcode 7.0">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15F34" minimumToolsVersion="Xcode 4.2">
     <entity name="User_Info" syncable="YES">
-        <attribute name="accountId" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="activate" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="avatarCheckSelect" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="avatarName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="avatarPic" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="avatarPicTemp" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="empEmail" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="empName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="id_" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="rev_" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="token" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="accountId" optional="YES" transient="YES" attributeType="String" defaultValueString="nil" indexed="YES" syncable="YES"/>
+        <attribute name="activate" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="avatarCheckSelect" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="avatarName" optional="YES" attributeType="String" defaultValueString="avatar" syncable="YES"/>
+        <attribute name="avatarPic" optional="YES" attributeType="String" defaultValueString="default_avatar" syncable="YES"/>
+        <attribute name="avatarPicTemp" optional="YES" attributeType="String" defaultValueString="default_avatar" syncable="YES"/>
+        <attribute name="birthday" optional="YES" attributeType="String" defaultValueString="1/1/2559 BE, 12:00 PM" syncable="YES"/>
+        <attribute name="empEmail" optional="YES" attributeType="String" defaultValueString="nil" syncable="YES"/>
+        <attribute name="empName" optional="YES" attributeType="String" defaultValueString="nil" syncable="YES"/>
+        <attribute name="id_" optional="YES" attributeType="String" defaultValueString="nil" syncable="YES"/>
+        <attribute name="rev_" optional="YES" attributeType="String" defaultValueString="nil" syncable="YES"/>
+        <attribute name="statusLogin" optional="YES" attributeType="Boolean" defaultValueString="false" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" defaultValueString="nil" syncable="YES"/>
     </entity>
     <elements>
-        <element name="User_Info" positionX="-63" positionY="-18" width="128" height="225"/>
+        <element name="User_Info" positionX="-63" positionY="-18" width="128" height="238"/>
     </elements>
 </model>

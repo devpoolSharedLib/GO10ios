@@ -13,6 +13,7 @@ target 'GO10' do
 	pod 'Crashlytics'
 	pod 'KMPlaceholderTextView', '~> 1.2.0'
 	pod 'MRProgress'
+	pod 'IQKeyboardManagerSwift'
 end
 
 target 'GO10Tests' do

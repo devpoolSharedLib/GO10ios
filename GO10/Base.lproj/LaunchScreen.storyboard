@@ -18,13 +18,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="go10_Screen" translatesAutoresizingMaskIntoConstraints="NO" id="grv-JT-aJf">
-                                <rect key="frame" x="9" y="256" width="355" height="160"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="grv-JT-aJf">
+                                <rect key="frame" x="50" y="288" width="274" height="92"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="160" id="Jhf-FJ-qjm"/>
+                                    <constraint firstAttribute="height" constant="92" id="Jhf-FJ-qjm"/>
                                     <constraint firstAttribute="height" constant="156" id="YhV-Wu-dyb"/>
                                     <constraint firstAttribute="width" constant="355" id="e0Z-Yw-vAA"/>
-                                    <constraint firstAttribute="width" constant="355" id="sZQ-dw-Vpx"/>
+                                    <constraint firstAttribute="width" constant="274" id="sZQ-dw-Vpx"/>
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -36,13 +36,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="grv-JT-aJf" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="2.5" id="6l8-Wh-7Sy"/>
+                            <constraint firstItem="grv-JT-aJf" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="6l8-Wh-7Sy"/>
                             <constraint firstItem="grv-JT-aJf" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-6" id="Kg4-U0-fDd"/>
                             <constraint firstItem="grv-JT-aJf" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="OkZ-4P-yfI"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="grv-JT-aJf" secondAttribute="bottom" constant="255" id="RpO-Vc-5jL"/>
                             <constraint firstItem="grv-JT-aJf" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="ikR-9V-tsF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="grv-JT-aJf" secondAttribute="trailing" id="kZo-my-ayI"/>
-                            <constraint firstItem="grv-JT-aJf" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" constant="-1" id="v43-0J-hb8"/>
+                            <constraint firstItem="grv-JT-aJf" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="v43-0J-hb8"/>
                             <constraint firstItem="grv-JT-aJf" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="236" id="xR0-9g-1q5"/>
                         </constraints>
                         <variation key="default">
@@ -60,10 +60,10 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-253.5" y="148.5"/>
+            <point key="canvasLocation" x="-327.5" y="147.5"/>
         </scene>
     </scenes>
     <resources>
-        <image name="go10_Screen" width="1024" height="768"/>
+        <image name="logo" width="768" height="248"/>
     </resources>
 </document>

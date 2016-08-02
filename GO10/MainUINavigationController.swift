@@ -11,32 +11,67 @@ import CoreData
 
 class MainUINavigationController: UINavigationController {
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    
+   
     
     var profile = [NSDictionary]();
     var status: Bool!
     var accountId: String!
+    var statusLogin: Bool!
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("*** MainVC ViewDidAppear ***")
-        
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
-        if (FBSDKAccessToken.currentAccessToken() != nil) || (GIDSignIn.sharedInstance().hasAuthInKeychain()){
-            print("\(NSDate().formattedISO8601) : Facebook or Google is login")
-            do{
-                let fetchReq = NSFetchRequest(entityName: "User_Info");
-                let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-                
-                self.accountId = result[0].valueForKey("accountId") as! String;
-            }catch{
-                print("\(NSDate().formattedISO8601) Error Reading Data");
+         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+        do{
+            let fetchReq = NSFetchRequest(entityName: "User_Info");
+            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
+            print("Results : \(result)")
+            print("count Results : \(result.count)")
+            if(result.count == 0){
+                print("count=0")
+                self.statusLogin = false;
+            }else if((result[0].valueForKey("statusLogin")) as! Bool == false){
+                print("status=false")
+                self.statusLogin = false
+            }else{
+                print("true")
+                for results in result as [NSManagedObject] {
+                    
+                    print("\(NSDate().formattedISO8601) results : \(results)")
+                }
+                self.statusLogin = true
             }
-            checkStatus()
             
-        } else {
-            print("\(NSDate().formattedISO8601) : Facebook or Google is not login")
-            self.performSegueWithIdentifier("gotoLogin", sender: nil)
+            print("Status Login : \(self.statusLogin)")
+            
+            if((self.statusLogin) == true){
+                self.performSegueWithIdentifier("gotoHomePage", sender: nil)
+            }else{
+                self.performSegueWithIdentifier("gotoLoginPage", sender: nil)
+            }
+            
+
+            
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Reading Data");
         }
+        
+       //        if (FBSDKAccessToken.currentAccessToken() != nil) || (GIDSignIn.sharedInstance().hasAuthInKeychain()){
+//            print("\(NSDate().formattedISO8601) : Facebook or Google is login")
+//            do{
+//                let fetchReq = NSFetchRequest(entityName: "User_Info");
+//                let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
+//                
+//                self.accountId = result[0].valueForKey("accountId") as! String;
+//            }catch{
+//                print("\(NSDate().formattedISO8601) Error Reading Data");
+//            }
+//            checkStatus()
+//            
+//        } else {
+//            print("\(NSDate().formattedISO8601) : Facebook or Google is not login")
+//            self.performSegueWithIdentifier("gotoLogin", sender: nil)
+//        }
     }
     
     func checkStatus(){

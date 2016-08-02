@@ -1,118 +1,209 @@
 //
-//  GoogleLoginViewController.swift
-//  DemoFBLogin
+//  LoginViewController.swift
+//  GO10
 //
-//  Created by devpool on 5/11/2559 BE.
-//  Copyright © 2559 devpool. All rights reserved.
+//  Created by Go10Application on 7/25/2559 BE.
+//  Copyright © 2559 Gosoft. All rights reserved.
 //
 
 import UIKit
 import CoreData
 
-class LoginViewController: UIViewController, GIDSignInUIDelegate ,GIDSignInDelegate{
-    
-    @IBOutlet weak var btnLoginFacebook: UIButton!
-    @IBOutlet weak var btnSigninGoogle: UIButton!
+class LoginViewController: UIViewController {
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var profile = [NSDictionary]();
     var modelName: String!
+    @IBOutlet weak var emailLbl: UILabel!
+    
+    @IBOutlet weak var emailTxtField: UITextField!
+    @IBOutlet weak var passwordLbl: UILabel!
+    @IBOutlet weak var passwordTxtField: UITextField!
+    
+    @IBOutlet weak var loginBtn: UIButton!
+    @IBOutlet weak var forgotPasswordBtn: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** LoginVC ViewDidLoad ***")
-        GIDSignIn.sharedInstance().uiDelegate = self
-        GIDSignIn.sharedInstance().delegate = self
         modelName = UIDevice.currentDevice().modelName
+        self.loginBtn.layer.cornerRadius = 5
         if(modelName.rangeOfString("ipad Mini") != nil){
-            btnLoginFacebook.titleLabel?.font = FontModel.ipadminiTopicName
-            btnSigninGoogle.titleLabel?.font = FontModel.ipadminiTopicName
+            emailLbl.font = FontModel.ipadminiPainText
+            passwordLbl.font = FontModel.ipadminiPainText
+            loginBtn.titleLabel?.font = FontModel.ipadminiPainText
+            forgotPasswordBtn.titleLabel?.font = FontModel.ipadminiPainText
+        }
+
+        // Do any additional setup after loading the view.
+    }
+
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        if UIDevice.currentDevice().orientation.isLandscape.boolValue{
+            print("Change to Landscape")
+            
+        }else{
+            print("Change to Portrait")
+            
+        }
+    }
+    
+    @IBAction func gotoForgotPage(sender: AnyObject) {
+        self.performSegueWithIdentifier("gotoForgotPage", sender: nil)
+    }
+    
+    @IBAction func gotoTermConditon(sender: AnyObject) {
+        self.performSegueWithIdentifier("gotoTerm_Cond", sender: nil)
+        
+    }
+    @IBAction func gotoSelectRoomPage(sender: AnyObject) {
+        
+//        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+//        
+//        do{
+//            let fetchReq = NSFetchRequest(entityName: "User_Info");
+//            let result = try context.executeFetchRequest(fetchReq);
+//            if(result.count > 0){
+//                print("set Old User")
+//                result[0].setValue(true, forKey: "statusLogin");
+//                
+//            }else{
+//                print("set New User")
+//                let newUser = NSEntityDescription.insertNewObjectForEntityForName("User_Info", inManagedObjectContext: context);
+//                newUser.setValue(true, forKey: "statusLogin");
+//            }
+//                try context.save();
+//
+//        }catch{
+//            print("\(NSDate().formattedISO8601) Error Saving Data");
+//        }
+
+        
+        let email = self.emailTxtField.text
+        let password = self.passwordTxtField.text
+        
+        print("E-MAIL : \(email)")
+        print("PASSWORD : \(password)")
+        
+        if((email == "") || checkSpace(email!) || password == "" || checkSpace(password!) ) {
+            let alert = UIAlertController(title: "Alert", message: "Please enter your E-mail and Password.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            
+            
+        }else{
+            checkLogin(email!,password: password!)
+        }
+    }
+    
+   
+    func checkLogin(email:String,password:String){
+        
+            print("\(NSDate().formattedISO8601) getLoginWebservice")
+            let urlWs = NSURL(string: "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByUserPassword?email=\(email)&password=\(password)")
+            print("\(NSDate().formattedISO8601) URL -->  : \(urlWs)")
+        
+            let urlsession = NSURLSession.sharedSession()
+            let request = urlsession.dataTaskWithURL(urlWs!) { (data, response, error) in
+                do{
+                    
+                    self.profile = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
+                    print("\(NSDate().formattedISO8601) profile : \(self.profile)")
+                    if(self.profile.isEmpty){
+                        print("Profile is Empty")
+                        NSOperationQueue.mainQueue().addOperationWithBlock {
+                            let alert = UIAlertController(title: "Alert", message: "The e-mail or password is incorrect.\n\nPlease try again.", preferredStyle: UIAlertControllerStyle.Alert)
+                            alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                            self.presentViewController(alert, animated: true, completion: nil)
+                        }
+                    }else{
+                        if(self.profile[0].valueForKey("activate") as! Bool == false){
+                            print("FALSE")
+                            NSOperationQueue.mainQueue().addOperationWithBlock {
+                                let alert = UIAlertController(title: "Alert", message: "The e-mail or password is incorrect.\n\nPlease try again.", preferredStyle: UIAlertControllerStyle.Alert)
+                                alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                                self.presentViewController(alert, animated: true, completion: nil)
+                            }
+                        }
+                        else if(self.profile[0].valueForKey("avatarPic") as! String == "default_avatar"||self.profile[0].valueForKey("avatarName") as! String == "Avatar Name"){
+                            print("\(NSDate().formattedISO8601) Default Avatar")
+                            self.setUserInfo()
+                            self.gotoSetAvatar()
+                        }else{
+                            self.setUserInfo()
+                            self.loginToHomepage()
+                        }
+                        
+                    }
+                    
+                }catch let error as NSError{
+                    print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
+                }
+            }
+            request.resume()
+
+    }
+    
+    func gotoSetAvatar(){
+        let firstLogin = "First Login"
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.performSegueWithIdentifier("gotoSetting", sender: firstLogin)
+        }
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "gotoSetting" {
+            let navController = segue.destinationViewController as! UINavigationController
+            let destVC = navController.topViewController as! EditAvatarTableViewController
+//            let destVC = segue.destinationViewController as! EditAvatarTableViewController
+            destVC.recieveFirstLogin = sender as! String
         }
     }
 
-    //Login Facebook Button
-    @IBAction func btnFBLoginPressed(sender: AnyObject) {
-        appDelegate.signInType = "Facebook"
-        let fbLoginManager : FBSDKLoginManager = FBSDKLoginManager()
-        fbLoginManager .logInWithReadPermissions(["public_profile", "email"], fromViewController: self, handler: { (result, error) -> Void in
-            if (error == nil){
-                self.getFBUserData()
-            }
-            print("CALL BACK FB")
-        })
-    }
     
-    //Signin Google Button
-    @IBAction func btnSigninGooglePressed(sender: AnyObject) {
-        appDelegate.signInType = "Google"
-        GIDSignIn.sharedInstance().signIn()
-    }
-    
-    //get Facebook User Data
-    func getFBUserData()
-    {
-         print("FB GET DATA")
-        let graphRequest : FBSDKGraphRequest = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"id, name, email, gender, birthday, location"])
-        graphRequest.startWithCompletionHandler({ (connection, result, error) -> Void in
-            
-            if ((error) != nil)
-            {
-                print("Error: \(error)")
-            }
-            else
-            {
-                let accountId = result.valueForKey("id") as! String
-                print("\(NSDate().formattedISO8601) FB User id is: \(accountId)")
-                self.saveUserInfo(accountId)
-            }
-        })
-    }
-    
-    
-    //Google Signin Handle
-    func signIn(signIn: GIDSignIn!, didSignInForUser user: GIDGoogleUser!,
-                withError error: NSError!) {
-        if (error == nil) {
-            let userId = user.userID
-            print("\(NSDate().formattedISO8601) Google User id is: \(userId)")
-            NSNotificationCenter.defaultCenter().postNotificationName(
-                "ToggleAuthUINotification",
-                object: nil,
-                userInfo: ["statusText": "Signed in user:\n\(userId)"])
-                self.saveUserInfo(userId)
-            // self.performSegueWithIdentifier("gotoHomePage", sender: nil)
-        } else {
-            print("\(NSDate().formattedISO8601) : \(error.localizedDescription)")
-            NSNotificationCenter.defaultCenter().postNotificationName(
-                "ToggleAuthUINotification", object: nil, userInfo: nil)
+    func loginToHomepage(){
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.performSegueWithIdentifier("LoginToHomepage", sender: nil)
         }
+        
     }
     
-    
-    //Google Signin Disconnect
-    func signIn(signIn: GIDSignIn!, didDisconnectWithUser user:GIDGoogleUser!,
-                withError error: NSError!) {
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            "ToggleAuthUINotification",
-            object: nil,
-            userInfo: ["statusText": "User has disconnected."])
-    }
-    
-    
-    func saveUserInfo(accountId: String){
+    func setUserInfo(){
         // Write Data into CoreData
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
+            let fetchReq = NSFetchRequest(entityName: "User_Info");
+            let result = try context.executeFetchRequest(fetchReq);
+            if(result.count > 0){
+                print("set Old User")
+                result[0].setValue(self.profile[0].valueForKey("_id"), forKey: "id_")
+                result[0].setValue(self.profile[0].valueForKey("_rev"), forKey: "rev_")
+                result[0].setValue("xxxxxxxxxx", forKey: "accountId");
+                result[0].setValue(self.profile[0].valueForKey("activate"), forKey: "activate")
+                result[0].setValue(self.profile[0].valueForKey("empName") , forKey: "empName");
+                result[0].setValue(self.profile[0].valueForKey("empEmail"), forKey: "empEmail");
+                result[0].setValue(self.profile[0].valueForKey("avatarPic"), forKey: "avatarPic");
+                result[0].setValue("default_avatar", forKey: "avatarPicTemp");
+                result[0].setValue(self.profile[0].valueForKey("avatarName"), forKey: "avatarName")
+                result[0].setValue(true, forKey: "avatarCheckSelect")
+                result[0].setValue(self.profile[0].valueForKey("birthday"), forKey: "birthday")
+                result[0].setValue(self.profile[0].valueForKey("type"), forKey: "type")
+                result[0].setValue(true, forKey: "statusLogin")
+            }else{
+                print("set New User")
                 let newUser = NSEntityDescription.insertNewObjectForEntityForName("User_Info", inManagedObjectContext: context);
-                newUser.setValue(accountId, forKey: "accountId");
-                newUser.setValue("Name" , forKey: "empName");
-                newUser.setValue("email@gosoft.co.th", forKey: "empEmail");
-                newUser.setValue("default_avatar", forKey: "avatarPic");
+                newUser.setValue(self.profile[0].valueForKey("_id"), forKey: "id_")
+                newUser.setValue(self.profile[0].valueForKey("_rev"), forKey: "rev_")
+                newUser.setValue("xxxxxxxxxx", forKey: "accountId");
+                newUser.setValue(self.profile[0].valueForKey("activate"), forKey: "activate")
+                newUser.setValue(self.profile[0].valueForKey("empName") , forKey: "empName");
+                newUser.setValue(self.profile[0].valueForKey("empEmail"), forKey: "empEmail");
+                newUser.setValue(self.profile[0].valueForKey("avatarPic"), forKey: "avatarPic");
                 newUser.setValue("default_avatar", forKey: "avatarPicTemp");
-                newUser.setValue("avatar", forKey: "avatarName")
+                newUser.setValue(self.profile[0].valueForKey("avatarName"), forKey: "avatarName")
                 newUser.setValue(true, forKey: "avatarCheckSelect")
-                newUser.setValue(false, forKey: "activate")
-                newUser.setValue("", forKey: "token")
-                newUser.setValue("user", forKey: "type")
-                newUser.setValue("_id", forKey: "id_")
-                newUser.setValue("_rev", forKey: "rev_")
+                newUser.setValue(self.profile[0].valueForKey("birthday"), forKey: "birthday")
+                newUser.setValue(self.profile[0].valueForKey("type"), forKey: "type")
+                newUser.setValue(true, forKey: "statusLogin")
+            }
             try context.save();
             print("\(NSDate().formattedISO8601) Save Data Success")
         }catch{
@@ -120,5 +211,22 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate ,GIDSignInDeleg
         }
         
     }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func checkSpace(strCheck: String) -> Bool {
+        let trimmedString = strCheck.stringByTrimmingCharactersInSet(
+            NSCharacterSet.whitespaceAndNewlineCharacterSet()
+        )
+        if trimmedString.characters.count == 0 {
+            return true
+        }else{
+            return false
+        }
+    }
+
     
 }

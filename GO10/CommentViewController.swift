@@ -37,7 +37,6 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         //Radius Button Border
         commentTxtView.layer.cornerRadius = 5
         editor.layer.cornerRadius = 5
-    
         if(modelName.rangeOfString("ipad Mini") != nil){
             commentTxtView.setFontSize(17)
         }
@@ -74,7 +73,9 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         editor.delegate = self
         editor.inputAccessoryView = toolbar
-            
+        
+        //setPlaceholderText
+        editor.setPlaceholderText("Write something ...")
     }
     
     func postCommentWebservice(){
@@ -174,7 +175,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         // Generate Request
         print("\(NSDate().formattedISO8601) Upload Image")
-//        let url = NSURL(string: "http://10.37.54.253:9080/GO10WebService/UploadServlet")
+        //        let url = NSURL(string: "http://localhost:9080/GO10WebService/UploadServlet")
         let url = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet")
         print("\(NSDate().formattedISO8601) url request image : \(url)")
         let request = NSMutableURLRequest(URL: url!)
@@ -209,7 +210,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
                     let responseUrl = jsonData.valueForKey("imgUrl") as! String
                     
                     let imgUrl = "http://go10webservice.au-syd.mybluemix.net\(responseUrl)"
-//                     let imgUrl = "http://10.37.54.253:9080\(responseUrl)"
+//                     let imgUrl = "http://localhost:9080\(responseUrl)"
                     
                     print("\(NSDate().formattedISO8601) imgUrl: \(imgUrl)")
                     dispatch_async(dispatch_get_main_queue(), {

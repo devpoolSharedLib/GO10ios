@@ -86,6 +86,7 @@ strip_invalid_archs() {
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-GO10/ActiveLabel.framework"
   install_framework "Pods-GO10/CarbonKit.framework"
+  install_framework "Pods-GO10/IQKeyboardManagerSwift.framework"
   install_framework "Pods-GO10/KMPlaceholderTextView.framework"
   install_framework "Pods-GO10/MRProgress.framework"
   install_framework "Pods-GO10/RichEditorView.framework"
@@ -94,6 +95,7 @@ fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-GO10/ActiveLabel.framework"
   install_framework "Pods-GO10/CarbonKit.framework"
+  install_framework "Pods-GO10/IQKeyboardManagerSwift.framework"
   install_framework "Pods-GO10/KMPlaceholderTextView.framework"
   install_framework "Pods-GO10/MRProgress.framework"
   install_framework "Pods-GO10/RichEditorView.framework"

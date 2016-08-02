@@ -120,11 +120,11 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
             let empEmail = result[0].valueForKey("empEmail") as! String;
             let avatarName = result[0].valueForKey("avatarName") as! String;
             let avatarPic = result[0].valueForKey("avatarPic") as! String;
-            let token = result[0].valueForKey("token") as! String;
+//            let token = result[0].valueForKey("token") as! String;
             let activate = result[0].valueForKey("activate") as! Bool;
             let type = result[0].valueForKey("type") as! String;
             
-            
+            let birthday = result[0].valueForKey("birthday") as! String;
             
             print("\(NSDate().formattedISO8601) putUpdateWebservice")
             let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser")
@@ -132,7 +132,7 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
             let requestPost = NSMutableURLRequest(URL: urlWs!)
             
             
-            let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"accountId\":\"\(accountId)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"token\":\"\(token)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
+            let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"accountId\":\"\(accountId)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"birthday\":\"\(birthday)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
             print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
             
             requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)

@@ -58,16 +58,37 @@ class SettingTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         print("index Path : \(indexPath.row)")
         if indexPath.row == 1{
-            if (FBSDKAccessToken.currentAccessToken() != nil){
-                print("\(NSDate().formattedISO8601) Facebook is logon")
-                FBSDKLoginManager().logOut()
-            } else if(GIDSignIn.sharedInstance().hasAuthInKeychain()){
-                print("\(NSDate().formattedISO8601) Google is logon")
-                GIDSignIn.sharedInstance().signOut()
-            }
+//            if (FBSDKAccessToken.currentAccessToken() != nil){
+//                print("\(NSDate().formattedISO8601) Facebook is logon")
+//                FBSDKLoginManager().logOut()
+//            } else if(GIDSignIn.sharedInstance().hasAuthInKeychain()){
+//                print("\(NSDate().formattedISO8601) Google is logon")
+//                GIDSignIn.sharedInstance().signOut()
+//            }
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            let loginVC =  storyboard.instantiateViewControllerWithIdentifier("mainVCID")
+//            self.presentViewController(loginVC, animated: true, completion: nil)
+            logout()
+        }
+    }
+    
+    func logout(){
+        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+        do{
+            let fetchReq = NSFetchRequest(entityName: "User_Info");
+            let result = try context.executeFetchRequest(fetchReq);
+        
+            result[0].setValue(false, forKey: "statusLogin");
+            try context.save();
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let loginVC =  storyboard.instantiateViewControllerWithIdentifier("mainVCID")
             self.presentViewController(loginVC, animated: true, completion: nil)
+            print("\(NSDate().formattedISO8601) Save Data Success")
+ 
+            
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Saving Profile Data");
         }
+
     }
 }

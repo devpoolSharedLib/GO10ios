@@ -12,7 +12,7 @@ import MRProgress
 
 class EditAvatarTableViewController: UITableViewController {
     var recieveformverify: String!
-    
+    var recieveFirstLogin: String!
      var backbtn: UIBarButtonItem!
      var submitBtn: UIBarButtonItem!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -32,32 +32,43 @@ class EditAvatarTableViewController: UITableViewController {
             avartarNameLbl.font = FontModel.ipadminiPainText
             editAvatarLbl.font = FontModel.ipadminiHotTopicNameAvatar
         }
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
-        do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
-            let activate = result[0].valueForKey("activate") as! Bool;
-            print("activate :\(activate)")
-            if(!activate){
-                print("from verfify page")
+    
+            if(recieveFirstLogin == "First Login"){
+                print("First Login")
                 self.navigationItem.setHidesBackButton(true, animated:true);
                 
             }else{
-                print("not from verfify page")
+                print("not First Login")
                 submitBtn =  self.navigationItem.rightBarButtonItems![0]
                 self.navigationItem.rightBarButtonItems?.removeAtIndex(0)
             }
-        }catch{
-            print("\(NSDate().formattedISO8601) Error Reading Data");
-        }
+        
+//        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+//        do{
+//            let fetchReq = NSFetchRequest(entityName: "User_Info");
+//            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
+//            
+//            let activate = result[0].valueForKey("activate") as! Bool;
+//            print("activate :\(activate)")
+//            if(!activate){
+//                print("from verfify page")
+//                self.navigationItem.setHidesBackButton(true, animated:true);
+//                
+//            }else{
+//                print("not from verfify page")
+//                submitBtn =  self.navigationItem.rightBarButtonItems![0]
+//                self.navigationItem.rightBarButtonItems?.removeAtIndex(0)
+//            }
+//        }catch{
+//            print("\(NSDate().formattedISO8601) Error Reading Data");
+//        }
 
     }
     
     override func viewDidAppear(animated: Bool) {
         
         super.viewDidAppear(animated)
-        print("*** EditAvatarVC ViewDidAppear ***")
+        print("*** EditAvatarTableVC ViewDidAppear ***")
         MRProgressOverlayView.showOverlayAddedTo(self.editavatarTableView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
@@ -148,10 +159,9 @@ class EditAvatarTableViewController: UITableViewController {
             let empEmail = result[0].valueForKey("empEmail") as! String;
             let avatarName = result[0].valueForKey("avatarName") as! String;
             let avatarPic = result[0].valueForKey("avatarPic") as! String;
-            let token = result[0].valueForKey("token") as! String;
             let activate = result[0].valueForKey("activate") as! Bool;
             let type = result[0].valueForKey("type") as! String;
-            
+            let birthday = result[0].valueForKey("birthday") as! String;
             result[0].setValue(true, forKey: "activate")
             
             print("\(NSDate().formattedISO8601) putUpdateWebservice")
@@ -160,7 +170,7 @@ class EditAvatarTableViewController: UITableViewController {
             let requestPost = NSMutableURLRequest(URL: urlWs!)
             
             
-            let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"accountId\":\"\(accountId)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"token\":\"\(token)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
+            let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"accountId\":\"\(accountId)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"birthday\":\"\(birthday)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
             print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
             
             requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)

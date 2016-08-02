@@ -17,7 +17,7 @@ import UIKit
 import CoreData
 import Fabric
 import Crashlytics
-
+import IQKeyboardManagerSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
@@ -33,6 +33,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         assert(configureError == nil, "Error configuring Google services: \(configureError)")
         
         Fabric.with([Crashlytics.self])
+        
+        IQKeyboardManager.sharedManager().enable = true
+        
         return true
         
     }
