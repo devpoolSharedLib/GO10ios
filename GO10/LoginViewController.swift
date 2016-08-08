@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import MRProgress
 
 class LoginViewController: UIViewController {
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -19,6 +20,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordLbl: UILabel!
     @IBOutlet weak var passwordTxtField: UITextField!
     
+    @IBOutlet var loginView: UIView!
     @IBOutlet weak var loginBtn: UIButton!
     @IBOutlet weak var forgotPasswordBtn: UIButton!
     override func viewDidLoad() {
@@ -35,7 +37,6 @@ class LoginViewController: UIViewController {
 
         // Do any additional setup after loading the view.
     }
-
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         if UIDevice.currentDevice().orientation.isLandscape.boolValue{
             print("Change to Landscape")
@@ -54,28 +55,8 @@ class LoginViewController: UIViewController {
         self.performSegueWithIdentifier("gotoTerm_Cond", sender: nil)
         
     }
+    
     @IBAction func gotoSelectRoomPage(sender: AnyObject) {
-        
-//        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
-//        
-//        do{
-//            let fetchReq = NSFetchRequest(entityName: "User_Info");
-//            let result = try context.executeFetchRequest(fetchReq);
-//            if(result.count > 0){
-//                print("set Old User")
-//                result[0].setValue(true, forKey: "statusLogin");
-//                
-//            }else{
-//                print("set New User")
-//                let newUser = NSEntityDescription.insertNewObjectForEntityForName("User_Info", inManagedObjectContext: context);
-//                newUser.setValue(true, forKey: "statusLogin");
-//            }
-//                try context.save();
-//
-//        }catch{
-//            print("\(NSDate().formattedISO8601) Error Saving Data");
-//        }
-
         
         let email = self.emailTxtField.text
         let password = self.passwordTxtField.text
@@ -84,12 +65,14 @@ class LoginViewController: UIViewController {
         print("PASSWORD : \(password)")
         
         if((email == "") || checkSpace(email!) || password == "" || checkSpace(password!) ) {
+            
             let alert = UIAlertController(title: "Alert", message: "Please enter your E-mail and Password.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
             
             
         }else{
+            MRProgressOverlayView.showOverlayAddedTo(self.loginView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
             checkLogin(email!,password: password!)
         }
     }
@@ -98,11 +81,17 @@ class LoginViewController: UIViewController {
     func checkLogin(email:String,password:String){
         
             print("\(NSDate().formattedISO8601) getLoginWebservice")
-            let urlWs = NSURL(string: "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByUserPassword?email=\(email)&password=\(password)")
+            let url = "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByUserPassword?email=\(email)&password=\(password)"
+            let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(
+            NSCharacterSet.URLFragmentAllowedCharacterSet())
+        
+            let urlWs = NSURL(string: strUrlEncode!)
             print("\(NSDate().formattedISO8601) URL -->  : \(urlWs)")
         
-            let urlsession = NSURLSession.sharedSession()
-            let request = urlsession.dataTaskWithURL(urlWs!) { (data, response, error) in
+            let req = NSMutableURLRequest(URL: urlWs!)
+            req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+           let request = NSURLSession.sharedSession().dataTaskWithRequest(req) { (data, response, error) in
                 do{
                     
                     self.profile = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
@@ -113,7 +102,9 @@ class LoginViewController: UIViewController {
                             let alert = UIAlertController(title: "Alert", message: "The e-mail or password is incorrect.\n\nPlease try again.", preferredStyle: UIAlertControllerStyle.Alert)
                             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                             self.presentViewController(alert, animated: true, completion: nil)
+                            MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
                         }
+                        
                     }else{
                         if(self.profile[0].valueForKey("activate") as! Bool == false){
                             print("FALSE")
@@ -126,9 +117,11 @@ class LoginViewController: UIViewController {
                         else if(self.profile[0].valueForKey("avatarPic") as! String == "default_avatar"||self.profile[0].valueForKey("avatarName") as! String == "Avatar Name"){
                             print("\(NSDate().formattedISO8601) Default Avatar")
                             self.setUserInfo()
+                            MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
                             self.gotoSetAvatar()
                         }else{
                             self.setUserInfo()
+                            MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
                             self.loginToHomepage()
                         }
                         
