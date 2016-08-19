@@ -12,7 +12,7 @@ import MRProgress
 
 class EditAvatarTableViewController: UITableViewController {
     var recieveformverify: String!
-    var recieveFirstLogin: String!
+    var recieveStatusLogin: String!
      var backbtn: UIBarButtonItem!
      var submitBtn: UIBarButtonItem!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -32,8 +32,11 @@ class EditAvatarTableViewController: UITableViewController {
             avartarNameLbl.font = FontModel.ipadminiPainText
             editAvatarLbl.font = FontModel.ipadminiHotTopicNameAvatar
         }
-    
-            if(recieveFirstLogin == "First Login"){
+            print("xxxxxxxxxxxx \(recieveStatusLogin)")
+        if(recieveStatusLogin == nil){
+            recieveStatusLogin = "not First Login"
+        }
+            if(recieveStatusLogin == "First Login" && recieveStatusLogin != nil){
                 print("First Login")
                 self.navigationItem.setHidesBackButton(true, animated:true);
                 

@@ -136,18 +136,18 @@ class LoginViewController: UIViewController {
     }
     
     func gotoSetAvatar(){
-        let firstLogin = "First Login"
+        let statusLogin = "First Login"
         NSOperationQueue.mainQueue().addOperationWithBlock {
-            self.performSegueWithIdentifier("gotoSetting", sender: firstLogin)
+            self.performSegueWithIdentifier("gotoSettingAvatar", sender: statusLogin)
         }
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "gotoSetting" {
+        if segue.identifier == "gotoSettingAvatar" {
             let navController = segue.destinationViewController as! UINavigationController
             let destVC = navController.topViewController as! EditAvatarTableViewController
 //            let destVC = segue.destinationViewController as! EditAvatarTableViewController
-            destVC.recieveFirstLogin = sender as! String
+            destVC.recieveStatusLogin = sender as! String
         }
     }
 

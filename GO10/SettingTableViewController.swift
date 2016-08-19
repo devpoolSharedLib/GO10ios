@@ -57,7 +57,7 @@ class SettingTableViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         print("index Path : \(indexPath.row)")
-        if indexPath.row == 1{
+            if indexPath.row == 1{
 //            if (FBSDKAccessToken.currentAccessToken() != nil){
 //                print("\(NSDate().formattedISO8601) Facebook is logon")
 //                FBSDKLoginManager().logOut()
