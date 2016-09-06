@@ -209,10 +209,11 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
                     let jsonData = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSMutableDictionary;
                     let responseUrl = jsonData.valueForKey("imgUrl") as! String
                     
-                    let imgUrl = "http://go10webservice.au-syd.mybluemix.net\(responseUrl)"
+//                    let imgUrl = "http://go10webservice.au-syd.mybluemix.net\(responseUrl)"
+                    
 //                     let imgUrl = "http://localhost:9080\(responseUrl)"
                     
-                    print("\(NSDate().formattedISO8601) imgUrl: \(imgUrl)")
+                    print("\(NSDate().formattedISO8601) imgUrl: \(responseUrl)")
                     dispatch_async(dispatch_get_main_queue(), {
                         // Show Image
                         print("\(NSDate().formattedISO8601) Show Image")
@@ -229,7 +230,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
                             width = 295
                             height = 295
                         }
-                        self.toolbar.editor?.insertImage(imgUrl,width: width,height: height,alt: "insertImageUrl")
+                        self.toolbar.editor?.insertImage(responseUrl,width: width,height: height,alt: "insertImageUrl")
                         
                     })
                     
