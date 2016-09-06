@@ -18,6 +18,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     var topicId: String!
     var roomId: String!
+    var empEmail: String!
     var userNameAvatar: String!
     var userPicAvatar: String!
     var receiveComment: NSDictionary!
@@ -45,8 +46,10 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
+            
             userNameAvatar = result[0].valueForKey("avatarName") as! String;
             userPicAvatar = result[0].valueForKey("avatarPic") as! String;
+            empEmail = result[0].valueForKey("empEmail") as! String;
         }catch{
             print("\(NSDate().formattedISO8601) Error: Reading Data");
             
@@ -89,7 +92,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         let userNameAvatarReplaceLine = userNameAvatar.stringByReplacingOccurrencesOfString("\n", withString: "\\n").stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
         
-        let jsonObj = "{\"topicId\":\"\(topicId)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"content\":\"\(strComment)\",\"date\":\" \",\"type\":\"comment\",\"roomId\":\"\(roomId)\"}"
+        let jsonObj = "{\"topicId\":\"\(topicId)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"content\":\"\(strComment)\",\"date\":\" \",\"type\":\"comment\",\"roomId\":\"\(roomId)\"}"
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         
         requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)

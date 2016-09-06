@@ -427,7 +427,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="84" height="94.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" tag="14" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xah-vI-QZx">
+                                                <imageView userInteractionEnabled="NO" tag="14" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xah-vI-QZx">
                                                     <rect key="frame" x="14" y="1" width="56" height="54"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="15" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i0x-30-Cgv">
@@ -845,7 +845,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="213" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="SGQ-SJ-BLd">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="213" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="SGQ-SJ-BLd">
                                 <rect key="frame" x="-8" y="64" width="391" height="559"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="separatorColor" red="0.92960502099999998" green="0.92960502099999998" blue="0.92960502099999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -1073,10 +1073,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FHk-MA-bX4">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FHk-MA-bX4">
                                 <rect key="frame" x="12" y="79" width="351" height="528"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8sB-Fz-ahz" userLabel="comment Txt View" customClass="RichEditorView" customModule="RichEditorView">
+                                    <view contentMode="scaleToFill" misplaced="YES" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8sB-Fz-ahz" userLabel="comment Txt View" customClass="RichEditorView" customModule="RichEditorView">
                                         <rect key="frame" x="0.0" y="0.0" width="351" height="528"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
@@ -1691,10 +1691,10 @@
         <image name="logo" width="768" height="248"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Yon-P0-l0i"/>
-        <segue reference="ATv-yh-iwI"/>
-        <segue reference="Y3h-AS-Iw1"/>
         <segue reference="IVH-9Q-YBp"/>
-        <segue reference="YAy-nf-7Nd"/>
+        <segue reference="GkO-V8-b6y"/>
+        <segue reference="Y3h-AS-Iw1"/>
+        <segue reference="K7P-Kb-tXj"/>
+        <segue reference="Yon-P0-l0i"/>
     </inferredMetricsTieBreakers>
 </document>

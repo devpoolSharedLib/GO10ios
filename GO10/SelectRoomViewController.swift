@@ -124,17 +124,38 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         topicUserAvatarNameLbl.text =  bean.valueForKey("avatarName") as? String
         
         let roomID = bean.valueForKey("roomId") as? String
-        if roomID == "rm01"{
-            topicImg.image = UIImage(named: "general")
-        }else if roomID == "rm02"{
-            topicImg.image = UIImage(named: "it")
-        }else if roomID == "rm03"{
-            topicImg.image = UIImage(named: "sport")
-        }else if roomID == "rm04"{
-            topicImg.image = UIImage(named: "entertainment")
-        }else if roomID == "rm05"{
-            topicImg.image = UIImage(named: "training")
+        
+        
+        
+        for item in RoomModel.room { // loop through data items
+            if(item.key as? String == roomID){
+            topicImg.image = item.value as? UIImage
+            }
         }
+        
+//        if roomID == "rm01"{
+//            topicImg.image = UIImage(named: "general")
+//        }else if roomID == "rm02"{
+//            topicImg.image = UIImage(named: "tell")
+//        }else if roomID == "rm03"{
+//            topicImg.image = UIImage(named: "game")
+//        }else if roomID == "rm04"{
+//            topicImg.image = UIImage(named: "food")
+//        }else if roomID == "rm05"{
+//            topicImg.image = UIImage(named: "stock info")
+//        }else if roomID == "rm06"{
+//            topicImg.image = UIImage(named: "travel")
+//        }else if roomID == "rm07"{
+//            topicImg.image = UIImage(named: "it")
+//        }else if roomID == "rm08"{
+//            topicImg.image = UIImage(named: "sport")
+//        }else if roomID == "rm09"{
+//            topicImg.image = UIImage(named: "newbie")
+//        }else if roomID == "rm10"{
+//            topicImg.image = UIImage(named: "talktoadmin")
+//        }
+
+        
         dateTime.text = bean.valueForKey("date") as? String
         return cell
     }
@@ -159,37 +180,44 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         
         let roomID = beanRoom.valueForKey("_id") as? String
         
-        if roomID == "rm01"{
-            roomImg.image = UIImage(named: "general")
-            roomTitle.text = beanRoom.valueForKey("name") as? String
-        }else if roomID == "rm02"{
-            roomImg.image = UIImage(named: "tell")
-            roomTitle.text = beanRoom.valueForKey("name") as? String
-        }else if roomID == "rm03"{
-            roomImg.image = UIImage(named: "game")
-            roomTitle.text = beanRoom.valueForKey("name") as? String
-        }else if roomID == "rm04"{
-            roomImg.image = UIImage(named: "food")
-            roomTitle.text = beanRoom.valueForKey("name") as? String
-        }else if roomID == "rm05"{
-            roomImg.image = UIImage(named: "stock info")
-            roomTitle.text = beanRoom.valueForKey("name") as? String
-        }else if roomID == "rm06"{
-                roomImg.image = UIImage(named: "travel")
+        for item in RoomModel.room { // loop through data items
+            if(item.key as? String == roomID){
+                roomImg.image = item.value as? UIImage
                 roomTitle.text = beanRoom.valueForKey("name") as? String
-            }else if roomID == "rm07"{
-                roomImg.image = UIImage(named: "it")
-                roomTitle.text = beanRoom.valueForKey("name") as? String
-            }else if roomID == "rm08"{
-                roomImg.image = UIImage(named: "sport")
-                roomTitle.text = beanRoom.valueForKey("name") as? String
-            }else if roomID == "rm09"{
-                roomImg.image = UIImage(named: "newbie")
-                roomTitle.text = beanRoom.valueForKey("name") as? String
-            }else if roomID == "rm10"{
-                roomImg.image = UIImage(named: "talktoadmin")
-                roomTitle.text = beanRoom.valueForKey("name") as? String
+            }
         }
+        
+//        if roomID == "rm01"{
+//            roomImg.image = UIImage(named: "general")
+//            roomTitle.text = beanRoom.valueForKey("name") as? String
+//        }else if roomID == "rm02"{
+//            roomImg.image = UIImage(named: "tell")
+//            roomTitle.text = beanRoom.valueForKey("name") as? String
+//        }else if roomID == "rm03"{
+//            roomImg.image = UIImage(named: "game")
+//            roomTitle.text = beanRoom.valueForKey("name") as? String
+//        }else if roomID == "rm04"{
+//            roomImg.image = UIImage(named: "food")
+//            roomTitle.text = beanRoom.valueForKey("name") as? String
+//        }else if roomID == "rm05"{
+//            roomImg.image = UIImage(named: "stock info")
+//            roomTitle.text = beanRoom.valueForKey("name") as? String
+//        }else if roomID == "rm06"{
+//            roomImg.image = UIImage(named: "travel")
+//            roomTitle.text = beanRoom.valueForKey("name") as? String
+//        }else if roomID == "rm07"{
+//            roomImg.image = UIImage(named: "it")
+//            roomTitle.text = beanRoom.valueForKey("name") as? String
+//        }else if roomID == "rm08"{
+//            roomImg.image = UIImage(named: "sport")
+//            roomTitle.text = beanRoom.valueForKey("name") as? String
+//        }else if roomID == "rm09"{
+//            roomImg.image = UIImage(named: "newbie")
+//            roomTitle.text = beanRoom.valueForKey("name") as? String
+//        }else if roomID == "rm10"{
+//            roomImg.image = UIImage(named: "talktoadmin")
+//            roomTitle.text = beanRoom.valueForKey("name") as? String
+//        }
         return collection
     }
     

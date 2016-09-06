@@ -25,6 +25,7 @@
 		A606EFEC1CE18B95000372FD /* GO10Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A606EFEB1CE18B95000372FD /* GO10Tests.swift */; };
 		A606EFF71CE18B95000372FD /* GO10UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A606EFF61CE18B95000372FD /* GO10UITests.swift */; };
 		A606F0051CE190F1000372FD /* SelectRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A606F0041CE190F1000372FD /* SelectRoomViewController.swift */; };
+		A64A368B1D7E6E0D00178769 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64A368A1D7E6E0C00178769 /* Room.swift */; };
 		A6685FCA1CE1F6BB00DA39F9 /* RoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6685FC91CE1F6BB00DA39F9 /* RoomViewController.swift */; };
 		A675E88E1CE2DD7E00430C6E /* BoardcontentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A675E88D1CE2DD7E00430C6E /* BoardcontentViewController.swift */; };
 		A6928B0A1CE33EBA00AF2D87 /* CommentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6928B091CE33EBA00AF2D87 /* CommentViewController.swift */; };
@@ -92,6 +93,7 @@
 		A606EFF61CE18B95000372FD /* GO10UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GO10UITests.swift; sourceTree = "<group>"; };
 		A606EFF81CE18B95000372FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A606F0041CE190F1000372FD /* SelectRoomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectRoomViewController.swift; sourceTree = "<group>"; };
+		A64A368A1D7E6E0C00178769 /* Room.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
 		A6685FC91CE1F6BB00DA39F9 /* RoomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomViewController.swift; sourceTree = "<group>"; };
 		A675E88D1CE2DD7E00430C6E /* BoardcontentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardcontentViewController.swift; sourceTree = "<group>"; };
 		A6928B091CE33EBA00AF2D87 /* CommentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentViewController.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				A6CEF09A1D094F3400DA1382 /* FontModel.swift */,
 				A6E81F451D45BF38002E8A37 /* LoginViewController.swift */,
 				A6E81F471D45D13F002E8A37 /* ForgotPasswordViewController.swift */,
+				A64A368A1D7E6E0C00178769 /* Room.swift */,
 			);
 			path = GO10;
 			sourceTree = "<group>";
@@ -545,6 +548,7 @@
 				A606EFD71CE18B95000372FD /* AppDelegate.swift in Sources */,
 				A6E81F481D45D13F002E8A37 /* ForgotPasswordViewController.swift in Sources */,
 				A6E81F461D45BF38002E8A37 /* LoginViewController.swift in Sources */,
+				A64A368B1D7E6E0D00178769 /* Room.swift in Sources */,
 				A6E01A171D0DD0DB00F693CC /* VerifyTokenViewController.swift in Sources */,
 				A6685FCA1CE1F6BB00DA39F9 /* RoomViewController.swift in Sources */,
 				6E7366E71CED6C0F005A52B0 /* SettingTableViewController.swift in Sources */,

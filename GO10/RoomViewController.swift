@@ -29,17 +29,34 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
             roomId = receiveRoomList.valueForKey("_id") as! String
             roomName = receiveRoomList.valueForKey("name") as! String
             lblRoom.text = roomName;
-            if roomId == "rm01"{
-                self.imgView.image = UIImage(named: "general")
-            }else if roomId == "rm02"{
-                self.imgView.image = UIImage(named: "it")
-            }else if roomId == "rm03"{
-            self.imgView.image = UIImage(named: "sport")
-            }else if roomId == "rm04"{
-                 self.imgView.image = UIImage(named: "entertainment")
-            }else if roomId == "rm05"{
-                 self.imgView.image = UIImage(named: "training")
+            
+            for item in RoomModel.room { // loop through data items
+                if(item.key as? String == roomId){
+                    self.imgView.image = item.value as? UIImage
+                }
             }
+            
+//            if roomId == "rm01"{
+//                self.imgView.image = UIImage(named: "general")
+//            }else if roomId == "rm02"{
+//                self.imgView.image = UIImage(named: "tell")
+//            }else if roomId == "rm03"{
+//                self.imgView.image = UIImage(named: "game")
+//            }else if roomId == "rm04"{
+//                self.imgView.image = UIImage(named: "food")
+//            }else if roomId == "rm05"{
+//                self.imgView.image = UIImage(named: "stock info")
+//            }else if roomId == "rm06"{
+//                self.imgView.image = UIImage(named: "travel")
+//            }else if roomId == "rm07"{
+//                self.imgView.image = UIImage(named: "it")
+//            }else if roomId == "rm08"{
+//                self.imgView.image = UIImage(named: "sport")
+//            }else if roomId == "rm09"{
+//                self.imgView.image = UIImage(named: "newbie")
+//            }else if roomId == "rm10"{
+//                self.imgView.image = UIImage(named: "talktoadmin")
+//            }            
         }
     
     

@@ -14,6 +14,7 @@ import KMPlaceholderTextView
 class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var receiveNewTopic: NSDictionary!
+    var empEmail: String!
     var userNameAvatar: String!
     var userPicAvatar: String!
     var roomId: String!
@@ -52,7 +53,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
             userNameAvatar = result[0].valueForKey("avatarName") as! String;
             userPicAvatar = result[0].valueForKey("avatarPic") as! String;
-
+            empEmail = result[0].valueForKey("empEmail") as! String;
         }catch{
             print("\(NSDate().formattedISO8601) Error Reading Data");
         }
@@ -103,7 +104,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         let strContent = self.editor.contentHTML.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
         let strSubject = strSubjectReplaceLine.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
 
-        let jsonObj = "{\"subject\":\"\(strSubject)\",\"content\":\"\(strContent)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"date\":\" \",\"type\":\"host\",\"roomId\":\"\(roomId)\"}"
+        let jsonObj = "{\"subject\":\"\(strSubject)\",\"content\":\"\(strContent)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"date\":\" \",\"type\":\"host\",\"roomId\":\"\(roomId)\"}"
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         
         
