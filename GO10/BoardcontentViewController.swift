@@ -15,7 +15,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     @IBOutlet weak var goCommentBtn: UIButton!
     
     
-    
     var BoardContentList = [NSDictionary]();
     var topicId: String!
     var receiveBoardContentList: NSDictionary!
@@ -25,38 +24,52 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 
     @IBOutlet var boardContentView: UIView!
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet var tableView: UITableView!
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        print("*** BoardContentVC viewDidLoad ***")
+        modelName = UIDevice.currentDevice().modelName
+        topicId = receiveBoardContentList.valueForKey("_id") as! String
+        getBoardContentWebService()
+    }
+
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("*** BoardContentVC viewDidAppear ***")
         modelName = UIDevice.currentDevice().modelName
         topicId = receiveBoardContentList.valueForKey("_id") as! String
         print("\(NSDate().formattedISO8601) topic id : \(topicId)")
+        
         // Auto Scale Height
         self.tableView.estimatedRowHeight = 100
         self.tableView.rowHeight = UITableViewAutomaticDimension
+       
         
         //fix bug auto scale
         self.tableView.setNeedsLayout()
         self.tableView.layoutIfNeeded()
+        
          MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         getBoardContentWebService()
     }
     
+    
     //refresh Table View
     func refreshTableView(){
         dispatch_async(dispatch_get_main_queue(), {
-            MRProgressOverlayView.dismissOverlayForView(self.boardContentView, animated: true)
+           
             self.tableView.reloadData()
-            print("\(NSDate().formattedISO8601)  REFRESHTABLE)")
+             MRProgressOverlayView.dismissOverlayForView(self.boardContentView, animated: true)
+            print("\(NSDate().formattedISO8601)  REFRESHTABLE")
         })
     }
+    
     
     func getBoardContentWebService(){
         
         print("\(NSDate().formattedISO8601) getBoardContentWebService")
-        let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopicbyid?topicId=\(topicId)")
+        let urlWs = NSURL(string: "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopicbyid?topicId=\(topicId)")
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let request = NSMutableURLRequest(URL: urlWs!)
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
@@ -64,20 +77,9 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
             do{
                 self.BoardContentList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
-//                self.cache.setValue(self.BoardContentList , forKey: "boardCache")
-                self.cache.setObject(self.BoardContentList, forKey: "boardCache")
-//                let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
-//                do{
-//                    let fetchReq = NSFetchRequest(entityName: "User_Info");
-//                    let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-//                    result[0].setValue(self.BoardContentList, forKey: "boardContent")
-//                    
-//                }catch{
-//                    print("\(NSDate().formattedISO8601) Error Reading Data");
-//                }
 
-                
-                print("\(NSDate().formattedISO8601) boardcontent size : \(self.BoardContentList.count)")
+//                self.cache.setObject(self.BoardContentList, forKey: "boardCache")
+//                print("\(NSDate().formattedISO8601) boardcontent size : \(self.BoardContentList.count)")
                 
                 self.refreshTableView()
             }catch let error as NSError{
@@ -93,12 +95,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         let boradContentBean = self.BoardContentList[indexPath.row]
-//        let boradContentBean = self.cache.objectForKey("boardCache")!
-        
         print(boradContentBean)
-//        print("\(NSDate().formattedISO8601) bean : \(boradContentBean)")
         let cell: UITableViewCell
         
         if boradContentBean.valueForKey("type") as! String == "host" {
@@ -109,13 +107,17 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             let hostImg = cell.viewWithTag(33) as! UIImageView;
             let hostNameLbl = cell.viewWithTag(34) as! UILabel;
             let hostTimeLbl = cell.viewWithTag(35) as! UILabel;
+            let countLikeLbl = cell.viewWithTag(40) as! UILabel;
+            
             
             if(modelName.rangeOfString("ipad Mini") != nil){
                 hostSubjectLbl.font = FontModel.ipadminiTopicName
-//                hostContentLbl.font = UIFont(name:"Helvetica Neue", size:16)
+                hostContentLbl.font = FontModel.ipadminiPainText
                 hostNameLbl.font = FontModel.ipadminiDateTime
                 hostTimeLbl.font = FontModel.ipadminiDateTime
+                countLikeLbl.font = FontModel.ipadminiDateTime
             }
+            
             hostSubjectLbl.text =  boradContentBean.valueForKey("subject") as? String
                         
             let htmlData = boradContentBean.valueForKey("content") as? String
@@ -123,29 +125,33 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             let htmlReplace = htmlData!.stringByReplacingOccurrencesOfString("\\\"", withString: "\"")
             print("\(NSDate().formattedISO8601) htmlReplace : \(htmlReplace)")
             do{
+                
+                
+                let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
 
-                let str = try NSMutableAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
                 
-                //set line space
-                let paragraphStyle = NSMutableParagraphStyle()
-                paragraphStyle.lineSpacing = 20
+//                let strMU = try NSMutableAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
+//                
+//                //set line space
+//                let paragraphStyle = NSMutableParagraphStyle()
+//                paragraphStyle.lineSpacing = 10
+//                
+//                strMU.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, strMU.length))
                 
-                str.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, str.length))
                 
-                hostContentLbl.attributedText = str
+                hostContentLbl.lineSpacing = 10
+                hostContentLbl.attributedText = strNS
                 openLink(hostContentLbl)
+                
             }catch let error as NSError{
                 print("error : \(error.localizedDescription)")
             }
-
-//            let url = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/images/Avatar/avatar_ronaldo.png")
-//            let data = NSData(contentsOfURL: url!)
-//            hostImg.image = UIImage(data: data!)
+            
             let picAvatar = boradContentBean.valueForKey("avatarPic") as? String
             hostImg.image = UIImage(named: picAvatar!)
             hostNameLbl.text =  boradContentBean.valueForKey("avatarName") as? String
             hostTimeLbl.text =  boradContentBean.valueForKey("date") as? String
-            
+            countLikeLbl.text = "12345"
             
         }else if boradContentBean.valueForKey("type") as! String == "comment" {
             cell = tableView.dequeueReusableCellWithIdentifier("commentCell", forIndexPath: indexPath)
@@ -155,7 +161,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             let commentTimeLbl = cell.viewWithTag(39) as! UILabel;
             
             if(modelName.rangeOfString("ipad Mini") != nil){
-//                commentContentLbl.font = UIFont(name:"Helvetica Neue", size:16)
+                commentContentLbl.font = FontModel.ipadminiPainText
                 commentNameLbl.font = FontModel.ipadminiDateTime
                 commentTimeLbl.font = FontModel.ipadminiDateTime
             }
@@ -164,21 +170,27 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             let htmlReplace = htmlData!.stringByReplacingOccurrencesOfString("\\\"", withString: "\"")
             print("\(NSDate().formattedISO8601) htmlReplace : \(htmlReplace)")
             do{
-                let str = try NSMutableAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute: NSUTF8StringEncoding], documentAttributes: nil)
+                
+
+                let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
+                    NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
                 
                 //set line space
-                let paragraphStyle = NSMutableParagraphStyle()
-                paragraphStyle.lineSpacing = 20
-                
-                str.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, str.length))
-                commentContentLbl.attributedText = str
+//                let paragraphStyle = NSMutableParagraphStyle()
+//                paragraphStyle.lineSpacing = 10
+//                let strMU = try NSMutableAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
+//                
+//                strMU.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, strMU.length))
+
+                commentContentLbl.lineSpacing = 10
+                commentContentLbl.attributedText = strNS
                 openLink(commentContentLbl)
+                
             }catch let error as NSError{
                 print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
             }
             
-//            let randnumbers =  arc4random_uniform(9)+1
-//            commentImg.image = UIImage(named: "man0\(randnumbers)")
+
             let picAvatar = boradContentBean.valueForKey("avatarPic") as? String
             commentImg.image = UIImage(named: picAvatar!)
             commentNameLbl.text =  boradContentBean.valueForKey("avatarName") as? String
@@ -187,9 +199,18 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         }else{
             cell = tableView.dequeueReusableCellWithIdentifier("noCell", forIndexPath: indexPath)
         }
+        
             return cell
         
         
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
     }
     
     func openLink(activeLabel: ActiveLabel){

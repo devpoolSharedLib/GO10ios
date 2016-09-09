@@ -1,5 +1,5 @@
 PODS:
-  - ActiveLabel (0.5.0)
+  - ActiveLabel (0.6.0)
   - CarbonKit (2.1.7)
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
@@ -66,7 +66,7 @@ PODS:
   - Toucan (0.5.0)
 
 DEPENDENCIES:
-  - ActiveLabel
+  - ActiveLabel (~> 0.6.0)
   - CarbonKit (~> 2.1)
   - Crashlytics
   - Fabric
@@ -78,7 +78,7 @@ DEPENDENCIES:
   - Toucan (~> 0.5)
 
 SPEC CHECKSUMS:
-  ActiveLabel: c7b011767b5660faacf8a3629174a9a775886b8d
+  ActiveLabel: ec8c7a0995ab2d789ab74b72b105397dc079ff97
   CarbonKit: 88f90b6290af1306c82fd5ba8d2aa4dd19e08083
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
@@ -98,6 +98,6 @@ SPEC CHECKSUMS:
   RichEditorView: b4ee60a4f5301cbe8f3fcb1f065cdd7de74ddd10
   Toucan: 0519c341148252ae114c5a657d2a85bb9ada9e40
 
-PODFILE CHECKSUM: 100a3b76b6411fcbc813f2eed65c3aae036da721
+PODFILE CHECKSUM: 8ba5304eac73a5b9f704bdcfbce71e0a86c57eb5
 
 COCOAPODS: 1.0.1

@@ -8,7 +8,7 @@ target 'GO10' do
 	pod 'CarbonKit', '~>2.1'
 	pod "RichEditorView"
 	pod 'Toucan', '~> 0.5'
-	pod 'ActiveLabel'
+	pod 'ActiveLabel', '~> 0.6.0'
 	pod 'Fabric'
 	pod 'Crashlytics'
 	pod 'KMPlaceholderTextView', '~> 1.2.0'
