@@ -12,10 +12,14 @@ import Toucan
 import CoreData
 
 class CommentViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    @IBOutlet weak var editor: RichEditorView!
-    var toolbar: RichEditorToolbar!
     
+    @IBOutlet weak var editor: RichEditorView!
+    @IBOutlet weak var commentTxtView: RichEditorView!
+    
+    var postCommentUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/post"
+    var uploadServletUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet"
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var toolbar: RichEditorToolbar!
     var topicId: String!
     var roomId: String!
     var empEmail: String!
@@ -25,7 +29,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     var ImagePicker = UIImagePickerController()
     var modelName: String!
     
-    @IBOutlet weak var commentTxtView: RichEditorView!
+  
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,7 +87,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     func postCommentWebservice(){
         print("\(NSDate().formattedISO8601) postCommentWebService")
-        let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/post")
+        let urlWs = NSURL(string: self.postCommentUrl)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let requestPost = NSMutableURLRequest(URL: urlWs!)
         
@@ -154,7 +158,6 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         }else{
             browseImg = Toucan(image: browseImg!).resize(CGSize(width: 450, height: 450), fitMode: Toucan.Resize.FitMode.Clip).image
         }
-        //90 and 60 //150 and 225 //450 and 300 //300 and 200
         
         print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
         let dataaf = UIImagePNGRepresentation(browseImg!)
@@ -178,8 +181,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         // Generate Request
         print("\(NSDate().formattedISO8601) Upload Image")
-        //        let url = NSURL(string: "http://localhost:9080/GO10WebService/UploadServlet")
-        let url = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet")
+        let url = NSURL(string: self.uploadServletUrl)
         print("\(NSDate().formattedISO8601) url request image : \(url)")
         let request = NSMutableURLRequest(URL: url!)
         request.HTTPMethod = "POST"
@@ -211,11 +213,6 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
                 do{
                     let jsonData = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSMutableDictionary;
                     let responseUrl = jsonData.valueForKey("imgUrl") as! String
-                    
-//                    let imgUrl = "http://go10webservice.au-syd.mybluemix.net\(responseUrl)"
-                    
-//                     let imgUrl = "http://localhost:9080\(responseUrl)"
-                    
                     print("\(NSDate().formattedISO8601) imgUrl: \(responseUrl)")
                     dispatch_async(dispatch_get_main_queue(), {
                         // Show Image

@@ -11,9 +11,12 @@ import CoreData
 
 class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
 
+    @IBOutlet weak var avatarNametxt: UITextField!
+    
+    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var modelName: String!
-    @IBOutlet weak var avatarNametxt: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         avatarNametxt.delegate = self
@@ -86,7 +89,7 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
             
             
             print("\(NSDate().formattedISO8601) putUpdateWebservice")
-            let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser")
+            let urlWs = NSURL(string: self.updateUserUrl)
             print("\(NSDate().formattedISO8601) URL : \(urlWs)")
             let requestPost = NSMutableURLRequest(URL: urlWs!)
             

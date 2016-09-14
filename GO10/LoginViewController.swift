@@ -11,6 +11,8 @@ import CoreData
 import MRProgress
 
 class LoginViewController: UIViewController {
+    
+    var getUserByUserPasswordUrl = "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByUserPassword?"
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var profile = [NSDictionary]();
     var modelName: String!
@@ -81,7 +83,7 @@ class LoginViewController: UIViewController {
     func checkLogin(email:String,password:String){
         
             print("\(NSDate().formattedISO8601) getLoginWebservice")
-            let url = "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByUserPassword?email=\(email)&password=\(password)"
+            let url = "\(getUserByUserPasswordUrl)email=\(email)&password=\(password)"
             let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(
             NSCharacterSet.URLFragmentAllowedCharacterSet())
         

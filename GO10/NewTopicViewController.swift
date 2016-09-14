@@ -12,6 +12,13 @@ import Toucan
 import CoreData
 import KMPlaceholderTextView
 class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    @IBOutlet weak var editor: RichEditorView!
+    @IBOutlet weak var subjectTxtView: UITextView!
+    @IBOutlet weak var contextTxtView: RichEditorView!
+    
+    var postTopicUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/post"
+    var uploadServletUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet"
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var receiveNewTopic: NSDictionary!
     var empEmail: String!
@@ -22,15 +29,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     var strDecodeBase64: String!
     var ImagePicker = UIImagePickerController()
     var modelName: String!
-    
-    @IBOutlet weak var editor: RichEditorView!
     var toolbar: RichEditorToolbar!
-    
-    @IBOutlet weak var subjectTxtView: UITextView!
-    
-    
-    @IBOutlet weak var contextTxtView: RichEditorView!
-   
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,7 +89,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     
     func postTopicWebservice(){
         print("\(NSDate().formattedISO8601) postTopicWebService")
-        let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/post")
+        let urlWs = NSURL(string: self.postTopicUrl)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let requestPost = NSMutableURLRequest(URL: urlWs!)
         
@@ -104,7 +103,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         let strContent = self.editor.contentHTML.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
         let strSubject = strSubjectReplaceLine.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
 
-        let jsonObj = "{\"subject\":\"\(strSubject)\",\"content\":\"\(strContent)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"date\":\" \",\"type\":\"host\",\"roomId\":\"\(roomId)\"}"
+        let jsonObj = "{\"subject\":\"\(strSubject)\",\"content\":\"\(strContent)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"date\":\" \",\"type\":\"host\",\"roomId\":\"\(roomId)\",\"countLike\":0}"
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         
         
@@ -150,7 +149,6 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         }else{
             browseImg = Toucan(image: browseImg!).resize(CGSize(width: 450, height: 450), fitMode: Toucan.Resize.FitMode.Clip).image
         }
-        //90 and 60 //150 and 225 //450 and 300
 
         print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
         let dataaf = UIImagePNGRepresentation(browseImg!)
@@ -173,7 +171,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         
         // Generate Request
         print("\(NSDate().formattedISO8601) Upload Image")
-        let url = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet")
+        let url = NSURL(string: self.uploadServletUrl)
         print("\(NSDate().formattedISO8601) url request image : \(url)")
         let request = NSMutableURLRequest(URL: url!)
         request.HTTPMethod = "POST"

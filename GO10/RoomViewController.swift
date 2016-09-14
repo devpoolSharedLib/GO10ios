@@ -3,7 +3,7 @@
 //  GO10
 //
 //  Created by Go10Application on 10/5/2559 .
-//  Copyright © 2559 Nutnapun Akkharangsi. All rights reserved.
+//  Copyright © 2559 Gosoft. All rights reserved.
 //
 
 import UIKit
@@ -16,7 +16,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var lblRoom: UILabel!
     @IBOutlet weak var imgView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
-    
+    var getRoomByIdUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopiclistbyroom?roomId="
     var roomList = [NSDictionary]();
     var roomId: String!
     var roomName: String!
@@ -35,28 +35,6 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     self.imgView.image = item.value as? UIImage
                 }
             }
-            
-//            if roomId == "rm01"{
-//                self.imgView.image = UIImage(named: "general")
-//            }else if roomId == "rm02"{
-//                self.imgView.image = UIImage(named: "tell")
-//            }else if roomId == "rm03"{
-//                self.imgView.image = UIImage(named: "game")
-//            }else if roomId == "rm04"{
-//                self.imgView.image = UIImage(named: "food")
-//            }else if roomId == "rm05"{
-//                self.imgView.image = UIImage(named: "stock info")
-//            }else if roomId == "rm06"{
-//                self.imgView.image = UIImage(named: "travel")
-//            }else if roomId == "rm07"{
-//                self.imgView.image = UIImage(named: "it")
-//            }else if roomId == "rm08"{
-//                self.imgView.image = UIImage(named: "sport")
-//            }else if roomId == "rm09"{
-//                self.imgView.image = UIImage(named: "newbie")
-//            }else if roomId == "rm10"{
-//                self.imgView.image = UIImage(named: "talktoadmin")
-//            }            
         }
     
     
@@ -72,7 +50,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func getRoomByIdWebService(roomId: String) {
         print("\(NSDate().formattedISO8601) getRoomByIdWebService")
-        let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopiclistbyroom?roomId=\(roomId)")
+        let urlWs = NSURL(string: self.getRoomByIdUrl + roomId)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let request = NSMutableURLRequest(URL: urlWs!)
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
@@ -121,14 +99,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         roomSubjectLbl.text = bean.valueForKey("subject") as? String
         roomUserAvatarNameLbl.text = bean.valueForKey("avatarName") as? String
         dateTime.text = bean.valueForKey("date") as? String
-//        if self.roomId == "rm01" {
-//            roomImg.image = UIImage(named: "general")
-//        }else if self.roomId == "rm02" {
-//            roomImg.image = UIImage(named: "it")
-//        }else if self.roomId == "rm03" {
-//            roomImg.image = UIImage(named: "sport")
-//        }
-        
+
         let picAvatar = bean.valueForKey("avatarPic") as? String
         roomImg.image = UIImage(named: picAvatar!)
 //        let randnumbers =  arc4random_uniform(9)+1

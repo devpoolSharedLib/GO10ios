@@ -11,19 +11,21 @@ import CoreData
 import MRProgress
 
 class EditAvatarTableViewController: UITableViewController {
-    var recieveformverify: String!
-    var recieveStatusLogin: String!
-     var backbtn: UIBarButtonItem!
-     var submitBtn: UIBarButtonItem!
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    @IBOutlet weak var avatarImageButton: UIButton!
     
+    @IBOutlet weak var avatarImageButton: UIButton!
     @IBOutlet weak var avartarNameLbl: UILabel!
     @IBOutlet weak var editAvatarLbl: UILabel!
     @IBOutlet weak var cameraImg: UIImageView!
     @IBOutlet var editavatarTableView: UITableView!
-    
+    var getUserByTokenUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByToken?token="
+    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+    var recieveformverify: String!
+    var recieveStatusLogin: String!
+    var backbtn: UIBarButtonItem!
+    var submitBtn: UIBarButtonItem!
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var modelName: String!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         modelName = UIDevice.currentDevice().modelName
@@ -108,8 +110,6 @@ class EditAvatarTableViewController: UITableViewController {
         
     }
 
-    
-
     @IBAction func submitAvatar(sender: AnyObject) {
        updateData()
         NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -119,7 +119,7 @@ class EditAvatarTableViewController: UITableViewController {
     
     func updateRev(token: String){
         print("\(NSDate().formattedISO8601) getTokenWebservice")
-        let url = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByToken?token=\(token)"
+        let url = self.getUserByTokenUrl + token
         let urlWs = NSURL(string: url)
         print("\(NSDate().formattedISO8601) URL : \(url)")
         let urlsession = NSURLSession.sharedSession()
@@ -157,7 +157,7 @@ class EditAvatarTableViewController: UITableViewController {
             
             let _id = result[0].valueForKey("id_") as! String;
             let _rev = result[0].valueForKey("rev_") as! String;
-            let accountId = result[0].valueForKey("accountId") as! String;
+//            let accountId = result[0].valueForKey("accountId") as! String;
             let empName = result[0].valueForKey("empName") as! String;
             let empEmail = result[0].valueForKey("empEmail") as! String;
             let avatarName = result[0].valueForKey("avatarName") as! String;
@@ -168,12 +168,12 @@ class EditAvatarTableViewController: UITableViewController {
             result[0].setValue(true, forKey: "activate")
             
             print("\(NSDate().formattedISO8601) putUpdateWebservice")
-            let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser")
+            let urlWs = NSURL(string: self.updateUserUrl )
             print("\(NSDate().formattedISO8601) URL : \(urlWs)")
             let requestPost = NSMutableURLRequest(URL: urlWs!)
             
             
-            let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"accountId\":\"\(accountId)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"birthday\":\"\(birthday)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
+            let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"birthday\":\"\(birthday)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
             print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
             
             requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)

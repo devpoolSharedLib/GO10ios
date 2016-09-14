@@ -16,8 +16,9 @@ class ForgotPasswordViewController: UIViewController {
     @IBOutlet var forgotView: UIView!
     @IBOutlet weak var emailLbl: UILabel!
     @IBOutlet weak var emailTxtField: UITextField!
-    
     @IBOutlet weak var sendEmailBtn: UIButton!
+    
+    var resetPasswordByEmailUrl = "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/resetPasswordByEmail?email="
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** ForgotPasswordVC ViewDidLoad ***")
@@ -49,7 +50,7 @@ class ForgotPasswordViewController: UIViewController {
     func resetPassword(email: String){
         print("\(NSDate().formattedISO8601) getResetPasswordWebservice")
         
-        let url = "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/resetPasswordByEmail?email=\(email)"
+        let url = resetPasswordByEmailUrl + email
         let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(
             NSCharacterSet.URLFragmentAllowedCharacterSet())
         

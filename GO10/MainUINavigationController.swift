@@ -11,8 +11,7 @@ import CoreData
 
 class MainUINavigationController: UINavigationController {
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-   
-    
+    var getUserByAccountIdUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByAccountId?accountId="
     var profile = [NSDictionary]();
     var status: Bool!
     var accountId: String!
@@ -77,7 +76,7 @@ class MainUINavigationController: UINavigationController {
     func checkStatus(){
         print("\(NSDate().formattedISO8601) accoundId : \(self.accountId)")
         print("\(NSDate().formattedISO8601) getStatusWebservice")
-        let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByAccountId?accountId=\(self.accountId)")
+        let urlWs = NSURL(string: self.getUserByAccountIdUrl + self.accountId)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let urlsession = NSURLSession.sharedSession()
        

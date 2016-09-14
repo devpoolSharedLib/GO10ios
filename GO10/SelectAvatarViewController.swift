@@ -11,7 +11,9 @@ import CarbonKit
 import CoreData
 
 class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDelegate {
-
+    
+    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+    
     var items = NSArray()
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var carbonTabSwipeNavigation: CarbonTabSwipeNavigation = CarbonTabSwipeNavigation()
@@ -127,12 +129,12 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
             let birthday = result[0].valueForKey("birthday") as! String;
             
             print("\(NSDate().formattedISO8601) putUpdateWebservice")
-            let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser")
+            let urlWs = NSURL(string: self.updateUserUrl)
             print("\(NSDate().formattedISO8601) URL : \(urlWs)")
             let requestPost = NSMutableURLRequest(URL: urlWs!)
             
             
-            let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"accountId\":\"\(accountId)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"birthday\":\"\(birthday)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
+            let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"birthday\":\"\(birthday)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
             print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
             
             requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)

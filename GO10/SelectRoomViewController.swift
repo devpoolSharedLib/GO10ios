@@ -13,24 +13,16 @@ import MRProgress
 class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate {
     
     @IBOutlet var selectroomView: UIView!
-    var topicList = [NSDictionary]();
-    var roomList = [NSDictionary]();
-    var modelName: String!
-    
     @IBOutlet weak var tableView: UITableView!
-    
     @IBOutlet weak var roomLbl: UILabel!
     @IBOutlet weak var hotTopicLbl: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     
-//        override func viewDidLoad() {
-//            super.viewDidLoad()
-//            modelName = UIDevice.currentDevice().modelName
-//            print("SelectRoomVC ViewDidAppear")
-//            getTopicWebService()
-//            getRoomsWebService()
-//            readData()
-//        }
+    var getHotToppicUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gethottopiclist"
+    var getRoomUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/room/get"
+    var topicList = [NSDictionary]();
+    var roomList = [NSDictionary]();
+    var modelName: String!
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
@@ -58,7 +50,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     
     func getTopicWebService(){
         print("\(NSDate().formattedISO8601) getTopicWebService");
-        let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gethottopiclist")
+        let urlWs = NSURL(string: getHotToppicUrl)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let request = NSMutableURLRequest(URL: urlWs!)
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
@@ -78,7 +70,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     
     func getRoomsWebService(){
         print("\(NSDate().formattedISO8601) getRoomsWebService")
-        let urlWs = NSURL(string: "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/room/get")
+        let urlWs = NSURL(string: self.getRoomUrl)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let request = NSMutableURLRequest(URL: urlWs!)
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
@@ -108,8 +100,6 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         let topicSubjectLbl = cell.viewWithTag(12) as! UILabel;
         let topicUserAvatarNameLbl = cell.viewWithTag(13) as! UILabel;
         let dateTime = cell.viewWithTag(14) as! UILabel;
-        
-        
         let bean = topicList[indexPath.row]
         print("\(NSDate().formattedISO8601) bean : \(bean)")
         if(modelName.rangeOfString("ipad Mini") != nil){
@@ -120,42 +110,13 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         }
         
         topicSubjectLbl.text =  bean.valueForKey("subject") as? String
-        
         topicUserAvatarNameLbl.text =  bean.valueForKey("avatarName") as? String
-        
         let roomID = bean.valueForKey("roomId") as? String
-        
-        
-        
         for item in RoomModel.room { // loop through data items
             if(item.key as? String == roomID){
             topicImg.image = item.value as? UIImage
             }
         }
-        
-//        if roomID == "rm01"{
-//            topicImg.image = UIImage(named: "general")
-//        }else if roomID == "rm02"{
-//            topicImg.image = UIImage(named: "tell")
-//        }else if roomID == "rm03"{
-//            topicImg.image = UIImage(named: "game")
-//        }else if roomID == "rm04"{
-//            topicImg.image = UIImage(named: "food")
-//        }else if roomID == "rm05"{
-//            topicImg.image = UIImage(named: "stock info")
-//        }else if roomID == "rm06"{
-//            topicImg.image = UIImage(named: "travel")
-//        }else if roomID == "rm07"{
-//            topicImg.image = UIImage(named: "it")
-//        }else if roomID == "rm08"{
-//            topicImg.image = UIImage(named: "sport")
-//        }else if roomID == "rm09"{
-//            topicImg.image = UIImage(named: "newbie")
-//        }else if roomID == "rm10"{
-//            topicImg.image = UIImage(named: "talktoadmin")
-//        }
-
-        
         dateTime.text = bean.valueForKey("date") as? String
         return cell
     }
@@ -186,38 +147,6 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
                 roomTitle.text = beanRoom.valueForKey("name") as? String
             }
         }
-        
-//        if roomID == "rm01"{
-//            roomImg.image = UIImage(named: "general")
-//            roomTitle.text = beanRoom.valueForKey("name") as? String
-//        }else if roomID == "rm02"{
-//            roomImg.image = UIImage(named: "tell")
-//            roomTitle.text = beanRoom.valueForKey("name") as? String
-//        }else if roomID == "rm03"{
-//            roomImg.image = UIImage(named: "game")
-//            roomTitle.text = beanRoom.valueForKey("name") as? String
-//        }else if roomID == "rm04"{
-//            roomImg.image = UIImage(named: "food")
-//            roomTitle.text = beanRoom.valueForKey("name") as? String
-//        }else if roomID == "rm05"{
-//            roomImg.image = UIImage(named: "stock info")
-//            roomTitle.text = beanRoom.valueForKey("name") as? String
-//        }else if roomID == "rm06"{
-//            roomImg.image = UIImage(named: "travel")
-//            roomTitle.text = beanRoom.valueForKey("name") as? String
-//        }else if roomID == "rm07"{
-//            roomImg.image = UIImage(named: "it")
-//            roomTitle.text = beanRoom.valueForKey("name") as? String
-//        }else if roomID == "rm08"{
-//            roomImg.image = UIImage(named: "sport")
-//            roomTitle.text = beanRoom.valueForKey("name") as? String
-//        }else if roomID == "rm09"{
-//            roomImg.image = UIImage(named: "newbie")
-//            roomTitle.text = beanRoom.valueForKey("name") as? String
-//        }else if roomID == "rm10"{
-//            roomImg.image = UIImage(named: "talktoadmin")
-//            roomTitle.text = beanRoom.valueForKey("name") as? String
-//        }
         return collection
     }
     
@@ -266,7 +195,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
             
             if result.count >= 0 {
-                for data in result as! [NSManagedObject]{
+                for data in result {
                     context.deleteObject(data)
                     try context.save()
                 }
