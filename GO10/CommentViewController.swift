@@ -16,8 +16,11 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     @IBOutlet weak var editor: RichEditorView!
     @IBOutlet weak var commentTxtView: RichEditorView!
     
-    var postCommentUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/post"
-    var uploadServletUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet"
+//    var postCommentUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/post"
+//    var uploadServletUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet"
+    var postCommentUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/post"
+    var uploadServletUrl = "http://หgo10.au-syd.mybluemix.net/GO10WebService/UploadServlet"
+  
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var toolbar: RichEditorToolbar!
     var topicId: String!

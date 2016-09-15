@@ -17,8 +17,11 @@ class EditAvatarTableViewController: UITableViewController {
     @IBOutlet weak var editAvatarLbl: UILabel!
     @IBOutlet weak var cameraImg: UIImageView!
     @IBOutlet var editavatarTableView: UITableView!
-    var getUserByTokenUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByToken?token="
-    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+    
+//    var getUserByTokenUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByToken?token="
+//    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+    var getUserByTokenUrl = "http://go.au-syd.mybluemix.net/GO10WebService/api/user/getUserByToken?token="
+    var updateUserUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
     var recieveformverify: String!
     var recieveStatusLogin: String!
     var backbtn: UIBarButtonItem!

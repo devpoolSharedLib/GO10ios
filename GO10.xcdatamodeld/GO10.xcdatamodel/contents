@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15F34" minimumToolsVersion="Xcode 4.2">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15G1004" minimumToolsVersion="Xcode 4.2">
     <entity name="User_Info" syncable="YES">
         <attribute name="accountId" optional="YES" transient="YES" attributeType="String" defaultValueString="nil" indexed="YES" syncable="YES"/>
         <attribute name="activate" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>

@@ -12,7 +12,8 @@ import CoreData
 
 class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDelegate {
     
-    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+//    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+     var updateUserUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
     
     var items = NSArray()
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate

@@ -12,7 +12,8 @@ import MRProgress
 
 class LoginViewController: UIViewController {
     
-    var getUserByUserPasswordUrl = "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByUserPassword?"
+//    var getUserByUserPasswordUrl = "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByUserPassword?"
+    var getUserByUserPasswordUrl = "https://go10.au-syd.mybluemix.net/GO10WebService/api/user/getUserByUserPassword?"
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var profile = [NSDictionary]();
     var modelName: String!

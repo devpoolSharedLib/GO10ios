@@ -17,8 +17,10 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     @IBOutlet weak var subjectTxtView: UITextView!
     @IBOutlet weak var contextTxtView: RichEditorView!
     
-    var postTopicUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/post"
-    var uploadServletUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet"
+//    var postTopicUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/post"
+//    var uploadServletUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet"
+    var postTopicUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/post"
+    var uploadServletUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/UploadServlet"
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var receiveNewTopic: NSDictionary!
     var empEmail: String!
@@ -125,7 +127,16 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
             }
             
             let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            print("\(NSDate().formattedISO8601) responseString = \(responseString)")
+            print("\(NSDate().formattedISO8601) responseString = \(responseString!)")
+            dispatch_async(dispatch_get_main_queue(), {
+                self.performSegueWithIdentifier("unwindToRoomVCID", sender:nil)
+//                let topicId:NSDictionary = ["_id":responseString!]
+//                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//                let boardVC =  storyboard.instantiateViewControllerWithIdentifier("boardContentVCID") as! BoardcontentViewController
+//                boardVC.receiveBoardContentList = topicId
+//                 self.presentViewController(boardVC, animated: true, completion: nil)
+                
+            })
         }
         request.resume()
         
@@ -246,7 +257,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
             
         }else{
             postTopicWebservice()
-            self.performSegueWithIdentifier("unwindToRoomVCID", sender:nil)
+//            self.performSegueWithIdentifier("unwindToRoomVCID", sender:nil)
         }
     }
     
@@ -255,7 +266,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
             let destVC = segue.destinationViewController as! RoomViewController
             destVC.receiveRoomList = self.receiveNewTopic  //send room Model (room_id , room_name)
         }
-        
+
     }
     
     func checkSpace(strCheck: String) -> Bool {

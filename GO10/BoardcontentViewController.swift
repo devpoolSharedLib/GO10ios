@@ -19,11 +19,16 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     @IBOutlet var boardContentView: UIView!
     
     
-    var getHotToppicByIdUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopicbyid?topicId="
-    var checkIsLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/checkLikeTopic?"
-    var updateLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/updateLike"
-    var updateDisLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/updateDisLike"
-    var newLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/newLike"
+//    var getHotToppicByIdUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopicbyid?topicId="
+//    var checkIsLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/checkLikeTopic?"
+//    var updateLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/updateLike"
+//    var updateDisLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/updateDisLike"
+//    var newLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/newLike"
+    var getHotToppicByIdUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/gettopicbyid?topicId="
+    var checkIsLikeUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/checkLikeTopic?"
+    var updateLikeUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/updateLike"
+    var updateDisLikeUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/updateDisLike"
+    var newLikeUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/newLike"
     var isLike: Bool!
     var countLikeLbl: UILabel!
     var likeBtn: UIButton!
@@ -45,6 +50,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         print("*** BoardContentVC viewDidLoad ***")
         modelName = UIDevice.currentDevice().modelName
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
+        getValuefromCoreData()
         getBoardContentWebService()
 
     }
@@ -58,7 +64,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         
         // Auto Scale Height
         self.boardTableview.rowHeight = UITableViewAutomaticDimension
-       self.boardTableview.estimatedRowHeight = 100
+//       self.boardTableview.estimatedRowHeight = 100
         
         //fix bug auto scale
         self.boardContentView.setNeedsLayout()
@@ -67,7 +73,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
          MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         getValuefromCoreData()
         getBoardContentWebService()
-        self.checkIsLikeWebservice()
+        
         
     }
     
@@ -140,6 +146,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             do{
                 
                 self.BoardContentList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
+                self.checkIsLikeWebservice()
                 self.refreshTableView()
             }catch let error as NSError{
                 print("\(NSDate().formattedISO8601)  error : \(error.localizedDescription)")
@@ -240,12 +247,22 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 }
                 
                 
-                let strMU = try NSMutableAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
-
-                strMU.addAttributes(myAttribute,range:NSMakeRange(0, strMU.length))
+                let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
+                                    NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
                 
-                hostContentLbl.lineSpacing = 10
-                hostContentLbl.attributedText = strMU
+//                let strMU =  try NSMutableAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
+//                    NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
+//                
+//                let strMU = NSMutableAttributedString(attributedString:strNS)
+//
+//                strMU.addAttributes(myAttribute,range:NSMakeRange(0, strMU.length))
+                
+//                strNS = NSAttributedString(attributedString: strMU)
+                
+//                hostContentLbl.font = FontModel.iphonepainText
+                hostContentLbl.numberOfLines = 0
+                hostContentLbl.lineSpacing = 20
+                hostContentLbl.attributedText = strNS
                 openLink(hostContentLbl)
                 
             }catch let error as NSError{
@@ -284,18 +301,19 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 }
                 
 
-//                let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
-//                    NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
+                let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
+                    NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
                 
                 
-                let strMU = try NSMutableAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
-                
-                strMU.addAttributes(myAttribute,range:NSMakeRange(0, strMU.length))
+//                let strMU = try NSMutableAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
 //                
+//                strMU.addAttributes(myAttribute,range:NSMakeRange(0, strMU.length))
+//
 //                strMU.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, strMU.length))
 
-                commentContentLbl.lineSpacing = 10
-                commentContentLbl.attributedText = strMU
+                commentContentLbl.lineSpacing = 20
+                commentContentLbl.numberOfLines = 0
+                commentContentLbl.attributedText = strNS
                 openLink(commentContentLbl)
                 
             }catch let error as NSError{

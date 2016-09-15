@@ -13,7 +13,8 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
 
     @IBOutlet weak var avatarNametxt: UITextField!
     
-    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+//    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+    var updateUserUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var modelName: String!
     

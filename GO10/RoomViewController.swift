@@ -16,7 +16,9 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var lblRoom: UILabel!
     @IBOutlet weak var imgView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
-    var getRoomByIdUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopiclistbyroom?roomId="
+//    var getRoomByIdUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopiclistbyroom?roomId="
+    var getRoomByIdUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/gettopiclistbyroom?roomId="
+    
     var roomList = [NSDictionary]();
     var roomId: String!
     var roomName: String!
