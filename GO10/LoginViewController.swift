@@ -117,7 +117,7 @@ class LoginViewController: UIViewController {
                                 self.presentViewController(alert, animated: true, completion: nil)
                             }
                         }
-                        else if(self.profile[0].valueForKey("avatarPic") as! String == "default_avatar"||self.profile[0].valueForKey("avatarName") as! String == "Avatar Name"){
+                        else if(self.profile[0].valueForKey("avatarPic") as! String == "default_avatar" && self.profile[0].valueForKey("avatarName") as! String == "Avatar Name"){
                             print("\(NSDate().formattedISO8601) Default Avatar")
                             self.setUserInfo()
                             MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)

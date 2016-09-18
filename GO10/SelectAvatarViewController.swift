@@ -18,7 +18,7 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
     var items = NSArray()
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var carbonTabSwipeNavigation: CarbonTabSwipeNavigation = CarbonTabSwipeNavigation()
-    
+    var recieveFromPage = "editTablePage"
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** SelectAvatarVC ViewDidLoad ***")
@@ -95,8 +95,13 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
                 result[0].setValue(userAvatarTemp, forKey: "avatarPic");
                 try context.save();
                 updateData()
-                self.performSegueWithIdentifier("unwindToEditAvatarID", sender: nil)
-            }else{
+                if(self.recieveFromPage=="SettingAvatar"){
+                    self.performSegueWithIdentifier("unwindToSettingVCID", sender: nil)
+                }else{
+                    self.performSegueWithIdentifier("unwindToEditAvatarID", sender: nil)
+                }
+
+                            }else{
                 let alert = UIAlertController(title: "Alert", message: "Please Select Avatar.", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)
@@ -166,5 +171,7 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
         }
         
     }
+    
+    
 
 }

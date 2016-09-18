@@ -28,7 +28,15 @@ class SettingTableViewController: UITableViewController {
             editAvatarLbl.font = FontModel.ipadminiPainText
             avatarNameLbl.font = FontModel.ipadminiPainText
         }
-        
+        let singleTap = UITapGestureRecognizer(target: self, action:#selector(SettingTableViewController.tapDetected))
+        singleTap.numberOfTapsRequired = 1
+        avatarImage.userInteractionEnabled = true
+        avatarImage.addGestureRecognizer(singleTap)
+    }
+    
+    func tapDetected() {
+        print("Single Tap on imageview gotoSelectAvatar")
+        self.performSegueWithIdentifier("gotoSelectAvatar", sender:nil)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -90,5 +98,17 @@ class SettingTableViewController: UITableViewController {
             print("\(NSDate().formattedISO8601) Error Saving Profile Data");
         }
 
+    }
+    
+    @IBAction func unwindToSetting(segue: UIStoryboardSegue) {
+        print("\(NSDate().formattedISO8601) unwindToSetting")
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "gotoSelectAvatar" {
+            let destVC = segue.destinationViewController as! SelectAvatarViewController
+            destVC.recieveFromPage = "SettingAvatar"
+            
+        }
     }
 }

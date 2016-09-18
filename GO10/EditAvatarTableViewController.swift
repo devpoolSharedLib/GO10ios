@@ -86,13 +86,13 @@ class EditAvatarTableViewController: UITableViewController {
             
             let userPicAvatar = result[0].valueForKey("avatarPic") as! String;
             let userNameAvatar = result[0].valueForKey("avatarName") as! String;
-            let activate = result[0].valueForKey("activate") as! Bool;
+//            let activate = result[0].valueForKey("activate") as! Bool;
             print("\(NSDate().formattedISO8601) result :\(result)")
-            if(!activate){
-                 print("from verfify page")
-                self.navigationItem.setHidesBackButton(true, animated:true);
-                
-            }
+//            if(!activate){
+//                 print("from verfify page")
+//                self.navigationItem.setHidesBackButton(true, animated:true);
+//                
+//            }
 
             
             let avatarImage = UIImage(named: userPicAvatar)
@@ -114,10 +114,33 @@ class EditAvatarTableViewController: UITableViewController {
     }
 
     @IBAction func submitAvatar(sender: AnyObject) {
-       updateData()
-        NSOperationQueue.mainQueue().addOperationWithBlock {
-            self.performSegueWithIdentifier("gotoHomePage", sender:nil)
+        print("SUBMIT AVATAR")
+        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+        do{
+            
+            let fetchReq = NSFetchRequest(entityName: "User_Info");
+            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
+            
+            let userPicAvatar = result[0].valueForKey("avatarPic") as! String;
+            let userNameAvatar = result[0].valueForKey("avatarName") as! String;
+            
+            if(userNameAvatar=="Avatar Name" || userPicAvatar == "default_avatar"){
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                    let alert = UIAlertController(title: "Alert", message: "Please Set Your Avatar Picture and Avatar Name.", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+
+            }else{
+                updateData()
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                    self.performSegueWithIdentifier("gotoHomePage", sender:nil)
+                }
+            }
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Reading Data");
         }
+        
     }
     
     func updateRev(token: String){
@@ -209,4 +232,5 @@ class EditAvatarTableViewController: UITableViewController {
     @IBAction func unwindToEditAvatar(segue: UIStoryboardSegue) {
         print("\(NSDate().formattedISO8601) unwindToEditAvatar")
     }
+    
 }
