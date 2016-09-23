@@ -36,6 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         IQKeyboardManager.sharedManager().enable = true
         
+        
         return true
         
     }

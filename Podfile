@@ -14,6 +14,7 @@ target 'GO10' do
 	pod 'KMPlaceholderTextView', '~> 1.2.0'
 	pod 'MRProgress'
 	pod 'IQKeyboardManagerSwift'
+	pod 'MRProgress/AFNetworking'
 end
 
 target 'GO10Tests' do

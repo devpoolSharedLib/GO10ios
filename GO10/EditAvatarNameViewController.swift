@@ -13,13 +13,14 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
 
     @IBOutlet weak var avatarNametxt: UITextField!
     
-//    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
-    var updateUserUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var updateUserUrl: String!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var modelName: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.updateUserUrl = "\(self.domainUrl)/GO10WebService/api/user/updateUser"
         avatarNametxt.delegate = self
         modelName = UIDevice.currentDevice().modelName
         if(modelName.rangeOfString("ipad Mini") != nil){

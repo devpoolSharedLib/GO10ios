@@ -257,7 +257,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u6a-iP-aMD">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u6a-iP-aMD">
                                 <rect key="frame" x="313" y="139" width="46" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="46" id="SOQ-uZ-8yk"/>
@@ -268,7 +268,7 @@
                                     <action selector="saveAvatarName:" destination="dwF-D3-gfy" eventType="touchUpInside" id="0g5-Vc-bcF"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9Hi-Lg-0vK">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9Hi-Lg-0vK">
                                 <rect key="frame" x="8" y="101" width="359" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="zpt-sW-RQq"/>
@@ -935,7 +935,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="40" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="xxx" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uO8-jL-QZz" userLabel="countLike">
                                                     <rect key="frame" x="51" y="177" width="319" height="14"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="31" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="hostSubject" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="scR-FJ-xfh">
@@ -1217,6 +1217,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="commentTxtView" destination="8sB-Fz-ahz" id="cjY-nK-uZC"/>
+                        <outlet property="commentView" destination="DFI-ts-FAM" id="CLL-MB-apm"/>
                         <outlet property="editor" destination="8sB-Fz-ahz" id="qvp-8m-RQf"/>
                         <segue destination="gfM-4M-xba" kind="unwind" identifier="unwindToBoardVCID" unwindAction="unwindToBoardVC:" id="Vgk-HO-6YR"/>
                     </connections>
@@ -1302,6 +1303,7 @@
                     <connections>
                         <outlet property="contextTxtView" destination="sM2-wr-w5r" id="S1B-nZ-R03"/>
                         <outlet property="editor" destination="sM2-wr-w5r" id="EFr-Pe-VcF"/>
+                        <outlet property="newTopicView" destination="hBt-bx-JXh" id="0p3-Dr-zL0"/>
                         <outlet property="subjectTxtView" destination="LZp-po-aXZ" id="OzJ-sx-ULK"/>
                         <segue destination="KBL-x4-Nzu" kind="unwind" identifier="unwindToRoomVCID" unwindAction="unwindToRoomVC:" id="Mbf-xe-sNs"/>
                     </connections>

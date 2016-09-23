@@ -11,16 +11,20 @@ import RichEditorView
 import Toucan
 import CoreData
 import KMPlaceholderTextView
+import MRProgress.MRProgressOverlayView_AFNetworking
+
 class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @IBOutlet weak var editor: RichEditorView!
     @IBOutlet weak var subjectTxtView: UITextView!
     @IBOutlet weak var contextTxtView: RichEditorView!
     
-//    var postTopicUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/post"
-//    var uploadServletUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet"
-    var postTopicUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/post"
-    var uploadServletUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/UploadServlet"
+    @IBOutlet var newTopicView: UIView!
+    
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    
+    var postTopicUrl: String!
+    var uploadServletUrl: String!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var receiveNewTopic: NSDictionary!
     var empEmail: String!
@@ -36,6 +40,9 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** NewTopicVC ViewDidLoad ***")
+        self.postTopicUrl = "\(self.domainUrl)/GO10WebService/api/topic/post"
+        self.uploadServletUrl = "\(self.domainUrl)/GO10WebService/UploadServlet"
+        
         roomId = receiveNewTopic.valueForKey("_id") as! String
         print("\(NSDate().formattedISO8601) room id : \(roomId)")
         // Do any additional setup after loading the view.
@@ -83,6 +90,11 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         
         editor.delegate = self
         editor.inputAccessoryView = toolbar
+        
+        
+//        let placeholderTextView2 = KMPlaceholderTextView(frame: contextTxtView.bounds)
+//        placeholderTextView2.placeholder = "teasdasdadsst"
+//        view.addSubview(placeholderTextView2)
         
         //setPlaceholderText
         editor.setPlaceholderText(" Write something ...")
@@ -153,17 +165,51 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         let databe = UIImagePNGRepresentation(browseImg!)
         
         print("\(NSDate().formattedISO8601) Byte Img before resize : \(databe?.length)")
-//        browseImg = Toucan(image: browseImg!).resize(CGSize(width: 100, height: 100), fitMode: Toucan.Resize.FitMode.Clip).image
+
+        //        if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
+        //            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 300, height: 300), fitMode: Toucan.Resize.FitMode.Clip).image
+        //        }else{
+        //            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 450, height: 450), fitMode: Toucan.Resize.FitMode.Clip).image
+        //        }
+        
+        var resizeWidth: Double
+        var reizeHeight: Double
+        let maxsize = 800 * 1024
+        //                if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
+        //                    print("6plusUpload")
+        //                    browseImg = Toucan(image: browseImg!).resize(CGSize(width: 200, height: 200), fitMode: Toucan.Resize.FitMode.Clip).image
+        //                }else{
+        //                    print("6Upload")
+        //                    browseImg = Toucan(image: browseImg!).resize(CGSize(width: 300, height: 300), fitMode: Toucan.Resize.FitMode.Clip).image
+        //                }
         
         if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
-            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 300, height: 300), fitMode: Toucan.Resize.FitMode.Clip).image
+            print("6plusUpload")
+            resizeWidth = 200
+            reizeHeight = 200
         }else{
-            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 450, height: 450), fitMode: Toucan.Resize.FitMode.Clip).image
+            print("6Upload")
+            resizeWidth = 300
+            reizeHeight = 300
         }
+        
+        //        browseImg = Toucan(image: browseImg!).resize(CGSize(width: resizeWidth, height: reizeHeight), fitMode: Toucan.Resize.FitMode.Clip).image
+        //
+        //        print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
+        //        var dataaf = UIImagePNGRepresentation(browseImg!)
+        //        print("\(NSDate().formattedISO8601) Byte Img after resize : \(dataaf?.length)")
+        
+        var dataaf = UIImagePNGRepresentation(browseImg!)
+        
+        repeat{
+            browseImg = Toucan(image: browseImg!).resize(CGSize(width: resizeWidth, height: reizeHeight), fitMode: Toucan.Resize.FitMode.Clip).image
+            dataaf = UIImagePNGRepresentation(browseImg!)
+            resizeWidth = resizeWidth * 0.9
+            reizeHeight = reizeHeight * 0.9
+            print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
+            print("\(NSDate().formattedISO8601) Byte Img after resize : \(dataaf?.length)")
+        }while dataaf?.length > maxsize
 
-        print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
-        let dataaf = UIImagePNGRepresentation(browseImg!)
-        print("\(NSDate().formattedISO8601) Byte Img after resize : \(dataaf?.length)")
         
         
         uploadImage(browseImg!)
@@ -208,7 +254,11 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         
         request.HTTPBody = body
+    
         let session = NSURLSession.sharedSession()
+        
+        let MRProgressAF = MRProgressOverlayView.showOverlayAddedTo(self.newTopicView, animated: true)
+        
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             if error == nil {
                 do{
@@ -236,6 +286,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
                             height = 295
                         }
                         self.toolbar.editor?.insertImage(responseUrl,width: width,height: height,alt: "insertImageUrl")
+                        MRProgressOverlayView.dismissOverlayForView(self.newTopicView, animated: true)
                     })
                     
                 }catch let error as NSError{
@@ -247,6 +298,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
             }
         }
         task.resume()
+        MRProgressAF.setModeAndProgressWithStateOfTask(task)
     }
     
     @IBAction func submitTopic(sender: AnyObject) {

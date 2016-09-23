@@ -12,8 +12,10 @@ import MRProgress
 
 class LoginViewController: UIViewController {
     
-//    var getUserByUserPasswordUrl = "https://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByUserPassword?"
-    var getUserByUserPasswordUrl = "https://go10.au-syd.mybluemix.net/GO10WebService/api/user/getUserByUserPassword?"
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
+    
+    var getUserByUserPasswordUrl: String!
+    
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var profile = [NSDictionary]();
     var modelName: String!
@@ -28,6 +30,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var forgotPasswordBtn: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.getUserByUserPasswordUrl = "\(self.domainUrl)/GO10WebService/api/user/getUserByUserPassword?"
         print("*** LoginVC ViewDidLoad ***")
         modelName = UIDevice.currentDevice().modelName
         self.loginBtn.layer.cornerRadius = 5
@@ -64,8 +67,8 @@ class LoginViewController: UIViewController {
         let email = self.emailTxtField.text
         let password = self.passwordTxtField.text
         
-        print("E-MAIL : \(email)")
-        print("PASSWORD : \(password)")
+//        print("E-MAIL : \(email)")
+//        print("PASSWORD : \(password)")
         
         if((email == "") || checkSpace(email!) || password == "" || checkSpace(password!) ) {
             

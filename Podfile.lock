@@ -1,5 +1,26 @@
 PODS:
   - ActiveLabel (0.6.0)
+  - AFNetworking (2.6.3):
+    - AFNetworking/NSURLConnection (= 2.6.3)
+    - AFNetworking/NSURLSession (= 2.6.3)
+    - AFNetworking/Reachability (= 2.6.3)
+    - AFNetworking/Security (= 2.6.3)
+    - AFNetworking/Serialization (= 2.6.3)
+    - AFNetworking/UIKit (= 2.6.3)
+  - AFNetworking/NSURLConnection (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.6.3)
+  - AFNetworking/Security (2.6.3)
+  - AFNetworking/Serialization (2.6.3)
+  - AFNetworking/UIKit (2.6.3):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
   - CarbonKit (2.1.7)
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
@@ -43,6 +64,32 @@ PODS:
     - MRProgress/Overlay (= 0.8.3)
   - MRProgress/ActivityIndicator (0.8.3):
     - MRProgress/Stopable
+  - MRProgress/AFNetworking (0.8.3):
+    - MRProgress/AFNetworking/ActivityIndicator (= 0.8.3)
+    - MRProgress/AFNetworking/Base (= 0.8.3)
+    - MRProgress/AFNetworking/Circular (= 0.8.3)
+    - MRProgress/AFNetworking/NavigationBarProgress (= 0.8.3)
+    - MRProgress/AFNetworking/Overlay (= 0.8.3)
+    - MRProgress/AFNetworking/ProgressBaseClass (= 0.8.3)
+  - MRProgress/AFNetworking/ActivityIndicator (0.8.3):
+    - MRProgress/ActivityIndicator
+    - MRProgress/AFNetworking/Base
+  - MRProgress/AFNetworking/Base (0.8.3):
+    - AFNetworking (~> 2.6.3)
+    - AFNetworking/UIKit
+    - MRProgress/MethodCopier
+  - MRProgress/AFNetworking/Circular (0.8.3):
+    - MRProgress/AFNetworking/ProgressBaseClass
+  - MRProgress/AFNetworking/NavigationBarProgress (0.8.3):
+    - MRProgress/AFNetworking/ProgressBaseClass
+  - MRProgress/AFNetworking/Overlay (0.8.3):
+    - MRProgress/AFNetworking/ActivityIndicator
+    - MRProgress/AFNetworking/Base
+    - MRProgress/AFNetworking/Circular
+    - MRProgress/Overlay
+  - MRProgress/AFNetworking/ProgressBaseClass (0.8.3):
+    - MRProgress/AFNetworking/Base
+    - MRProgress/ProgressBaseClass
   - MRProgress/Blur (0.8.3):
     - MRProgress/Helper
   - MRProgress/Circular (0.8.3):
@@ -51,6 +98,7 @@ PODS:
     - MRProgress/Stopable
   - MRProgress/Helper (0.8.3)
   - MRProgress/Icons (0.8.3)
+  - MRProgress/MethodCopier (0.8.3)
   - MRProgress/NavigationBarProgress (0.8.3):
     - MRProgress/ProgressBaseClass
   - MRProgress/Overlay (0.8.3):
@@ -74,11 +122,13 @@ DEPENDENCIES:
   - IQKeyboardManagerSwift
   - KMPlaceholderTextView (~> 1.2.0)
   - MRProgress
+  - MRProgress/AFNetworking
   - RichEditorView
   - Toucan (~> 0.5)
 
 SPEC CHECKSUMS:
   ActiveLabel: ec8c7a0995ab2d789ab74b72b105397dc079ff97
+  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   CarbonKit: 88f90b6290af1306c82fd5ba8d2aa4dd19e08083
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
@@ -98,6 +148,6 @@ SPEC CHECKSUMS:
   RichEditorView: b4ee60a4f5301cbe8f3fcb1f065cdd7de74ddd10
   Toucan: 0519c341148252ae114c5a657d2a85bb9ada9e40
 
-PODFILE CHECKSUM: 8ba5304eac73a5b9f704bdcfbce71e0a86c57eb5
+PODFILE CHECKSUM: 1d088a328778ce629a6acf87c209693220a4eca2
 
 COCOAPODS: 1.0.1

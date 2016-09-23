@@ -1,12 +1,16 @@
 #import <UIKit/UIKit.h>
 
 #import "MRProgress.h"
+#import "MRActivityIndicatorView+AFNetworking.h"
+#import "MRProgressOverlayView+AFNetworking.h"
+#import "MRProgressView+AFNetworking.h"
 #import "MRActivityIndicatorView.h"
 #import "MRBlurView.h"
 #import "UIImage+MRImageEffects.h"
 #import "MRCircularProgressView.h"
 #import "MRProgressHelper.h"
 #import "MRIconView.h"
+#import "MRMethodCopier.h"
 #import "MRNavigationBarProgressView.h"
 #import "MRProgressOverlayView.h"
 #import "MRProgressView.h"

@@ -10,16 +10,18 @@ import UIKit
 import RichEditorView
 import Toucan
 import CoreData
+import MRProgress
+import MRProgress.MRProgressOverlayView_AFNetworking
 
 class CommentViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    @IBOutlet var commentView: UIView!
     @IBOutlet weak var editor: RichEditorView!
     @IBOutlet weak var commentTxtView: RichEditorView!
     
-//    var postCommentUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/post"
-//    var uploadServletUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/UploadServlet"
-    var postCommentUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/post"
-    var uploadServletUrl = "http://หgo10.au-syd.mybluemix.net/GO10WebService/UploadServlet"
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var postCommentUrl: String!
+    var uploadServletUrl: String!
   
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var toolbar: RichEditorToolbar!
@@ -37,6 +39,8 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** CommentVC ViewDidiLoad ***")
+        self.postCommentUrl = "\(self.domainUrl)/GO10WebService/api/topic/post"
+        self.uploadServletUrl = "\(self.domainUrl)/GO10WebService/UploadServlet"
         topicId = receiveComment.valueForKey("_id") as! String
         roomId = receiveComment.valueForKey("roomId") as! String
         print("\(NSDate().formattedISO8601) topic id : \(topicId) room id : \(roomId)")
@@ -86,6 +90,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         //setPlaceholderText
         editor.setPlaceholderText("Write something ...")
+        
     }
     
     func postCommentWebservice(){
@@ -156,24 +161,63 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         let databe = UIImagePNGRepresentation(browseImg!)
         print("\(NSDate().formattedISO8601) Byte Img before resize : \(databe?.length)")
         
+//        if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
+//            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 300, height: 300), fitMode: Toucan.Resize.FitMode.Clip).image
+//        }else{
+//            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 450, height: 450), fitMode: Toucan.Resize.FitMode.Clip).image
+//        }
+        
+        var resizeWidth: Double
+        var reizeHeight: Double
+        let maxsize = 800 * 1024
+//                if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
+//                    print("6plusUpload")
+//                    browseImg = Toucan(image: browseImg!).resize(CGSize(width: 200, height: 200), fitMode: Toucan.Resize.FitMode.Clip).image
+//                }else{
+//                    print("6Upload")
+//                    browseImg = Toucan(image: browseImg!).resize(CGSize(width: 300, height: 300), fitMode: Toucan.Resize.FitMode.Clip).image
+//                }
+        
         if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
-            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 300, height: 300), fitMode: Toucan.Resize.FitMode.Clip).image
+            print("6plusUpload")
+            resizeWidth = 200
+            reizeHeight = 200
         }else{
-            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 450, height: 450), fitMode: Toucan.Resize.FitMode.Clip).image
+            print("6Upload")
+            resizeWidth = 300
+            reizeHeight = 300
         }
         
-        print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
-        let dataaf = UIImagePNGRepresentation(browseImg!)
-        print("\(NSDate().formattedISO8601) Byte Img after resize : \(dataaf?.length)")
+//        browseImg = Toucan(image: browseImg!).resize(CGSize(width: resizeWidth, height: reizeHeight), fitMode: Toucan.Resize.FitMode.Clip).image
+//        
+//        print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
+//        var dataaf = UIImagePNGRepresentation(browseImg!)
+//        print("\(NSDate().formattedISO8601) Byte Img after resize : \(dataaf?.length)")
     
+        var dataaf = UIImagePNGRepresentation(browseImg!)
+        
+        repeat{
+            browseImg = Toucan(image: browseImg!).resize(CGSize(width: resizeWidth, height: reizeHeight), fitMode: Toucan.Resize.FitMode.Clip).image
+            dataaf = UIImagePNGRepresentation(browseImg!)
+            resizeWidth = resizeWidth * 0.9
+            reizeHeight = reizeHeight * 0.9
+            print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
+            print("\(NSDate().formattedISO8601) Byte Img after resize : \(dataaf?.length)")
+        }while dataaf?.length > maxsize
+        
+        
         uploadImage(browseImg!)
         
         picker.dismissViewControllerAnimated(true, completion: nil)
         
         
+        
     }
 
     func uploadImage(objImage: UIImage) {
+        
+        
+
         print("\(NSDate().formattedISO8601) width : \(objImage.size.width) height :\(objImage.size.height)")
         
         let imageData = UIImagePNGRepresentation(objImage)
@@ -210,14 +254,21 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         
         request.HTTPBody = body
+        
         let session = NSURLSession.sharedSession()
+        
+        let MRProgressAF = MRProgressOverlayView.showOverlayAddedTo(self.commentView, animated: true)
+        
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
+            
             if error == nil {
                 do{
                     let jsonData = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSMutableDictionary;
                     let responseUrl = jsonData.valueForKey("imgUrl") as! String
                     print("\(NSDate().formattedISO8601) imgUrl: \(responseUrl)")
-                    dispatch_async(dispatch_get_main_queue(), {
+                    
+                     dispatch_async(dispatch_get_main_queue(), {
+                        
                         // Show Image
                         print("\(NSDate().formattedISO8601) Show Image")
                         var width = objImage.size.width
@@ -235,6 +286,10 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
                         }
                         self.toolbar.editor?.insertImage(responseUrl,width: width,height: height,alt: "insertImageUrl")
                         
+                        MRProgressOverlayView.dismissOverlayForView(self.commentView, animated: true)
+
+                        
+                        print("\(NSDate().formattedISO8601)  REFRESHTABLE")
                     })
                     
                 }catch let error as NSError{
@@ -246,6 +301,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
             }
         }
         task.resume()
+        MRProgressAF.setModeAndProgressWithStateOfTask(task)
     }
    
     func checkSpace(strCheck: String) -> Bool {

@@ -19,16 +19,12 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     @IBOutlet var boardContentView: UIView!
     
     
-//    var getHotToppicByIdUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopicbyid?topicId="
-//    var checkIsLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/checkLikeTopic?"
-//    var updateLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/updateLike"
-//    var updateDisLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/updateDisLike"
-//    var newLikeUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/newLike"
-    var getHotToppicByIdUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/gettopicbyid?topicId="
-    var checkIsLikeUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/checkLikeTopic?"
-    var updateLikeUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/updateLike"
-    var updateDisLikeUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/updateDisLike"
-    var newLikeUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/newLike"
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var getHotToppicByIdUrl: String!
+    var checkIsLikeUrl: String!
+    var updateLikeUrl: String!
+    var updateDisLikeUrl: String!
+    var newLikeUrl: String!
     var isLike: Bool!
     var countLikeLbl: UILabel!
     var likeBtn: UIButton!
@@ -48,6 +44,13 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** BoardContentVC viewDidLoad ***")
+        
+        self.getHotToppicByIdUrl = "\(self.domainUrl)/GO10WebService/api/topic/gettopicbyid?topicId="
+        self.checkIsLikeUrl = "\(self.domainUrl)/GO10WebService/api/topic/checkLikeTopic?"
+        self.updateLikeUrl = "\(self.domainUrl)/GO10WebService/api/topic/updateLike"
+        self.updateDisLikeUrl = "\(self.domainUrl)/GO10WebService/api/topic/updateDisLike"
+        self.newLikeUrl = "\(self.domainUrl)/GO10WebService/api/topic/newLike"
+        
         modelName = UIDevice.currentDevice().modelName
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
         getValuefromCoreData()
@@ -57,6 +60,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         print("*** BoardContentVC viewDidAppear ***")
         modelName = UIDevice.currentDevice().modelName
         topicId = receiveBoardContentList.valueForKey("_id") as! String
@@ -70,7 +74,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         self.boardContentView.setNeedsLayout()
         self.boardContentView.layoutIfNeeded()
 
-         MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         getValuefromCoreData()
         getBoardContentWebService()
         
@@ -113,9 +116,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     //refresh Table View
     func refreshTableView(){
         dispatch_async(dispatch_get_main_queue(), {
-            
             self.boardTableview.reloadData()
-             MRProgressOverlayView.dismissOverlayForView(self.boardContentView, animated: true)
+            MRProgressOverlayView.dismissOverlayForView(self.boardContentView, animated: true)
             print("\(NSDate().formattedISO8601)  REFRESHTABLE")
         })
     }
@@ -192,6 +194,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                     }
                 }
                 })
+                
+                
                 
             }catch let error as NSError{
                 print("\(NSDate().formattedISO8601)  error : \(error.localizedDescription)")
@@ -310,7 +314,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 //                strMU.addAttributes(myAttribute,range:NSMakeRange(0, strMU.length))
 //
 //                strMU.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, strMU.length))
-
+                
                 commentContentLbl.lineSpacing = 20
                 commentContentLbl.numberOfLines = 0
                 commentContentLbl.attributedText = strNS

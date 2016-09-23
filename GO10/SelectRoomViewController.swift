@@ -18,16 +18,19 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     @IBOutlet weak var hotTopicLbl: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     
-//    var getHotToppicUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gethottopiclist"
-//    var getRoomUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/room/get"
-    var getHotToppicUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/gethottopiclist"
-    var getRoomUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/room/get"
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var getHotToppicUrl:String!
+    var getRoomUrl:String!
     var topicList = [NSDictionary]();
     var roomList = [NSDictionary]();
     var modelName: String!
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        self.getHotToppicUrl = "\(self.domainUrl)/GO10WebService/api/topic/gethottopiclist"
+        self.getRoomUrl = "\(self.domainUrl)/GO10WebService/api/room/get"
+        
         modelName = UIDevice.currentDevice().modelName
         print("*** SelectRoomVC ViewDidAppear ***")
         MRProgressOverlayView.showOverlayAddedTo(self.selectroomView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)

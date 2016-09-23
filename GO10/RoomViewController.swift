@@ -16,8 +16,9 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var lblRoom: UILabel!
     @IBOutlet weak var imgView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
-//    var getRoomByIdUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/topic/gettopiclistbyroom?roomId="
-    var getRoomByIdUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/gettopiclistbyroom?roomId="
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    
+    var getRoomByIdUrl: String!
     
     var roomList = [NSDictionary]();
     var roomId: String!
@@ -28,6 +29,8 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         override func viewDidLoad() {
             super.viewDidLoad()
             print("*** RoomVC viewDidLoad ***")
+            
+            self.getRoomByIdUrl = "\(self.domainUrl)/GO10WebService/api/topic/gettopiclistbyroom?roomId="
             roomId = receiveRoomList.valueForKey("_id") as! String
             roomName = receiveRoomList.valueForKey("name") as! String
             lblRoom.text = roomName;

@@ -12,6 +12,7 @@ import CoreData
 class MainUINavigationController: UINavigationController {
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 //    var getUserByAccountIdUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByAccountId?accountId="
+    var getRoomByIdUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/gettopiclistbyroom?roomId="
     var getUserByAccountIdUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/user/getUserByAccountId?accountId="
     
     var profile = [NSDictionary]();

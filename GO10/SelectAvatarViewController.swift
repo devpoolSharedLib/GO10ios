@@ -12,8 +12,9 @@ import CoreData
 
 class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDelegate {
     
-//    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
-     var updateUserUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+
+    var updateUserUrl: String!
     
     var items = NSArray()
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -21,6 +22,7 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
     var recieveFromPage = "editTablePage"
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.updateUserUrl = "\(self.domainUrl)/GO10WebService/api/user/updateUser"
         print("*** SelectAvatarVC ViewDidLoad ***")
         self.title = "Select Avatar"
         

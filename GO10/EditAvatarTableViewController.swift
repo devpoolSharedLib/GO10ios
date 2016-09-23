@@ -18,10 +18,12 @@ class EditAvatarTableViewController: UITableViewController {
     @IBOutlet weak var cameraImg: UIImageView!
     @IBOutlet var editavatarTableView: UITableView!
     
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    
 //    var getUserByTokenUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByToken?token="
 //    var updateUserUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
-    var getUserByTokenUrl = "http://go.au-syd.mybluemix.net/GO10WebService/api/user/getUserByToken?token="
-    var updateUserUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/user/updateUser"
+    var getUserByTokenUrl: String!
+    var updateUserUrl: String!
     var recieveformverify: String!
     var recieveStatusLogin: String!
     var backbtn: UIBarButtonItem!
@@ -31,6 +33,8 @@ class EditAvatarTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.getUserByTokenUrl = "\(self.domainUrl)/GO10WebService/api/user/getUserByToken?token="
+        self.updateUserUrl = "\(self.domainUrl)/GO10WebService/api/user/updateUser"
         modelName = UIDevice.currentDevice().modelName
         print("*** EditAvatarTableVC ViewDidLoad")
         if(modelName.rangeOfString("ipad Mini") != nil){
