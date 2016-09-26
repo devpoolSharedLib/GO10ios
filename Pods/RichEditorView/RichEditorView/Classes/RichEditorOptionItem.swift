@@ -102,6 +102,7 @@ public enum RichEditorOptions: RichEditorOption {
     case Image
     case Link
     
+    
     public static func all() -> [RichEditorOption] {
         return [
             Clear,
@@ -179,6 +180,7 @@ public enum RichEditorOptions: RichEditorOption {
             case .Undo: toolbar.editor?.undo()
             case .Redo: toolbar.editor?.redo()
             case .Bold: toolbar.editor?.bold()
+//            case .Bold: toolbar.delegate?.richEditorToolbarBold!(toolbar)
             case .Italic: toolbar.editor?.italic()
             case .Subscript: toolbar.editor?.subscriptText()
             case .Superscript: toolbar.editor?.superscript()

@@ -25,6 +25,10 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     var roomList = [NSDictionary]();
     var modelName: String!
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.navigationItem.hidesBackButton = true
+    }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -103,20 +107,25 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         let cell = tableView.dequeueReusableCellWithIdentifier("topicCell", forIndexPath: indexPath)
         let topicImg = cell.viewWithTag(11) as! UIImageView;
         let topicSubjectLbl = cell.viewWithTag(12) as! UILabel;
-        let topicUserAvatarNameLbl = cell.viewWithTag(13) as! UILabel;
+//        let topicUserAvatarNameLbl = cell.viewWithTag(13) as! UILabel;
+        let countLikeLbl = cell.viewWithTag(13) as! UILabel;
         let dateTime = cell.viewWithTag(14) as! UILabel;
         let bean = topicList[indexPath.row]
         print("\(NSDate().formattedISO8601) bean : \(bean)")
         if(modelName.rangeOfString("ipad Mini") != nil){
             hotTopicLbl.font = FontModel.ipadminiTopicName
             topicSubjectLbl.font = FontModel.ipadminiPainText
-            topicUserAvatarNameLbl.font = FontModel.ipadminiHotTopicNameAvatar
+//            topicUserAvatarNameLbl.font = FontModel.ipadminiHotTopicNameAvatar
+            countLikeLbl.font = FontModel.ipadminiHotTopicNameAvatar
             dateTime.font = FontModel.ipadminiDateTime
         }
         
         topicSubjectLbl.text =  bean.valueForKey("subject") as? String
-        topicUserAvatarNameLbl.text =  bean.valueForKey("avatarName") as? String
-        let roomID = bean.valueForKey("roomId") as? String
+//        topicUserAvatarNameLbl.text =  bean.valueForKey("avatarName") as? String
+        countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
+        
+        let roomID = bean.valueForKey("roomId") as! String
+        
         for item in RoomModel.room { // loop through data items
             if(item.key as? String == roomID){
             topicImg.image = item.value as? UIImage
@@ -210,6 +219,10 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
             print("\(NSDate().formattedISO8601) Error clear Data");
         }
         
+    }
+    
+    @IBAction func unwindToSelectRoomVC(segue: UIStoryboardSegue){
+        print("\(NSDate().formattedISO8601) unwindToSelectRoomVC")
     }
     
     

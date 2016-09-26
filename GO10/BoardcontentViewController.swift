@@ -39,10 +39,12 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var _id: String!
     var _rev: String!
     var statusLike: Bool!
-//    var checkPushButton = false
+    var checkPushButton = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.leftItemsSupplementBackButton = true
+
         print("*** BoardContentVC viewDidLoad ***")
         
         self.getHotToppicByIdUrl = "\(self.domainUrl)/GO10WebService/api/topic/gettopicbyid?topicId="
@@ -60,6 +62,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
         MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         print("*** BoardContentVC viewDidAppear ***")
         modelName = UIDevice.currentDevice().modelName
@@ -77,7 +80,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         getValuefromCoreData()
         getBoardContentWebService()
         
-        
+        checkPushButton = false
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -85,9 +88,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 
         print("\(NSDate().formattedISO8601) WILLDISAPPAER isLike = \(self.isLike )")
         
-//        if(self.statusLike != self.isLike && checkPushButton){
-        if(self.statusLike != self.isLike){
-
+        if(self.statusLike != self.isLike && checkPushButton){
             if(self.LikeModelList.isEmpty){
                 newLikeWS()
                 print("DB NEW LIKE")
@@ -486,7 +487,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 
     
     @IBAction func likeButton(sender: AnyObject) {
-//        checkPushButton = true
+        checkPushButton = true
         if(self.isLike == false){
             self.countLikeLbl.text = String(Int(self.countLikeLbl.text!)! + 1)
 //            self.likeBtn.backgroundColor = UIColor.blueColor()

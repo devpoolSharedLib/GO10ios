@@ -106,7 +106,7 @@ RE.setPlaceholderText = function(text) {
 };
 
 RE.updatePlaceholder = function() {
-    if (RE.editor.textContent.length > 0) {
+    if (RE.editor.textContent.length > 0 || RE.editor.getElementsByTagName("img").length > 0) {
         RE.editor.classList.remove("placeholder");
     } else {
         RE.editor.classList.add("placeholder");
@@ -137,7 +137,7 @@ RE.redo = function() {
     document.execCommand('redo', false, null);
 };
 
-RE.setBold = function() {
+RE.setBold = function(color) {
     document.execCommand('bold', false, null);
 };
 

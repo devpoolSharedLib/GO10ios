@@ -3,8 +3,8 @@
 <plist version="1.0">
 <dict>
 	<key>urlDomainHttp</key>
-	<string>http://go10webservice.au-syd.mybluemix.net</string>
+	<string>http://go10.au-syd.mybluemix.net</string>
 	<key>urlDomainHttps</key>
-	<string>https://go10webservice.au-syd.mybluemix.net</string>
+	<string>https://go10.au-syd.mybluemix.net</string>
 </dict>
 </plist>

@@ -46,6 +46,10 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         print("\(NSDate().formattedISO8601) topic id : \(topicId) room id : \(roomId)")
         modelName = UIDevice.currentDevice().modelName
         
+        
+        //set other button side back button
+        self.navigationItem.leftItemsSupplementBackButton = true
+        
         //Radius Button Border
         commentTxtView.layer.cornerRadius = 5
         editor.layer.cornerRadius = 5
@@ -155,68 +159,18 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         //browse image from gallery
         var browseImg =  info[UIImagePickerControllerOriginalImage] as? UIImage
-        print("\(NSDate().formattedISO8601) model Name Upload : \(modelName)")
-        //Resize image
-        print("\(NSDate().formattedISO8601) size image before resize : \(browseImg?.size)")
-        let databe = UIImagePNGRepresentation(browseImg!)
-        print("\(NSDate().formattedISO8601) Byte Img before resize : \(databe?.length)")
         
-//        if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
-//            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 300, height: 300), fitMode: Toucan.Resize.FitMode.Clip).image
-//        }else{
-//            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 450, height: 450), fitMode: Toucan.Resize.FitMode.Clip).image
-//        }
-        
-        var resizeWidth: Double
-        var reizeHeight: Double
-        let maxsize = 800 * 1024
-//                if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
-//                    print("6plusUpload")
-//                    browseImg = Toucan(image: browseImg!).resize(CGSize(width: 200, height: 200), fitMode: Toucan.Resize.FitMode.Clip).image
-//                }else{
-//                    print("6Upload")
-//                    browseImg = Toucan(image: browseImg!).resize(CGSize(width: 300, height: 300), fitMode: Toucan.Resize.FitMode.Clip).image
-//                }
-        
-        if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
-            print("6plusUpload")
-            resizeWidth = 200
-            reizeHeight = 200
-        }else{
-            print("6Upload")
-            resizeWidth = 300
-            reizeHeight = 300
-        }
-        
-//        browseImg = Toucan(image: browseImg!).resize(CGSize(width: resizeWidth, height: reizeHeight), fitMode: Toucan.Resize.FitMode.Clip).image
-//        
-//        print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
-//        var dataaf = UIImagePNGRepresentation(browseImg!)
-//        print("\(NSDate().formattedISO8601) Byte Img after resize : \(dataaf?.length)")
-    
-        var dataaf = UIImagePNGRepresentation(browseImg!)
-        
-        repeat{
-            browseImg = Toucan(image: browseImg!).resize(CGSize(width: resizeWidth, height: reizeHeight), fitMode: Toucan.Resize.FitMode.Clip).image
-            dataaf = UIImagePNGRepresentation(browseImg!)
-            resizeWidth = resizeWidth * 0.9
-            reizeHeight = reizeHeight * 0.9
-            print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
-            print("\(NSDate().formattedISO8601) Byte Img after resize : \(dataaf?.length)")
-        }while dataaf?.length > maxsize
-        
-        
+        print("WIDTH : \(browseImg?.size.width)")
+        print("HEIGHT: \(browseImg?.size.height)")
+        print("RATIO: \((browseImg?.size.width)!/(browseImg?.size.height)!)")
+        browseImg = ImageUtil.resizeImage(browseImg!, modelName: modelName)
         uploadImage(browseImg!)
         
         picker.dismissViewControllerAnimated(true, completion: nil)
         
-        
-        
     }
 
     func uploadImage(objImage: UIImage) {
-        
-        
 
         print("\(NSDate().formattedISO8601) width : \(objImage.size.width) height :\(objImage.size.height)")
         
@@ -271,16 +225,52 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
                         
                         // Show Image
                         print("\(NSDate().formattedISO8601) Show Image")
+                        
+//                        let resultLength = ImageUtil.setSizeToSrc(objImage)
+
+//                        print("XXXX WIDTH : \(resultLength.valueForKey("width"))")
+//                        print("XXXX HEIGHT : \(resultLength.valueForKey("height"))")
+
                         var width = objImage.size.width
                         var height = objImage.size.height
-                        if(width > height){
-                            width = 295
-                            height = 166
-                            
-                        }else if(width < height){
-                            width = 230
-                            height = 408
-                        }else if(width == height){
+                        let ratio = round(width/height*100)/100
+                        
+                        print(">>>>>>> RATIO : \(ratio)")
+                        
+                        
+                        if(ratio > 1) {
+                            if(ratio == 1.33) {
+                                print("4:3 landscape")
+                                width = 295
+                                height = 222
+                            } else if(ratio == 1.78 || ratio == 1.77) {
+                                print("16:9 landscape")
+                                width = 295
+                                height = 166
+                            } else {
+                                print("Other Resulotion landscape")
+                                width = 295
+                                height = 166
+                            }
+                        } else if(ratio < 1) {
+                            if(ratio == 0.75) {
+                                print("3:4 portrait")
+                                width = 230
+                                height = 307
+                                print("aoisdfoadfsksakjdfbkajdfsbaljks")
+                                
+                            } else if(ratio == 0.56) {
+                                print("9:16 portrait")
+                                width = 230
+                                height = 410
+
+                            } else {
+                                print("Other Resulotion protrait")
+                                width = 230
+                                height = 410
+                            }
+                        } else if(ratio == 1) {
+                            print("1:1 square")
                             width = 295
                             height = 295
                         }
@@ -322,11 +312,11 @@ extension CommentViewController: RichEditorDelegate {
     func richEditor(editor: RichEditorView, heightDidChange height: Int) { }
     
     func richEditor(editor: RichEditorView, contentDidChange content: String) {
-        if content.isEmpty {
-            //htmlTextView.text = "HTML Preview"
-        } else {
-            //htmlTextView.text = content
-        }
+//        if content.isEmpty {
+//            //htmlTextView.text = "HTML Preview"
+//        } else {
+//            //htmlTextView.text = content
+//        }
     }
     
     func richEditorTookFocus(editor: RichEditorView) { }
@@ -354,22 +344,26 @@ extension CommentViewController: RichEditorToolbarDelegate {
         ]
         
         let color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
+        print("richEditorToolbarChangeTextColor")
         return color
     }
     
     func richEditorToolbarChangeTextColor(toolbar: RichEditorToolbar) {
         let color = randomColor()
         toolbar.editor?.setTextColor(color)
+        print("richEditorToolbarChangeTextColor")
     }
     
     func richEditorToolbarChangeBackgroundColor(toolbar: RichEditorToolbar) {
         let color = randomColor()
         toolbar.editor?.setTextBackgroundColor(color)
+        print("richEditorToolbarChangeBackgroundColor")
     }
     
     func richEditorToolbarInsertImage(toolbar: RichEditorToolbar) {
         ImagePicker.delegate = self
         ImagePicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+        ImagePicker.allowsEditing = true
         self.presentViewController(ImagePicker, animated: true, completion: nil)
     }
     

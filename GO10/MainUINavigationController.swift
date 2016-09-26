@@ -27,7 +27,8 @@ class MainUINavigationController: UINavigationController {
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            print("Results : \(result)")
+//            print("avatarName : \(result[0].valueForKey("avatarName"))")
+//            print("Results : \(result)")
             print("count Results : \(result.count)")
             if(result.count == 0){
                 print("count=0")

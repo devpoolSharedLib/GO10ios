@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		330361011D94D3E200047E28 /* ImageUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330361001D94D3E200047E28 /* ImageUtil.swift */; };
 		672E0443F37C63F692A58428 /* Pods_GO10.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92AECA92B167F8E0BCBC7ED7 /* Pods_GO10.framework */; };
 		6E10CD711CEC80DA000D7A02 /* EditAvatarTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E10CD701CEC80DA000D7A02 /* EditAvatarTableViewController.swift */; };
 		6E70CAA71CEC25B800D13FEC /* MenAvatarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70CAA61CEC25B800D13FEC /* MenAvatarViewController.swift */; };
@@ -68,6 +69,7 @@
 /* Begin PBXFileReference section */
 		1CB0BC711E2155DB59B9EECC /* Pods-GO10UITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GO10UITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-GO10UITests/Pods-GO10UITests.release.xcconfig"; sourceTree = "<group>"; };
 		20F23A8DC1D76E411BDE018C /* Pods-GO10.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GO10.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GO10/Pods-GO10.debug.xcconfig"; sourceTree = "<group>"; };
+		330361001D94D3E200047E28 /* ImageUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageUtil.swift; sourceTree = "<group>"; };
 		58EB9B7DBCEEC110A98D1179 /* Pods-GO10.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GO10.release.xcconfig"; path = "Pods/Target Support Files/Pods-GO10/Pods-GO10.release.xcconfig"; sourceTree = "<group>"; };
 		5BF67BB0ED42D64947FD85A0 /* Pods_GO10Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GO10Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E10CD701CEC80DA000D7A02 /* EditAvatarTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditAvatarTableViewController.swift; sourceTree = "<group>"; };
@@ -244,6 +246,7 @@
 				A64A368A1D7E6E0C00178769 /* Room.swift */,
 				A66703211D927B9E00D7A3A1 /* PropertyUtil.swift */,
 				A66703231D927F9400D7A3A1 /* data.plist */,
+				330361001D94D3E200047E28 /* ImageUtil.swift */,
 			);
 			path = GO10;
 			sourceTree = "<group>";
@@ -556,6 +559,7 @@
 				A6E81F481D45D13F002E8A37 /* ForgotPasswordViewController.swift in Sources */,
 				A6E81F461D45BF38002E8A37 /* LoginViewController.swift in Sources */,
 				A64A368B1D7E6E0D00178769 /* Room.swift in Sources */,
+				330361011D94D3E200047E28 /* ImageUtil.swift in Sources */,
 				A6E01A171D0DD0DB00F693CC /* VerifyTokenViewController.swift in Sources */,
 				A6685FCA1CE1F6BB00DA39F9 /* RoomViewController.swift in Sources */,
 				A66703221D927B9E00D7A3A1 /* PropertyUtil.swift in Sources */,

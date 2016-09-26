@@ -32,6 +32,13 @@ import UIKit
         Called when the Insert Link toolbar item is pressed.
     */
     optional func richEditorToolbarInsertLink(toolbar: RichEditorToolbar)
+    
+ 
+//    /**
+//     Called when the Bold toolbar item is pressed.
+//     */
+//    optional func richEditorToolbarBold(toolbar: RichEditorToolbar)
+    
 }
 
 
@@ -54,6 +61,7 @@ public class RichBarButtonItem: UIBarButtonItem {
         action = Selector("buttonWasTapped")
         actionHandler = handler
     }
+    
     
     func buttonWasTapped() {
         actionHandler?()
@@ -113,12 +121,13 @@ public class RichEditorToolbar: UIView {
         toolbar.autoresizingMask = .FlexibleWidth
         toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
         toolbar.setShadowImage(UIImage(), forToolbarPosition: .Any)
-
+        
         toolbarScroll.frame = self.bounds
         toolbarScroll.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
         toolbarScroll.showsHorizontalScrollIndicator = false
         toolbarScroll.showsVerticalScrollIndicator = false
         toolbarScroll.backgroundColor = UIColor.clearColor()
+
 
         toolbarScroll.addSubview(toolbar)
 
@@ -140,8 +149,9 @@ public class RichEditorToolbar: UIView {
             }
 
         }
+        
         toolbar.items = buttons
-
+        
         let defaultIconWidth: CGFloat = 22
         let barButtonItemMargin: CGFloat = 11
         let width: CGFloat = buttons.reduce(0) {sofar, new in

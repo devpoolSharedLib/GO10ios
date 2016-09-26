@@ -43,6 +43,10 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         self.postTopicUrl = "\(self.domainUrl)/GO10WebService/api/topic/post"
         self.uploadServletUrl = "\(self.domainUrl)/GO10WebService/UploadServlet"
         
+        //set other button side back button
+        self.navigationItem.leftItemsSupplementBackButton = true
+
+        
         roomId = receiveNewTopic.valueForKey("_id") as! String
         print("\(NSDate().formattedISO8601) room id : \(roomId)")
         // Do any additional setup after loading the view.
@@ -159,58 +163,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         
         //browse image from gallery
         var browseImg =  info[UIImagePickerControllerOriginalImage] as? UIImage
-        
-        //Resize image
-        print("\(NSDate().formattedISO8601) size image before resize : \(browseImg?.size)")
-        let databe = UIImagePNGRepresentation(browseImg!)
-        
-        print("\(NSDate().formattedISO8601) Byte Img before resize : \(databe?.length)")
-
-        //        if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
-        //            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 300, height: 300), fitMode: Toucan.Resize.FitMode.Clip).image
-        //        }else{
-        //            browseImg = Toucan(image: browseImg!).resize(CGSize(width: 450, height: 450), fitMode: Toucan.Resize.FitMode.Clip).image
-        //        }
-        
-        var resizeWidth: Double
-        var reizeHeight: Double
-        let maxsize = 800 * 1024
-        //                if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
-        //                    print("6plusUpload")
-        //                    browseImg = Toucan(image: browseImg!).resize(CGSize(width: 200, height: 200), fitMode: Toucan.Resize.FitMode.Clip).image
-        //                }else{
-        //                    print("6Upload")
-        //                    browseImg = Toucan(image: browseImg!).resize(CGSize(width: 300, height: 300), fitMode: Toucan.Resize.FitMode.Clip).image
-        //                }
-        
-        if(modelName == "iPhone 6s Plus" || modelName == "iPhone 6 Plus" || modelName == "Simulator"){
-            print("6plusUpload")
-            resizeWidth = 200
-            reizeHeight = 200
-        }else{
-            print("6Upload")
-            resizeWidth = 300
-            reizeHeight = 300
-        }
-        
-        //        browseImg = Toucan(image: browseImg!).resize(CGSize(width: resizeWidth, height: reizeHeight), fitMode: Toucan.Resize.FitMode.Clip).image
-        //
-        //        print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
-        //        var dataaf = UIImagePNGRepresentation(browseImg!)
-        //        print("\(NSDate().formattedISO8601) Byte Img after resize : \(dataaf?.length)")
-        
-        var dataaf = UIImagePNGRepresentation(browseImg!)
-        
-        repeat{
-            browseImg = Toucan(image: browseImg!).resize(CGSize(width: resizeWidth, height: reizeHeight), fitMode: Toucan.Resize.FitMode.Clip).image
-            dataaf = UIImagePNGRepresentation(browseImg!)
-            resizeWidth = resizeWidth * 0.9
-            reizeHeight = reizeHeight * 0.9
-            print("\(NSDate().formattedISO8601) size image after resize : \(browseImg?.size)")
-            print("\(NSDate().formattedISO8601) Byte Img after resize : \(dataaf?.length)")
-        }while dataaf?.length > maxsize
-
-        
+        browseImg = ImageUtil.resizeImage(browseImg!, modelName: modelName)
         
         uploadImage(browseImg!)
         picker.dismissViewControllerAnimated(true, completion: nil)
@@ -266,25 +219,59 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
                     let responseUrl = jsonData.valueForKey("imgUrl") as! String
                     
                     print("\(NSDate().formattedISO8601) imgUrl: \(responseUrl)")
-                    
-//                    let imgUrl = "http://go10webservice.au-syd.mybluemix.net\(responseUrl)"
-                    
                     dispatch_async(dispatch_get_main_queue(), {
                         // Show Image
                         print("\(NSDate().formattedISO8601) Show Image")
+                        //                        let resultLength = ImageUtil.setSizeToSrc(objImage)
+                        
+                        //                        print("XXXX WIDTH : \(resultLength.valueForKey("width"))")
+                        //                        print("XXXX HEIGHT : \(resultLength.valueForKey("height"))")
+                        
                         var width = objImage.size.width
                         var height = objImage.size.height
-                        if(width > height){
-                            width = 295
-                            height = 166
-                            
-                        }else if(width < height){
-                            width = 230
-                            height = 408
-                        }else if(width == height){
+                        let ratio = round(width/height*100)/100
+                        
+                        print(">>>>>>> RATIO : \(ratio)")
+                        
+                        
+                        if(ratio > 1) {
+                            if(ratio == 1.33) {
+                                print("4:3 landscape")
+                                width = 295
+                                height = 222
+                            } else if(ratio == 1.78 || ratio == 1.77) {
+                                print("16:9 landscape")
+                                width = 295
+                                height = 166
+                            } else {
+                                print("Other Resulotion landscape")
+                                width = 295
+                                height = 166
+                            }
+                        } else if(ratio < 1) {
+                            if(ratio == 0.75) {
+                                print("3:4 portrait")
+                                width = 230
+                                height = 307
+                                print("aoisdfoadfsksakjdfbkajdfsbaljks")
+                                
+                            } else if(ratio == 0.56) {
+                                print("9:16 portrait")
+                                width = 230
+                                height = 410
+                                
+                            } else {
+                                print("Other Resulotion protrait")
+                                width = 230
+                                height = 410
+                            }
+                        } else if(ratio == 1) {
+                            print("1:1 square")
                             width = 295
                             height = 295
                         }
+
+                        
                         self.toolbar.editor?.insertImage(responseUrl,width: width,height: height,alt: "insertImageUrl")
                         MRProgressOverlayView.dismissOverlayForView(self.newTopicView, animated: true)
                     })
@@ -384,11 +371,20 @@ extension NewTopicViewController: RichEditorToolbarDelegate {
     func richEditorToolbarChangeBackgroundColor(toolbar: RichEditorToolbar) {
         let color = randomColor()
         toolbar.editor?.setTextBackgroundColor(color)
+        
     }
+//    
+//    func richEditorToolbarBold(toolbar: RichEditorToolbar){
+//        print("BOLD")
+//        toolbar.editor?.bold()
+//        
+//       
+//    }
     
     func richEditorToolbarInsertImage(toolbar: RichEditorToolbar) {
         ImagePicker.delegate = self
         ImagePicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+        ImagePicker.allowsEditing = true
         self.presentViewController(ImagePicker, animated: true, completion: nil)
     }
     

@@ -47,12 +47,13 @@ class EditAvatarTableViewController: UITableViewController {
         }
             if(recieveStatusLogin == "First Login" && recieveStatusLogin != nil){
                 print("First Login")
-                self.navigationItem.setHidesBackButton(true, animated:true);
+                self.navigationItem.setHidesBackButton(true, animated:true)
                 
             }else{
                 print("not First Login")
                 submitBtn =  self.navigationItem.rightBarButtonItems![0]
                 self.navigationItem.rightBarButtonItems?.removeAtIndex(0)
+                
             }
         
 //        let context: NSManagedObjectContext = appDelegate.managedObjectContext;

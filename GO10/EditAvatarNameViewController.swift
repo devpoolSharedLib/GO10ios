@@ -14,13 +14,17 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
     @IBOutlet weak var avatarNametxt: UITextField!
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    
     var updateUserUrl: String!
+    var checkAvatarNameUrl: String!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var modelName: String!
+    var checkAvatarName: Bool!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.updateUserUrl = "\(self.domainUrl)/GO10WebService/api/user/updateUser"
+        self.checkAvatarNameUrl = "\(self.domainUrl)/GO10WebService/api/user/checkAvatarName?avatarName="
         avatarNametxt.delegate = self
         modelName = UIDevice.currentDevice().modelName
         if(modelName.rangeOfString("ipad Mini") != nil){
@@ -52,25 +56,95 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         }else{
-            let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+            checkAvatarNameWS(avatarName!)
             
+//            if(self.checkAvatarName != nil){
+//                                let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+//                
+//                                do{
+//                                    let fetchReq = NSFetchRequest(entityName: "User_Info");
+//                                    let result = try context.executeFetchRequest(fetchReq);
+//                                    result[0].setValue(avatarNametxt.text, forKey: "avatarName");
+//                                    try context.save();
+//                                    updateData()
+//                                }catch{
+//                                    print("\(NSDate().formattedISO8601) Error Saving Data");
+//                                }
+//                                updateData()
+//                                self.performSegueWithIdentifier("unwindToEditAvatarID", sender: nil)
+//            }
+        }
+    }
+
+
+
+    func checkAvatarNameWS(avatarName: String){
+        print("\(NSDate().formattedISO8601) checkavatarNameWebservice")
+        
+        let url = self.checkAvatarNameUrl + avatarName
+        
+        let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(
+            NSCharacterSet.URLFragmentAllowedCharacterSet())
+        
+        let urlWs = NSURL(string: strUrlEncode!)
+        print("\(NSDate().formattedISO8601) URL -->  : \(urlWs)")
+        
+        
+        
+        let req = NSMutableURLRequest(URL: urlWs!)
+        req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        let request = NSURLSession.sharedSession().dataTaskWithRequest(req) { (data, response, error) in
             do{
-                let fetchReq = NSFetchRequest(entityName: "User_Info");
-                let result = try context.executeFetchRequest(fetchReq);
-                result[0].setValue(avatarNametxt.text, forKey: "avatarName");
-                try context.save();
-                updateData()
-            }catch{
-                print("\(NSDate().formattedISO8601) Error Saving Data");
+                
+                
+
+               let httpStatus = response as? NSHTTPURLResponse
+                
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                if (httpStatus!.statusCode == 201) {
+                    self.checkAvatarName = true
+                    
+                    let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
+                    
+                    do{
+                        let fetchReq = NSFetchRequest(entityName: "User_Info");
+                        let result = try context.executeFetchRequest(fetchReq);
+                        result[0].setValue(avatarName, forKey: "avatarName");
+                        try context.save();
+                    }catch{
+                        print("\(NSDate().formattedISO8601) Error Saving Data");
+                    }
+                    self.updateData()
+
+                    self.performSegueWithIdentifier("unwindToEditAvatarID", sender: nil)
+                
+                }else if (httpStatus!.statusCode == 404){
+                    self.checkAvatarName = false
+                    let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                    print("\(NSDate().formattedISO8601) responseString = \(responseString)")
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                        let alert = UIAlertController(title: "Alert", message: responseString as? String, preferredStyle: UIAlertControllerStyle.Alert)
+                        alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                        self.presentViewController(alert, animated: true, completion: nil)
+                    }
+                    
+                }else{
+                     self.checkAvatarName = false
+                    print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus!.statusCode)")
+                    print("\(NSDate().formattedISO8601) response = \(response)")
+                }
+            })
+            }
+            catch let error as NSError{
+                print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
             }
             
-            self.performSegueWithIdentifier("unwindToEditAvatarID", sender: nil)
-
         }
-
-   
+        request.resume()
     }
-    
+
     func updateData(){
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
@@ -110,15 +184,18 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
                     return
                 }
                 
-                if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {
+                if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 201 {
                     print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus.statusCode)")
                     print("\(NSDate().formattedISO8601) response = \(response)")
-                }
+                }else{
                 
                 let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
                 print("\(NSDate().formattedISO8601) responseString = \(responseString)")
                 result[0].setValue(responseString, forKey: "rev_")
-
+                result[0].setValue(avatarName, forKey: "avatarName");
+                    
+                self.performSegueWithIdentifier("unwindToEditAvatarID", sender: nil)
+                }
             }
             request.resume()
             

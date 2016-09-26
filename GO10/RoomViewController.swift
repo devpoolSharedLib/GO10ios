@@ -46,6 +46,9 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("*** RoomVC viewDidAppear ***")
+        
+        
+        
         modelName = UIDevice.currentDevice().modelName
         print("\(NSDate().formattedISO8601) room id : \(roomId)")
         MRProgressOverlayView.showOverlayAddedTo(self.roomView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
@@ -89,20 +92,23 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let cell = tableView.dequeueReusableCellWithIdentifier("roomCell", forIndexPath: indexPath)
         let roomImg = cell.viewWithTag(21) as! UIImageView;
         let roomSubjectLbl = cell.viewWithTag(22) as! UILabel;
-        let roomUserAvatarNameLbl = cell.viewWithTag(23) as! UILabel;
+//        let roomUserAvatarNameLbl = cell.viewWithTag(23) as! UILabel;
+        let countLikeLbl = cell.viewWithTag(23) as! UILabel;
         let dateTime = cell.viewWithTag(24) as! UILabel;
         if(modelName.rangeOfString("ipad Mini") != nil){
             
             roomLbl.font = FontModel.ipadminiTopicName
             roomSubjectLbl.font = FontModel.ipadminiPainText
-            roomUserAvatarNameLbl.font = FontModel.ipadminiHotTopicNameAvatar
+//            roomUserAvatarNameLbl.font = FontModel.ipadminiHotTopicNameAvatar
+            countLikeLbl.font = FontModel.ipadminiHotTopicNameAvatar
             dateTime.font = FontModel.ipadminiDateTime
         }
         
         let bean = roomList[indexPath.row]
         print("\(NSDate().formattedISO8601) bean : \(bean)")
         roomSubjectLbl.text = bean.valueForKey("subject") as? String
-        roomUserAvatarNameLbl.text = bean.valueForKey("avatarName") as? String
+//        roomUserAvatarNameLbl.text = bean.valueForKey("avatarName") as? String
+        countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
         dateTime.text = bean.valueForKey("date") as? String
 
         let picAvatar = bean.valueForKey("avatarPic") as? String

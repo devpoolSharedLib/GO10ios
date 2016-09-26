@@ -92,7 +92,7 @@ class LoginViewController: UIViewController {
             NSCharacterSet.URLFragmentAllowedCharacterSet())
         
             let urlWs = NSURL(string: strUrlEncode!)
-            print("\(NSDate().formattedISO8601) URL -->  : \(urlWs)")
+//            print("\(NSDate().formattedISO8601) URL -->  : \(urlWs)")
         
             let req = NSMutableURLRequest(URL: urlWs!)
             req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
