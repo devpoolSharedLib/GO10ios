@@ -47,6 +47,15 @@ class EditAvatarTableViewController: UITableViewController {
         }
             if(recieveStatusLogin == "First Login" && recieveStatusLogin != nil){
                 print("First Login")
+                let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+                    do{
+                        let fetchReq = NSFetchRequest(entityName: "User_Info");
+                        let result = try context.executeFetchRequest(fetchReq);
+                        result[0].setValue(false, forKey: "statusLogin")
+                        try context.save();
+                        }catch{
+                            print("\(NSDate().formattedISO8601) Error Reading Data");
+                        }
                 self.navigationItem.setHidesBackButton(true, animated:true)
                 
             }else{
@@ -119,6 +128,22 @@ class EditAvatarTableViewController: UITableViewController {
     }
 
     @IBAction func submitAvatar(sender: AnyObject) {
+        
+        if(recieveStatusLogin == "First Login" && recieveStatusLogin != nil){
+            print("First Login")
+            let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+            do{
+                let fetchReq = NSFetchRequest(entityName: "User_Info");
+                let result = try context.executeFetchRequest(fetchReq);
+                result[0].setValue(false, forKey: "statusLogin")
+                try context.save();
+            }catch{
+                print("\(NSDate().formattedISO8601) Error Reading Data");
+            }
+            self.navigationItem.setHidesBackButton(true, animated:true)
+            
+        }
+        
         print("SUBMIT AVATAR")
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{

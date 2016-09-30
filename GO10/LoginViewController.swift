@@ -113,11 +113,12 @@ class LoginViewController: UIViewController {
                         
                     }else{
                         if(self.profile[0].valueForKey("activate") as! Bool == false){
-                            print("FALSE")
+                            print("activate is false")
                             NSOperationQueue.mainQueue().addOperationWithBlock {
                                 let alert = UIAlertController(title: "Alert", message: "The e-mail or password is incorrect.\n\nPlease try again.", preferredStyle: UIAlertControllerStyle.Alert)
                                 alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                                 self.presentViewController(alert, animated: true, completion: nil)
+                                MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
                             }
                         }
                         else if(self.profile[0].valueForKey("avatarPic") as! String == "default_avatar" && self.profile[0].valueForKey("avatarName") as! String == "Avatar Name"){

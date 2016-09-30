@@ -10,24 +10,29 @@ import UIKit
 import CoreData
 
 class MainUINavigationController: UINavigationController {
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//    var getUserByAccountIdUrl = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByAccountId?accountId="
-    var getRoomByIdUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/topic/gettopiclistbyroom?roomId="
-    var getUserByAccountIdUrl = "http://go10.au-syd.mybluemix.net/GO10WebService/api/user/getUserByAccountId?accountId="
     
+    
+    
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var getUserByAccountIdUrl: String!
     var profile = [NSDictionary]();
     var status: Bool!
     var accountId: String!
     var statusLogin: Bool!
+    var empEmail: String!
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("*** MainVC ViewDidAppear ***")
-         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+        self.getUserByAccountIdUrl = "\(self.domainUrl)/GO10WebService/api/user/checkUserActivation?empEmail="
+        
+        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-//            print("avatarName : \(result[0].valueForKey("avatarName"))")
+            
+
 //            print("Results : \(result)")
             print("count Results : \(result.count)")
             if(result.count == 0){
@@ -48,7 +53,9 @@ class MainUINavigationController: UINavigationController {
             print("Status Login : \(self.statusLogin)")
             
             if((self.statusLogin) == true){
-                self.performSegueWithIdentifier("gotoHomePage", sender: nil)
+                self.empEmail = result[0].valueForKey("empEmail") as! String
+                checkStatus(self.empEmail)
+//                self.performSegueWithIdentifier("gotoHomePage", sender: nil)
             }else{
                 self.performSegueWithIdentifier("gotoLoginPage", sender: nil)
             }
@@ -77,26 +84,55 @@ class MainUINavigationController: UINavigationController {
 //        }
     }
     
-    func checkStatus(){
-        print("\(NSDate().formattedISO8601) accoundId : \(self.accountId)")
+    func checkStatus(empEmail: String){
+        print("\(NSDate().formattedISO8601) empEmail : \(empEmail)")
         print("\(NSDate().formattedISO8601) getStatusWebservice")
-        let urlWs = NSURL(string: self.getUserByAccountIdUrl + self.accountId)
+        let urlWs = NSURL(string: self.getUserByAccountIdUrl + empEmail)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let urlsession = NSURLSession.sharedSession()
        
         let request = urlsession.dataTaskWithURL(urlWs!) { (data, response, error) in
             do{
                 
-                self.profile = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
-                print("\(NSDate().formattedISO8601) profile : \(self.profile)")
-                if(self.profile.isEmpty){
-                    print("Profile is Empty")
-                     self.performSegueWithIdentifier("gotoVerify", sender: nil)
-                }
-                else{
-                    self.setUserInfo()
-                }
-                
+                let httpStatus = response as? NSHTTPURLResponse
+                dispatch_async(dispatch_get_main_queue(), {
+                    if (httpStatus!.statusCode == 201) {
+                        print("\(NSDate().formattedISO8601) activated is true")
+                       self.performSegueWithIdentifier("gotoHomePage", sender: nil)
+                        
+        
+                    }else if (httpStatus!.statusCode == 404){
+                        
+                        let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                        print("\(NSDate().formattedISO8601) responseString = \(responseString)")
+                        NSOperationQueue.mainQueue().addOperationWithBlock {
+                            let alert = UIAlertController(title: "Alert", message: responseString as? String, preferredStyle: UIAlertControllerStyle.Alert)
+                            alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                            self.presentViewController(alert, animated: true, completion: nil)
+                        }
+                        let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
+                        do{
+                            let fetchReq = NSFetchRequest(entityName: "User_Info");
+                            let result = try context.executeFetchRequest(fetchReq);
+                            result[0].setValue(false, forKey: "statusLogin");
+                            try context.save();
+                            print("\(NSDate().formattedISO8601) Save status Login Success")
+//                            
+//                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//                            let loginVC =  storyboard.instantiateViewControllerWithIdentifier("mainVCID")
+//                            self.presentViewController(loginVC, animated: true, completion: nil)
+                            self.viewDidAppear(true)
+                            
+                        }catch{
+                            print("\(NSDate().formattedISO8601) Error Saving Data");
+                        }
+
+                        
+                    }else{
+                        print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus!.statusCode)")
+                        print("\(NSDate().formattedISO8601) response = \(response)")
+                    }
+                })
             }catch let error as NSError{
                 print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
             }

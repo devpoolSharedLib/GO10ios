@@ -96,8 +96,6 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
         
         let request = NSURLSession.sharedSession().dataTaskWithRequest(req) { (data, response, error) in
             do{
-                
-                
 
                let httpStatus = response as? NSHTTPURLResponse
                 

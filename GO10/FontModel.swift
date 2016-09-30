@@ -15,9 +15,9 @@ class FontModel {
     static var ipadminiDateTime = UIFont(name: "Helvetica Neue", size: 15)
 
     
-    static var iphoneTopicName = UIFont(name:"Helvetica Neue", size:20)
-    static var iphonepainText = UIFont(name:"Helvetica Neue", size:15)
-    static var iphoneHotTopicNameAvatar = UIFont(name:"Helvetica Neue", size:10)
-    static var iphoneDateTime = UIFont(name: "Helvetica Neue", size: 8)
+    static var iphoneTopicName = UIFont(name:"Helvetica Neue", size:21)
+    static var iphonepainText = UIFont(name:"Helvetica Neue", size:17)
+    static var iphoneHotTopicNameAvatar = UIFont(name:"Helvetica Neue", size:11)
+    static var iphoneDateTime = UIFont(name: "Helvetica Neue", size: 9)
     
 }

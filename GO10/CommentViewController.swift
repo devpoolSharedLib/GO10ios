@@ -174,7 +174,8 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
 
         print("\(NSDate().formattedISO8601) width : \(objImage.size.width) height :\(objImage.size.height)")
         
-        let imageData = UIImagePNGRepresentation(objImage)
+//        let imageData = UIImagePNGRepresentation(objImage)
+        let imageData = UIImageJPEGRepresentation(objImage, 0.8)
         if(imageData == nil)
         {
             return
