@@ -57,6 +57,9 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         if(modelName.rangeOfString("ipad Mini") != nil){
             subjectTxtView.font = FontModel.ipadminiPainText
             contextTxtView.setFontSize(17)
+        }else{
+            subjectTxtView.font = FontModel.iphonepainText
+            
         }
         
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;

@@ -112,12 +112,20 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         let dateTime = cell.viewWithTag(14) as! UILabel;
         let bean = topicList[indexPath.row]
         print("\(NSDate().formattedISO8601) bean : \(bean)")
+        
+        
         if(modelName.rangeOfString("ipad Mini") != nil){
             hotTopicLbl.font = FontModel.ipadminiTopicName
             topicSubjectLbl.font = FontModel.ipadminiPainText
 //            topicUserAvatarNameLbl.font = FontModel.ipadminiHotTopicNameAvatar
             countLikeLbl.font = FontModel.ipadminiHotTopicNameAvatar
             dateTime.font = FontModel.ipadminiDateTime
+        }else{
+            topicSubjectLbl.font = FontModel.iphoneTopicName
+            topicSubjectLbl.font = FontModel.iphonepainText
+            countLikeLbl.font = FontModel.iphoneHotTopicNameAvatar
+            dateTime.font = FontModel.iphoneDateTime
+
         }
         
         topicSubjectLbl.text =  bean.valueForKey("subject") as? String
@@ -151,6 +159,10 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         if(modelName.rangeOfString("ipad Mini") != nil){
             roomLbl.font = FontModel.ipadminiTopicName
             roomTitle.font = FontModel.ipadminiPainText
+        }else{
+            roomLbl.font = FontModel.iphoneTopicName
+            roomTitle.font = FontModel.iphonepainText
+
         }
         
         let roomID = beanRoom.valueForKey("_id") as? String

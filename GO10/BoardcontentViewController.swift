@@ -245,11 +245,11 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             do{
                 
                
-                var myAttribute = [ NSFontAttributeName: FontModel.iphonepainText! ]
-                
-                if(modelName.rangeOfString("ipad Mini") != nil){
-                    myAttribute = [ NSFontAttributeName: FontModel.ipadminiPainText! ]
-                }
+//                var myAttribute = [ NSFontAttributeName: FontModel.iphonepainText! ]
+//                
+//                if(modelName.rangeOfString("ipad Mini") != nil){
+//                    myAttribute = [ NSFontAttributeName: FontModel.ipadminiPainText! ]
+//                }
                 
                 
                 let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
@@ -292,6 +292,9 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 //                commentContentLbl.font = FontModel.ipadminiPainText
                 commentNameLbl.font = FontModel.ipadminiDateTime
                 commentTimeLbl.font = FontModel.ipadminiDateTime
+            }else{
+                commentNameLbl.font = FontModel.iphoneDateTime
+                commentTimeLbl.font = FontModel.iphoneDateTime
             }
             
             let htmlData = boardContentBean.valueForKey("content") as? String
@@ -299,11 +302,11 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             print("\(NSDate().formattedISO8601) htmlReplace : \(htmlReplace)")
             do{
                 
-                var myAttribute = [ NSFontAttributeName: FontModel.iphonepainText! ]
-                
-                if(modelName.rangeOfString("ipad Mini") != nil){
-                    myAttribute = [ NSFontAttributeName: FontModel.ipadminiPainText! ]
-                }
+//                var myAttribute = [ NSFontAttributeName: FontModel.iphonepainText! ]
+//                
+//                if(modelName.rangeOfString("ipad Mini") != nil){
+//                    myAttribute = [ NSFontAttributeName: FontModel.ipadminiPainText! ]
+//                }
                 
 
                 let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
@@ -358,6 +361,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             label.URLColor = UIColor.blueColor()
             if(self.modelName.rangeOfString("ipad Mini") != nil){
                 label.font = FontModel.ipadminiPainText
+            }else{
+                label.font = FontModel.iphonepainText
             }
             
             label.handleURLTap({ (url) in

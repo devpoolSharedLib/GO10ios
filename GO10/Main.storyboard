@@ -773,18 +773,27 @@
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Q2-sP-dEg">
                                 <rect key="frame" x="8" y="0.0" width="364" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <mutableString key="text">
+                                <string key="text">
 1.ห้ามนำรูปภาพหรือข้อความที่มีลักษณะเป็นข้อมูลลับของบริษัท อาทิ เอกสาร รายงาน ข้อความและอื่นๆที่อยู่ใน Application ออกไปเผยแพร่ภายนอก
 
 2.ห้ามโพสรูปภาพหรือข้อความที่ละเมิดลิขสิทธิ์โดยเด็ดขาด
-3.ห้ามเปิดเผย Username และ Password ของตนเองแก่ผู้อื่น
-4.ห้ามใช้  Username และ Password ของผู้อื่นได้การเข้าใช้งานระบบ 
-5.ห้ามมิให้มีการโฆษณา ขาย ประชาสัมพันธ์ สินค้าและบริการที่ผู้ใช้เป็นเจ้าของ
-6.ห้ามใช้รูปภาพหรือข้อความที่ส่อไปในทางหยาบคาย ก้าวร้าว ลามก อนาจาร คุกคาม อุจาด รุนแรง
-7.ห้ามนำเสนอข้อความอันเป็นการวิพากษ์วิจารณ์หรือพาดพิงสถาบันพระมหากษัตริย์และราชวงศ์เป็นอันขาด
-8.ห้ามเสนอข้อความกล่าวโจมตี วิจารณ์ เสียดสี ด้านศาสนา หลักคำสอน ของทุกศาสนา อันอาจก่อให้เกิดความขัดแย้ง พิพาท ระหว่างองค์การ สถาบัน บุคคล และอื่นๆ
-9.ห้ามเสนอข้อความหรือเนื้อหาที่เป็นการแสดงออกในทางดูหมิ่น เหยียดหยาม หรือนำข้อมูลส่วนบุคคลมาเปิดเผย อันจะก่อให้เกิดความอับอาย เสื่อมเสียชื่อเสียง ของบุคคลอื่นที่จะก่อให้เกิดความรุนแรงและความขัดแย้งได้
-10.ห้ามเสนอข้อความหรือเนื้อหาที่ผิดกฎหมายหรือผิดศีลธรรม</mutableString>
+
+3.ห้ามเปิดเผย Username และ Password ของตนเองแก่ผู้อื่น
+
+4.ห้ามใช้  Username และ Password ของผู้อื่นได้การเข้าใช้งานระบบ 
+
+5.ห้ามมิให้มีการโฆษณา ขาย ประชาสัมพันธ์ สินค้าและบริการที่ผู้ใช้เป็นเจ้าของ
+
+6.ห้ามใช้รูปภาพหรือข้อความที่ส่อไปในทางหยาบคาย ก้าวร้าว ลามก อนาจาร คุกคาม อุจาด รุนแรง
+
+7.ห้ามนำเสนอข้อความอันเป็นการวิพากษ์วิจารณ์หรือพาดพิงสถาบันพระมหากษัตริย์และราชวงศ์เป็นอันขาด
+
+8.ห้ามเสนอข้อความกล่าวโจมตี วิจารณ์ เสียดสี ด้านศาสนา หลักคำสอน ของทุกศาสนา อันอาจก่อให้เกิดความขัดแย้ง พิพาท ระหว่างองค์การ สถาบัน บุคคล และอื่นๆ
+
+9.ห้ามเสนอข้อความหรือเนื้อหาที่เป็นการแสดงออกในทางดูหมิ่น เหยียดหยาม หรือนำข้อมูลส่วนบุคคลมาเปิดเผย อันจะก่อให้เกิดความอับอาย เสื่อมเสียชื่อเสียง ของบุคคลอื่นที่จะก่อให้เกิดความรุนแรงและความขัดแย้งได้
+
+10.ห้ามเสนอข้อความหรือเนื้อหาที่ผิดกฎหมายหรือผิดศีลธรรม
+</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -1946,12 +1955,12 @@
         <image name="logo" width="768" height="248"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="K1T-4J-Dfj"/>
-        <segue reference="ATv-yh-iwI"/>
-        <segue reference="g0h-69-Pdz"/>
-        <segue reference="vkn-R5-Eqh"/>
-        <segue reference="EdX-Ef-rOC"/>
         <segue reference="EnZ-jt-CnO"/>
         <segue reference="Xau-Sn-SRF"/>
+        <segue reference="EdX-Ef-rOC"/>
+        <segue reference="K7P-Kb-tXj"/>
+        <segue reference="K1T-4J-Dfj"/>
+        <segue reference="GkO-V8-b6y"/>
+        <segue reference="vkn-R5-Eqh"/>
     </inferredMetricsTieBreakers>
 </document>

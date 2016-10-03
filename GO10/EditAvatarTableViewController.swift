@@ -40,6 +40,9 @@ class EditAvatarTableViewController: UITableViewController {
         if(modelName.rangeOfString("ipad Mini") != nil){
             avartarNameLbl.font = FontModel.ipadminiPainText
             editAvatarLbl.font = FontModel.ipadminiHotTopicNameAvatar
+        }else{
+            avartarNameLbl.font = FontModel.iphonepainText
+            editAvatarLbl.font = FontModel.iphoneHotTopicNameAvatar
         }
             print("xxxxxxxxxxxx \(recieveStatusLogin)")
         if(recieveStatusLogin == nil){

@@ -26,6 +26,8 @@ class RulesViewController: UIViewController {
         
         if(modelName.rangeOfString("ipad Mini") != nil){
             fontAtt = FontModel.ipadminiPainText
+        }else{
+            fontAtt = FontModel.iphonepainText
         }
         
         let attributes = [NSParagraphStyleAttributeName : linespace,NSFontAttributeName: fontAtt!]

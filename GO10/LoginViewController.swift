@@ -39,8 +39,13 @@ class LoginViewController: UIViewController {
             passwordLbl.font = FontModel.ipadminiPainText
             loginBtn.titleLabel?.font = FontModel.ipadminiPainText
             forgotPasswordBtn.titleLabel?.font = FontModel.ipadminiPainText
+        }else{
+            emailLbl.font = FontModel.iphonepainText
+            passwordLbl.font = FontModel.iphonepainText
+            loginBtn.titleLabel?.font = FontModel.iphonepainText
+            forgotPasswordBtn.titleLabel?.font = FontModel.iphonepainText
         }
-
+        
         // Do any additional setup after loading the view.
     }
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {

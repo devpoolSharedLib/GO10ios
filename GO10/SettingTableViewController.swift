@@ -27,7 +27,12 @@ class SettingTableViewController: UITableViewController {
             logoutLbl.font = FontModel.ipadminiPainText
             editAvatarLbl.font = FontModel.ipadminiPainText
             avatarNameLbl.font = FontModel.ipadminiPainText
+        }else{
+            logoutLbl.font = FontModel.iphonepainText
+            editAvatarLbl.font = FontModel.iphonepainText
+            avatarNameLbl.font = FontModel.iphonepainText
         }
+        
         let singleTap = UITapGestureRecognizer(target: self, action:#selector(SettingTableViewController.tapDetected))
         singleTap.numberOfTapsRequired = 1
         avatarImage.userInteractionEnabled = true

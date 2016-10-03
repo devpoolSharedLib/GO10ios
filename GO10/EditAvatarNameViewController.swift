@@ -29,6 +29,8 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
         modelName = UIDevice.currentDevice().modelName
         if(modelName.rangeOfString("ipad Mini") != nil){
             avatarNametxt.font = FontModel.ipadminiPainText
+        }else{
+            avatarNametxt.font = FontModel.iphonepainText
         }
     }
     

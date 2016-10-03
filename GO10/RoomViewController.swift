@@ -102,6 +102,11 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
 //            roomUserAvatarNameLbl.font = FontModel.ipadminiHotTopicNameAvatar
             countLikeLbl.font = FontModel.ipadminiHotTopicNameAvatar
             dateTime.font = FontModel.ipadminiDateTime
+        }else{
+            roomLbl.font = FontModel.iphoneTopicName
+            roomSubjectLbl.font = FontModel.iphonepainText
+            countLikeLbl.font = FontModel.iphoneHotTopicNameAvatar
+            dateTime.font = FontModel.iphoneDateTime
         }
         
         let bean = roomList[indexPath.row]
