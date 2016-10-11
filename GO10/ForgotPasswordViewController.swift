@@ -20,14 +20,14 @@ class ForgotPasswordViewController: UIViewController {
     
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
-    
+    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
 
     var resetPasswordByEmailUrl: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** ForgotPasswordVC ViewDidLoad ***")
-        self.resetPasswordByEmailUrl = "\(self.domainUrl)/GO10WebService/api/user/resetPasswordByEmail?email="
+        self.resetPasswordByEmailUrl = "\(self.domainUrl)\(self.pathUserService)/resetPasswordByEmail?email="
         self.sendEmailBtn.layer.cornerRadius = 5
         // Do any additional setup after loading the view.
     }

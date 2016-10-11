@@ -13,7 +13,7 @@ import CoreData
 class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDelegate {
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
-
+    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var updateUserUrl: String!
     
     var items = NSArray()
@@ -22,7 +22,7 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
     var recieveFromPage = "editTablePage"
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.updateUserUrl = "\(self.domainUrl)/GO10WebService/api/user/updateUser"
+        self.updateUserUrl = "\(self.domainUrl)\(self.pathUserService)/updateUser"
         print("*** SelectAvatarVC ViewDidLoad ***")
         self.title = "Select Avatar"
         
@@ -125,7 +125,7 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
             
             let _id = result[0].valueForKey("id_") as! String;
             let _rev = result[0].valueForKey("rev_") as! String;
-            let accountId = result[0].valueForKey("accountId") as! String;
+//            let accountId = result[0].valueForKey("accountId") as! String;
             let empName = result[0].valueForKey("empName") as! String;
             let empEmail = result[0].valueForKey("empEmail") as! String;
             let avatarName = result[0].valueForKey("avatarName") as! String;

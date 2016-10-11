@@ -20,6 +20,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
     var getHotToppicByIdUrl: String!
     var checkIsLikeUrl: String!
     var updateLikeUrl: String!
@@ -47,16 +48,16 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 
         print("*** BoardContentVC viewDidLoad ***")
         
-        self.getHotToppicByIdUrl = "\(self.domainUrl)/GO10WebService/api/topic/gettopicbyid?topicId="
-        self.checkIsLikeUrl = "\(self.domainUrl)/GO10WebService/api/topic/checkLikeTopic?"
-        self.updateLikeUrl = "\(self.domainUrl)/GO10WebService/api/topic/updateLike"
-        self.updateDisLikeUrl = "\(self.domainUrl)/GO10WebService/api/topic/updateDisLike"
-        self.newLikeUrl = "\(self.domainUrl)/GO10WebService/api/topic/newLike"
+        self.getHotToppicByIdUrl = "\(self.domainUrl)\(self.pathTopicService)/gettopicbyid?topicId="
+        self.checkIsLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/checkLikeTopic?"
+        self.updateLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/updateLike"
+        self.updateDisLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/updateDisLike"
+        self.newLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/newLike"
         
         modelName = UIDevice.currentDevice().modelName
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
         getValuefromCoreData()
-        getBoardContentWebService()
+//        getBoardContentWebService()
 
     }
 
@@ -390,7 +391,10 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let requestPost = NSMutableURLRequest(URL: urlWs!)
         
+//        let jsonObj = "{\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\(self.isLike),\"type\":\"like\",\"date\":\"\"}"
+        
         let jsonObj = "{\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\(self.isLike),\"type\":\"like\"}"
+        
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         
         
@@ -426,9 +430,11 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         
         
         //***** field "isLike" Swift ต้องใช้ "like" *******
-                let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\"}"
         
-//        let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"cefbd271feac412eb81c3d4893464dc0\",\"empEmail\":\"manitkan@gosoft.co.th\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\"}"
+        let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\"}"
+        
+      //          let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\",\"date\":\"\"}"
+
         
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         
@@ -464,7 +470,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         //***** field "isLike" Swift ต้องใช้ "like" *******
         let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\"}"
         
-        //        let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"cefbd271feac412eb81c3d4893464dc0\",\"empEmail\":\"manitkan@gosoft.co.th\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\"}"
+      //  let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\",\"date\":\"\"}"
         
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         

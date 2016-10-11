@@ -22,7 +22,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     @IBOutlet var newTopicView: UIView!
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
-    
+    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
     var postTopicUrl: String!
     var uploadServletUrl: String!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -40,7 +40,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** NewTopicVC ViewDidLoad ***")
-        self.postTopicUrl = "\(self.domainUrl)/GO10WebService/api/topic/post"
+        self.postTopicUrl = "\(self.domainUrl)\(self.pathTopicService)/post"
         self.uploadServletUrl = "\(self.domainUrl)/GO10WebService/UploadServlet"
         
         //set other button side back button
@@ -124,7 +124,9 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         let strContent = self.editor.contentHTML.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
         let strSubject = strSubjectReplaceLine.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
 
+//        let jsonObj = "{\"subject\":\"\(strSubject)\",\"content\":\"\(strContent)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"date\":\" \",\"type\":\"host\",\"roomId\":\"\(roomId)\",\"countLike\":0,\"updateDate\":\"\"}"
         let jsonObj = "{\"subject\":\"\(strSubject)\",\"content\":\"\(strContent)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"date\":\" \",\"type\":\"host\",\"roomId\":\"\(roomId)\",\"countLike\":0}"
+        
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         
         

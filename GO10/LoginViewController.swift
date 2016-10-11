@@ -13,6 +13,7 @@ import MRProgress
 class LoginViewController: UIViewController {
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
+    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     
     var getUserByUserPasswordUrl: String!
     
@@ -30,7 +31,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var forgotPasswordBtn: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.getUserByUserPasswordUrl = "\(self.domainUrl)/GO10WebService/api/user/getUserByUserPassword?"
+        self.getUserByUserPasswordUrl = "\(self.domainUrl)\(self.pathUserService)/getUserByUserPassword?"
         print("*** LoginVC ViewDidLoad ***")
         modelName = UIDevice.currentDevice().modelName
         self.loginBtn.layer.cornerRadius = 5

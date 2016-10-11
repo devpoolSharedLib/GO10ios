@@ -19,6 +19,8 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     @IBOutlet weak var collectionView: UICollectionView!
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
+    var pathRoomService = PropertyUtil.getPropertyFromPlist("data",key: "pathRoomService")
     var getHotToppicUrl:String!
     var getRoomUrl:String!
     var topicList = [NSDictionary]();
@@ -32,8 +34,8 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.getHotToppicUrl = "\(self.domainUrl)/GO10WebService/api/topic/gethottopiclist"
-        self.getRoomUrl = "\(self.domainUrl)/GO10WebService/api/room/get"
+        self.getHotToppicUrl = "\(self.domainUrl)\(self.pathTopicService)/gethottopiclist"
+        self.getRoomUrl = "\(self.domainUrl)\(self.pathRoomService)/get"
         
         modelName = UIDevice.currentDevice().modelName
         print("*** SelectRoomVC ViewDidAppear ***")

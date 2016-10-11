@@ -6,5 +6,11 @@
 	<string>http://go10.au-syd.mybluemix.net</string>
 	<key>urlDomainHttps</key>
 	<string>https://go10.au-syd.mybluemix.net</string>
+	<key>pathTopicService</key>
+	<string>/GO10WebService/api/newtopic</string>
+	<key>pathRoomService</key>
+	<string>/GO10WebService/api/room</string>
+	<key>pathUserService</key>
+	<string>/GO10WebService/api/user</string>
 </dict>
 </plist>

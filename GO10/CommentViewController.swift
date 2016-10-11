@@ -20,6 +20,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     @IBOutlet weak var commentTxtView: RichEditorView!
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
     var postCommentUrl: String!
     var uploadServletUrl: String!
   
@@ -39,7 +40,8 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** CommentVC ViewDidiLoad ***")
-        self.postCommentUrl = "\(self.domainUrl)/GO10WebService/api/topic/post"
+        
+        self.postCommentUrl = "\(self.domainUrl)\(self.pathTopicService)/post"
         self.uploadServletUrl = "\(self.domainUrl)/GO10WebService/UploadServlet"
         topicId = receiveComment.valueForKey("_id") as! String
         roomId = receiveComment.valueForKey("roomId") as! String
@@ -109,6 +111,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         let userNameAvatarReplaceLine = userNameAvatar.stringByReplacingOccurrencesOfString("\n", withString: "\\n").stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
         
         let jsonObj = "{\"topicId\":\"\(topicId)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"content\":\"\(strComment)\",\"date\":\" \",\"type\":\"comment\",\"roomId\":\"\(roomId)\"}"
+        
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         
         requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
