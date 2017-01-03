@@ -8,7 +8,7 @@
 
 import Foundation
 
-class RoomModel {
+class RoomModelUtil {
     static var room: NSDictionary = ["rm01" : UIImage(named: "general")!,
                                      "rm02" : UIImage(named: "tell")!,
                                      "rm03" : UIImage(named: "game")!,

@@ -3,13 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>urlDomainHttp</key>
-	<string>http://go10.au-syd.mybluemix.net</string>
+	<string>http://localhost:9080</string>
 	<key>urlDomainHttps</key>
-	<string>https://go10.au-syd.mybluemix.net</string>
+	<string>http://localhost:9080</string>
 	<key>pathTopicService</key>
 	<string>/GO10WebService/api/newtopic</string>
+	<key>pathTopicServiceV2</key>
+	<string>/GO10WebService/api/topicv2</string>
 	<key>pathRoomService</key>
 	<string>/GO10WebService/api/room</string>
+	<key>pathRoomServiceV1</key>
+	<string>/GO10WebService/api/roomv1</string>
 	<key>pathUserService</key>
 	<string>/GO10WebService/api/user</string>
 </dict>

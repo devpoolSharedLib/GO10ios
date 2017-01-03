@@ -8,6 +8,7 @@
 
 import UIKit
 import MRProgress
+import CoreData
 
 class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -16,6 +17,8 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var lblRoom: UILabel!
     @IBOutlet weak var imgView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
     
@@ -26,6 +29,10 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var roomName: String!
     var receiveRoomList: NSDictionary!
     var modelName: String!
+    var postUserCD: NSMutableDictionary = NSMutableDictionary()
+    var commentUserCD: NSMutableDictionary = NSMutableDictionary()
+    var postTopicBtn: UIBarButtonItem!
+    var empEmail: String!
     
         override func viewDidLoad() {
             super.viewDidLoad()
@@ -36,20 +43,31 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
             roomName = receiveRoomList.valueForKey("name") as! String
             lblRoom.text = roomName;
             
-            for item in RoomModel.room { // loop through data items
+            for item in  RoomModelUtil.room { // loop through data items
                 if(item.key as? String == roomId){
                     self.imgView.image = item.value as? UIImage
                 }
             }
+            
+            getValuefromRoomManageInfo()
+            getValuefromUserInfo()
+            
+            let postUserArray = self.postUserCD.valueForKey(roomId) as! Array<String>
+            if(RoomAdminUtil.checkAccess(postUserArray, empEmail: self.empEmail)){
+                print("Find Post User")
+            }else{
+                print("not Find Post User")
+                self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
+            }
+            
+            
+//            checkPostBtn(self.roomId)
         }
     
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("*** RoomVC viewDidAppear ***")
-        
-        
-        
         modelName = UIDevice.currentDevice().modelName
         print("\(NSDate().formattedISO8601) room id : \(roomId)")
         MRProgressOverlayView.showOverlayAddedTo(self.roomView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
@@ -111,7 +129,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         
         let bean = roomList[indexPath.row]
-        print("\(NSDate().formattedISO8601) bean : \(bean)")
+//        print("\(NSDate().formattedISO8601) bean : \(bean)")
         roomSubjectLbl.text = bean.valueForKey("subject") as? String
 //        roomUserAvatarNameLbl.text = bean.valueForKey("avatarName") as? String
         countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
@@ -150,4 +168,47 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBAction func unwindToRoomVC(segue: UIStoryboardSegue){
         print("\(NSDate().formattedISO8601) unwindToRoomVC")
     }
+    
+    func getValuefromRoomManageInfo(){
+        let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
+        do{
+            let fetchReq = NSFetchRequest(entityName: "Room_Manage_Info");
+            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
+            
+            self.postUserCD = result[0].valueForKey("postUser") as! NSMutableDictionary
+            self.commentUserCD = result[0].valueForKey("commentUser") as! NSMutableDictionary
+            print("Post User From Core Data : \(self.postUserCD)");
+            print("Comment User From Core Data : \(self.commentUserCD)");
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Reading Data");
+        }
+    }
+    
+    func getValuefromUserInfo(){
+        let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
+        do{
+            let fetchReq = NSFetchRequest(entityName: "User_Info");
+            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
+            
+            self.empEmail = result[0].valueForKey("empEmail") as! String
+            print("empEmail : \(self.empEmail)");
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Reading Data");
+        }
+    }
+    
+//    func checkPostBtn(roomId:String){
+//        let postUserArray = self.postUserCD.valueForKey(roomId) as! Array<String>
+//        if postUserArray.contains("all") {
+//            print("Find All Post User")
+//        }else if postUserArray.contains(self.empEmail) {
+//            print("Find Post User")
+//        }else{
+//            print("not Find Post User")
+////            postTopicBtn =  self.navigationItem.rightBarButtonItems![1]
+////            self.navigationItem.rightBarButtonItems?.removeAtIndex(0)
+//            self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
+//        }
+//    }
+
 }

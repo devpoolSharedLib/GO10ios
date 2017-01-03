@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3302D5381D9A1F8F00303AB7 /* RulesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3302D5371D9A1F8F00303AB7 /* RulesViewController.swift */; };
 		330361011D94D3E200047E28 /* ImageUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330361001D94D3E200047E28 /* ImageUtil.swift */; };
+		339281001DC5A3EA000AB40B /* RichEditorUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339280FF1DC5A3EA000AB40B /* RichEditorUtil.swift */; };
+		33DA60D91E177D9700D632E5 /* RoomAdminUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33DA60D81E177D9700D632E5 /* RoomAdminUtil.swift */; };
 		672E0443F37C63F692A58428 /* Pods_GO10.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92AECA92B167F8E0BCBC7ED7 /* Pods_GO10.framework */; };
 		6E10CD711CEC80DA000D7A02 /* EditAvatarTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E10CD701CEC80DA000D7A02 /* EditAvatarTableViewController.swift */; };
 		6E70CAA71CEC25B800D13FEC /* MenAvatarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70CAA61CEC25B800D13FEC /* MenAvatarViewController.swift */; };
@@ -27,7 +29,7 @@
 		A606EFEC1CE18B95000372FD /* GO10Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A606EFEB1CE18B95000372FD /* GO10Tests.swift */; };
 		A606EFF71CE18B95000372FD /* GO10UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A606EFF61CE18B95000372FD /* GO10UITests.swift */; };
 		A606F0051CE190F1000372FD /* SelectRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A606F0041CE190F1000372FD /* SelectRoomViewController.swift */; };
-		A64A368B1D7E6E0D00178769 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64A368A1D7E6E0C00178769 /* Room.swift */; };
+		A64A368B1D7E6E0D00178769 /* RoomUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64A368A1D7E6E0C00178769 /* RoomUtil.swift */; };
 		A66703221D927B9E00D7A3A1 /* PropertyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A66703211D927B9E00D7A3A1 /* PropertyUtil.swift */; };
 		A66703241D927F9400D7A3A1 /* data.plist in Resources */ = {isa = PBXBuildFile; fileRef = A66703231D927F9400D7A3A1 /* data.plist */; };
 		A6685FCA1CE1F6BB00DA39F9 /* RoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6685FC91CE1F6BB00DA39F9 /* RoomViewController.swift */; };
@@ -72,6 +74,8 @@
 		20F23A8DC1D76E411BDE018C /* Pods-GO10.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GO10.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GO10/Pods-GO10.debug.xcconfig"; sourceTree = "<group>"; };
 		3302D5371D9A1F8F00303AB7 /* RulesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesViewController.swift; sourceTree = "<group>"; };
 		330361001D94D3E200047E28 /* ImageUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageUtil.swift; sourceTree = "<group>"; };
+		339280FF1DC5A3EA000AB40B /* RichEditorUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RichEditorUtil.swift; sourceTree = "<group>"; };
+		33DA60D81E177D9700D632E5 /* RoomAdminUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomAdminUtil.swift; sourceTree = "<group>"; };
 		58EB9B7DBCEEC110A98D1179 /* Pods-GO10.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GO10.release.xcconfig"; path = "Pods/Target Support Files/Pods-GO10/Pods-GO10.release.xcconfig"; sourceTree = "<group>"; };
 		5BF67BB0ED42D64947FD85A0 /* Pods_GO10Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GO10Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E10CD701CEC80DA000D7A02 /* EditAvatarTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditAvatarTableViewController.swift; sourceTree = "<group>"; };
@@ -99,7 +103,7 @@
 		A606EFF61CE18B95000372FD /* GO10UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GO10UITests.swift; sourceTree = "<group>"; };
 		A606EFF81CE18B95000372FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A606F0041CE190F1000372FD /* SelectRoomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectRoomViewController.swift; sourceTree = "<group>"; };
-		A64A368A1D7E6E0C00178769 /* Room.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
+		A64A368A1D7E6E0C00178769 /* RoomUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomUtil.swift; sourceTree = "<group>"; };
 		A66703211D927B9E00D7A3A1 /* PropertyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyUtil.swift; sourceTree = "<group>"; };
 		A66703231D927F9400D7A3A1 /* data.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = data.plist; sourceTree = "<group>"; };
 		A6685FC91CE1F6BB00DA39F9 /* RoomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomViewController.swift; sourceTree = "<group>"; };
@@ -157,6 +161,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		339281011DC5A3F4000AB40B /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				330361001D94D3E200047E28 /* ImageUtil.swift */,
+				A66703211D927B9E00D7A3A1 /* PropertyUtil.swift */,
+				A64A368A1D7E6E0C00178769 /* RoomUtil.swift */,
+				339280FF1DC5A3EA000AB40B /* RichEditorUtil.swift */,
+				33DA60D81E177D9700D632E5 /* RoomAdminUtil.swift */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 		5483C813925D0C21980D5510 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -220,37 +236,35 @@
 		A606EFD51CE18B95000372FD /* GO10 */ = {
 			isa = PBXGroup;
 			children = (
-				6E70CAA51CEC259000D13FEC /* Avatar Views */,
 				A6D8FC911CE986E20089831D /* FBSDKCoreKit.framework */,
 				A6D8FC921CE986E20089831D /* FBSDKLoginKit.framework */,
 				A6D8FC931CE986E20089831D /* FBSDKShareKit.framework */,
-				A606EFD61CE18B95000372FD /* AppDelegate.swift */,
-				A6E01A161D0DD0DB00F693CC /* VerifyTokenViewController.swift */,
-				A606EFDD1CE18B95000372FD /* Assets.xcassets */,
-				6E9C9FC91CEB2C6700C68C77 /* Extensions.swift */,
-				A675E88D1CE2DD7E00430C6E /* BoardcontentViewController.swift */,
-				A6928B091CE33EBA00AF2D87 /* CommentViewController.swift */,
+				A66703231D927F9400D7A3A1 /* data.plist */,
 				A606EFE21CE18B95000372FD /* Info.plist */,
 				A6E01A121D0DA1EA00F693CC /* Main.storyboard */,
-				A606EFDF1CE18B95000372FD /* LaunchScreen.storyboard */,
+				A606EFD61CE18B95000372FD /* AppDelegate.swift */,
+				A675E88D1CE2DD7E00430C6E /* BoardcontentViewController.swift */,
+				A6928B091CE33EBA00AF2D87 /* CommentViewController.swift */,
+				6E7366E81CED7728005A52B0 /* EditAvatarNameViewController.swift */,
+				6E10CD701CEC80DA000D7A02 /* EditAvatarTableViewController.swift */,
+				6E9C9FC91CEB2C6700C68C77 /* Extensions.swift */,
+				A6CEF09A1D094F3400DA1382 /* FontModel.swift */,
+				A6E81F471D45D13F002E8A37 /* ForgotPasswordViewController.swift */,
 				A6D8FC881CE985830089831D /* LoginFBViewController.swift */,
+				A6E81F451D45BF38002E8A37 /* LoginViewController.swift */,
 				6E7366EA1CEDC872005A52B0 /* MainUINavigationController.swift */,
 				6E70CAAA1CEC73E400D13FEC /* NewTopicViewController.swift */,
-				A6685FC91CE1F6BB00DA39F9 /* RoomViewController.swift */,
-				A606F0041CE190F1000372FD /* SelectRoomViewController.swift */,
 				6E9C9FC51CEB262C00C68C77 /* PagerController.swift */,
-				6E9C9FC71CEB2B1B00C68C77 /* SelectAvatarViewController.swift */,
-				6E10CD701CEC80DA000D7A02 /* EditAvatarTableViewController.swift */,
-				6E7366E61CED6C0F005A52B0 /* SettingTableViewController.swift */,
-				6E7366E81CED7728005A52B0 /* EditAvatarNameViewController.swift */,
-				A6CEF09A1D094F3400DA1382 /* FontModel.swift */,
-				A6E81F451D45BF38002E8A37 /* LoginViewController.swift */,
-				A6E81F471D45D13F002E8A37 /* ForgotPasswordViewController.swift */,
-				A64A368A1D7E6E0C00178769 /* Room.swift */,
-				A66703211D927B9E00D7A3A1 /* PropertyUtil.swift */,
-				A66703231D927F9400D7A3A1 /* data.plist */,
-				330361001D94D3E200047E28 /* ImageUtil.swift */,
+				A6685FC91CE1F6BB00DA39F9 /* RoomViewController.swift */,
 				3302D5371D9A1F8F00303AB7 /* RulesViewController.swift */,
+				6E9C9FC71CEB2B1B00C68C77 /* SelectAvatarViewController.swift */,
+				A606F0041CE190F1000372FD /* SelectRoomViewController.swift */,
+				6E7366E61CED6C0F005A52B0 /* SettingTableViewController.swift */,
+				A6E01A161D0DD0DB00F693CC /* VerifyTokenViewController.swift */,
+				A606EFDD1CE18B95000372FD /* Assets.xcassets */,
+				6E70CAA51CEC259000D13FEC /* Avatar Views */,
+				A606EFDF1CE18B95000372FD /* LaunchScreen.storyboard */,
+				339281011DC5A3F4000AB40B /* Utils */,
 			);
 			path = GO10;
 			sourceTree = "<group>";
@@ -558,17 +572,19 @@
 				A675E88E1CE2DD7E00430C6E /* BoardcontentViewController.swift in Sources */,
 				A6D8FCD91CE9B8A90089831D /* GO10.xcdatamodeld in Sources */,
 				6E70CAA91CEC25C900D13FEC /* WomenAvatarViewController.swift in Sources */,
+				339281001DC5A3EA000AB40B /* RichEditorUtil.swift in Sources */,
 				6E70CAA71CEC25B800D13FEC /* MenAvatarViewController.swift in Sources */,
 				A606EFD71CE18B95000372FD /* AppDelegate.swift in Sources */,
 				A6E81F481D45D13F002E8A37 /* ForgotPasswordViewController.swift in Sources */,
 				A6E81F461D45BF38002E8A37 /* LoginViewController.swift in Sources */,
-				A64A368B1D7E6E0D00178769 /* Room.swift in Sources */,
+				A64A368B1D7E6E0D00178769 /* RoomUtil.swift in Sources */,
 				330361011D94D3E200047E28 /* ImageUtil.swift in Sources */,
 				A6E01A171D0DD0DB00F693CC /* VerifyTokenViewController.swift in Sources */,
 				A6685FCA1CE1F6BB00DA39F9 /* RoomViewController.swift in Sources */,
 				A66703221D927B9E00D7A3A1 /* PropertyUtil.swift in Sources */,
 				6E7366E71CED6C0F005A52B0 /* SettingTableViewController.swift in Sources */,
 				6E7366E91CED7728005A52B0 /* EditAvatarNameViewController.swift in Sources */,
+				33DA60D91E177D9700D632E5 /* RoomAdminUtil.swift in Sources */,
 				6E9C9FC81CEB2B1B00C68C77 /* SelectAvatarViewController.swift in Sources */,
 				6E70CAAB1CEC73E400D13FEC /* NewTopicViewController.swift in Sources */,
 				6E7366EB1CEDC872005A52B0 /* MainUINavigationController.swift in Sources */,

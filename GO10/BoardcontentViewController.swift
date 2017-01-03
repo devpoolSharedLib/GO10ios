@@ -15,17 +15,21 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     @IBOutlet weak var goCommentBtn: UIButton!
     
     @IBOutlet weak var boardTableview: UITableView!
+    @IBOutlet weak var commentBtnInCell: UIButton!
     
     @IBOutlet var boardContentView: UIView!
     
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
+    var pathTopicServiceV2 = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicServiceV2")
+    
     var getHotToppicByIdUrl: String!
     var checkIsLikeUrl: String!
     var updateLikeUrl: String!
     var updateDisLikeUrl: String!
     var newLikeUrl: String!
+    var readTopicUrl: String!
     var isLike: Bool!
     var countLikeLbl: UILabel!
     var likeBtn: UIButton!
@@ -41,6 +45,10 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var _rev: String!
     var statusLike: Bool!
     var checkPushButton = false
+    var postUserCD: NSMutableDictionary = NSMutableDictionary()
+    var commentUserCD: NSMutableDictionary = NSMutableDictionary()
+    var roomId: String!
+    var commentUserArray: Array<String>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,15 +56,31 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 
         print("*** BoardContentVC viewDidLoad ***")
         
-        self.getHotToppicByIdUrl = "\(self.domainUrl)\(self.pathTopicService)/gettopicbyid?topicId="
+        self.getHotToppicByIdUrl = "\(self.domainUrl)\(self.pathTopicServiceV2)/gettopicbyid?"
         self.checkIsLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/checkLikeTopic?"
         self.updateLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/updateLike"
         self.updateDisLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/updateDisLike"
         self.newLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/newLike"
-        
+        self.readTopicUrl = "\(self.domainUrl)\(self.pathTopicService)/newLike"
         modelName = UIDevice.currentDevice().modelName
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
-        getValuefromCoreData()
+        self.roomId = receiveBoardContentList.valueForKey("roomId") as! String
+        getValuefromUserInfo()
+        getValuefromRoomManageInfo()
+        
+        self.commentUserArray = self.commentUserCD.valueForKey(roomId) as! Array<String>
+        
+        if(RoomAdminUtil.checkAccess(self.commentUserArray, empEmail: self.empEmail)){
+            print("Find Comment User")
+        }else{
+            print("not Find Comment User")
+            self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
+        }
+
+        
+//        checkCommentBtn(self.roomId)
+        
+//        readTopic()
 //        getBoardContentWebService()
 
     }
@@ -78,7 +102,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         self.boardContentView.setNeedsLayout()
         self.boardContentView.layoutIfNeeded()
 
-        getValuefromCoreData()
+        getValuefromUserInfo()
+      
         getBoardContentWebService()
         
         checkPushButton = false
@@ -106,14 +131,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         
     }
     
-   
-    
-//    override func viewDidDisappear(animated: Bool) {
-//        super.viewDidDisappear(false)
-//        glFinish()
-//         print("\(NSDate().formattedISO8601) DIDDISAPPAER isLike = \(self.isLike )")
-//        
-//    }
     
     //refresh Table View
     func refreshTableView(){
@@ -124,7 +141,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         })
     }
     
-    func getValuefromCoreData(){
+    func getValuefromUserInfo(){
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");
@@ -137,18 +154,55 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         }
     }
   
+    func getValuefromRoomManageInfo(){
+        let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
+        do{
+            let fetchReq = NSFetchRequest(entityName: "Room_Manage_Info");
+            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
+            
+            self.postUserCD = result[0].valueForKey("postUser") as! NSMutableDictionary
+            self.commentUserCD = result[0].valueForKey("commentUser") as! NSMutableDictionary
+//            print("Post User From Core Data : \(self.postUserCD)");
+//            print("Comment User From Core Data : \(self.commentUserCD)");
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Reading Data");
+        }
+    }
+    
+//    func checkCommentBtn(roomId:String){
+//        let commentUserArray = self.commentUserCD.valueForKey(roomId) as! Array<String>
+//        if commentUserArray.contains("all") {
+//            print("Find All Comment User")
+//        }else if commentUserArray.contains(self.empEmail) {
+//            print("Find Comment User")
+//        }else{
+//            print("not Find Comment User")
+//            self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
+//        }
+//    }
+    
+//    func checkCommentBtnFromCell(roomId:String){
+//        let commentUserArray = self.commentUserCD.valueForKey(roomId) as! Array<String>
+//        if commentUserArray.contains("all") {
+//            print("Find All Comment User")
+//        }else if commentUserArray.contains(self.empEmail) {
+//            print("Find Comment User")
+//        }else{
+//            print("not Find Comment User")
+//            self.commentBtnInCell.enabled = false
+//        }
+//    }
     
     func getBoardContentWebService(){
         
         print("\(NSDate().formattedISO8601) getBoardContentWebService")
-        let urlWs = NSURL(string: self.getHotToppicByIdUrl + self.topicId)
+        let urlWs = NSURL(string: "\(self.getHotToppicByIdUrl)topicId=\(self.topicId)&empEmail=\(self.empEmail)")
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let request = NSMutableURLRequest(URL: urlWs!)
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         let urlsession = NSURLSession.sharedSession()
         let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
             do{
-                
                 self.BoardContentList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
                 self.checkIsLikeWebservice()
                 self.refreshTableView()
@@ -164,7 +218,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     func checkIsLikeWebservice(){
         print("\(NSDate().formattedISO8601) checkIsLikeWS")
         let urlcheckIsLikeWs = NSURL(string: "\(self.checkIsLikeUrl)topicId=\(self.topicId)&empEmail=\(self.empEmail)")
-        //        let urlcheckIsLikeWs = NSURL(string: "\(self.checkIsLikeUrl)topicId=cefbd271feac412eb81c3d4893464dc0&empEmail=manitkan@gosoft.co.th")
         print("\(NSDate().formattedISO8601) URL : \(urlcheckIsLikeWs)")
         let request = NSMutableURLRequest(URL: urlcheckIsLikeWs!)
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
@@ -172,7 +225,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
             do{
                 self.LikeModelList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
-                print("\(NSDate().formattedISO8601) LikeModel \(self.LikeModelList)")
+//                print("\(NSDate().formattedISO8601) LikeModel \(self.LikeModelList)")
                 
                   dispatch_async(dispatch_get_main_queue(), {
                     
@@ -196,17 +249,31 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                     }
                 }
                 })
-                
-                
-                
             }catch let error as NSError{
                 print("\(NSDate().formattedISO8601)  error : \(error.localizedDescription)")
             }
         }
         requestSent.resume()
-        
     }
 
+    func readTopic(){
+            print("\(NSDate().formattedISO8601) readTopicWs")
+            let urlreadTopicWs = NSURL(string: "\(self.readTopicUrl)topicId=\(self.topicId)&empEmail=\(self.empEmail)")
+        
+            print("\(NSDate().formattedISO8601) URL : \(urlreadTopicWs)")
+            let request = NSMutableURLRequest(URL: urlreadTopicWs!)
+            request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+            let urlsession = NSURLSession.sharedSession()
+            let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
+                do{
+                
+                }catch let error as NSError{
+                    print("\(NSDate().formattedISO8601)  error : \(error.localizedDescription)")
+                }
+            }
+            requestSent.resume()
+
+    }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return BoardContentList.count
@@ -227,6 +294,18 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             let hostTimeLbl = cell.viewWithTag(35) as! UILabel;
             self.countLikeLbl = cell.viewWithTag(40) as! UILabel;
             self.likeBtn = cell.viewWithTag(41) as! UIButton;
+            self.commentBtnInCell = cell.viewWithTag(42) as! UIButton;
+            
+            //disabled comment Button if Ineligible
+//            checkCommentBtnFromCell(self.roomId)
+            if(RoomAdminUtil.checkAccess(self.commentUserArray, empEmail: self.empEmail)){
+                print("Find Comment User")
+            }else{
+                print("not Find Comment User")
+                self.commentBtnInCell.enabled = false
+            }
+
+            
             
             
             if(modelName.rangeOfString("ipad Mini") != nil){
@@ -274,6 +353,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             }catch let error as NSError{
                 print("error : \(error.localizedDescription)")
             }
+            
+            print(">>>>> count read >>>> \(boardContentBean.valueForKey("countRead"))")
             
             let picAvatar = boardContentBean.valueForKey("avatarPic") as? String
             hostImg.image = UIImage(named: picAvatar!)
@@ -532,4 +613,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     @IBAction func unwindToBoardVC(segue: UIStoryboardSegue){
         print("\(NSDate().formattedISO8601) unwindToBoardVC")
     }
+    
+    
 }

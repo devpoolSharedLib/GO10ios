@@ -76,8 +76,9 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         let placeholderTextView = KMPlaceholderTextView(frame: subjectTxtView.bounds)
         view.addSubview(placeholderTextView)
         
+        /*
         //set toolbar
-        toolbar = RichEditorToolbar(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44))
+//        toolbar = RichEditorToolbar(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44))
         
         //custom toolbar
         toolbar.options = [RichEditorOptions.Undo,
@@ -91,20 +92,36 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
 //                           RichEditorOptions.Indent,
 //                           RichEditorOptions.Outdent
                             ]
+ 
+        
+        
+         //set toolbar by RichEditorViewUtil
+         toolbar = RichEditor.setToolbar(self.view,width: self.view.bounds.width,height: 44)
+
+        //set toolbar to editor
+        toolbar.delegate = self
+        toolbar.editor = self.editor
+       
+        editor.delegate = self
+        editor.inputAccessoryView = toolbar
+        
+        //setPlaceholderText
+        editor.setPlaceholderText(" Write something ...")
+        
+  
+         */
+        
+        //set toolbar by RichEditorViewUtil
+        toolbar = RichEditorUtil.setToolbar(self.view.bounds.width,height: 44,editor: self.editor)
         //set toolbar to editor
         toolbar.delegate = self
         toolbar.editor = self.editor
         
         editor.delegate = self
         editor.inputAccessoryView = toolbar
+
+
         
-        
-//        let placeholderTextView2 = KMPlaceholderTextView(frame: contextTxtView.bounds)
-//        placeholderTextView2.placeholder = "teasdasdadsst"
-//        view.addSubview(placeholderTextView2)
-        
-        //setPlaceholderText
-        editor.setPlaceholderText(" Write something ...")
     }
 
     
@@ -117,14 +134,13 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         // Replace Line in Subject
         let strSubjectReplaceLine = subjectTxtView.text.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
         
-       // let strContentReplaceLine = contentTxtView.text.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
+        // let strContentReplaceLine = contentTxtView.text.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
         let userNameAvatarReplaceLine = userNameAvatar.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
         
         //Replace " with \"
         let strContent = self.editor.contentHTML.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
         let strSubject = strSubjectReplaceLine.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
 
-//        let jsonObj = "{\"subject\":\"\(strSubject)\",\"content\":\"\(strContent)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"date\":\" \",\"type\":\"host\",\"roomId\":\"\(roomId)\",\"countLike\":0,\"updateDate\":\"\"}"
         let jsonObj = "{\"subject\":\"\(strSubject)\",\"content\":\"\(strContent)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"date\":\" \",\"type\":\"host\",\"roomId\":\"\(roomId)\",\"countLike\":0}"
         
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
@@ -388,6 +404,7 @@ extension NewTopicViewController: RichEditorToolbarDelegate {
 //    }
     
     func richEditorToolbarInsertImage(toolbar: RichEditorToolbar) {
+        print("asjkhdfklasdhjdfjkhfjkasbhgjkhsgjkhgjklshjl")
         ImagePicker.delegate = self
         ImagePicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
         ImagePicker.allowsEditing = true

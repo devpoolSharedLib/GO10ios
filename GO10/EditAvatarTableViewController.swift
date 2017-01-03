@@ -42,7 +42,7 @@ class EditAvatarTableViewController: UITableViewController {
             avartarNameLbl.font = FontModel.iphonepainText
             editAvatarLbl.font = FontModel.iphoneHotTopicNameAvatar
         }
-            print("xxxxxxxxxxxx \(recieveStatusLogin)")
+
         if(recieveStatusLogin == nil){
             recieveStatusLogin = "not First Login"
         }
@@ -102,7 +102,7 @@ class EditAvatarTableViewController: UITableViewController {
             let userPicAvatar = result[0].valueForKey("avatarPic") as! String;
             let userNameAvatar = result[0].valueForKey("avatarName") as! String;
 //            let activate = result[0].valueForKey("activate") as! Bool;
-            print("\(NSDate().formattedISO8601) result :\(result)")
+            print("\(NSDate().formattedISO8601) Data_Info :\(result)")
 //            if(!activate){
 //                 print("from verfify page")
 //                self.navigationItem.setHidesBackButton(true, animated:true);

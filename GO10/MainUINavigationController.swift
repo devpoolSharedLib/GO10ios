@@ -12,7 +12,6 @@ import CoreData
 class MainUINavigationController: UINavigationController {
     
     
-    
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")

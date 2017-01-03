@@ -71,7 +71,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
             print("\(NSDate().formattedISO8601) Error: Reading Data");
             
         }
-        
+        /*
         //set toolbar
         toolbar = RichEditorToolbar(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44))
         
@@ -87,6 +87,15 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
 //                           RichEditorOptions.Indent,
 //                           RichEditorOptions.Outdent
                           ]
+        
+        //set toolbar by RichEditorViewUtil
+//        toolbar = RichEditor.setToolbar(self.view,width: self.view.bounds.width,height: 44)
+        
+         
+        
+        //set toolbar by RichEditorViewUtil
+//        toolbar = RichEditor.setToolbar(self.view,width: self.view.bounds.width,height: 44)
+        
         //set toolbar to editor
         toolbar.delegate = self
         toolbar.editor = self.editor
@@ -96,6 +105,16 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         //setPlaceholderText
         editor.setPlaceholderText("Write something ...")
+        */
+        
+        //set toolbar by RichEditorViewUtil
+        toolbar = RichEditorUtil.setToolbar(self.view.bounds.width,height: 44,editor: self.editor)
+        //set toolbar to editor
+        toolbar.delegate = self
+        toolbar.editor = self.editor
+        
+        editor.delegate = self
+        editor.inputAccessoryView = toolbar
         
     }
     
@@ -230,11 +249,6 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
                         // Show Image
                         print("\(NSDate().formattedISO8601) Show Image")
                         
-//                        let resultLength = ImageUtil.setSizeToSrc(objImage)
-
-//                        print("XXXX WIDTH : \(resultLength.valueForKey("width"))")
-//                        print("XXXX HEIGHT : \(resultLength.valueForKey("height"))")
-
                         var width = objImage.size.width
                         var height = objImage.size.height
                         let ratio = round(width/height*100)/100
@@ -331,7 +345,7 @@ extension CommentViewController: RichEditorDelegate {
     
     func richEditor(editor: RichEditorView, shouldInteractWithURL url: NSURL) -> Bool { return true }
     
-    func richEditor(editor: RichEditorView, handleCustomAction content: String) { }
+    func richEditor(editor: RichEditorView, handleCusßtomAction content: String) { }
     
 }
 
