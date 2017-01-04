@@ -17,8 +17,8 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     @IBOutlet weak var roomLbl: UILabel!
     @IBOutlet weak var hotTopicLbl: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
 //    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
 //    var pathRoomService = PropertyUtil.getPropertyFromPlist("data",key: "pathRoomService")
@@ -37,18 +37,18 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true
     }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         getValuefromUserInfo()
         self.getHotToppicUrl = "\(self.domainUrl)\(self.pathTopicServiceV2)/gethottopiclist?empEmail=\(self.empEmail)"
         self.getRoomUrl = "\(self.domainUrl)\(self.pathRoomServiceV1)/get?empEmail=\(self.empEmail)"
-        
         modelName = UIDevice.currentDevice().modelName
         print("*** SelectRoomVC ViewDidAppear ***")
         MRProgressOverlayView.showOverlayAddedTo(self.selectroomView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
+        
         getTopicWebService()
         getRoomsWebService()
-        
     }
     
     func refreshTableView() {
@@ -71,7 +71,6 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         let request = NSMutableURLRequest(URL: urlWs!)
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         let urlsession = NSURLSession.sharedSession()
-        
         let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
             do{
                 self.topicList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
@@ -90,22 +89,17 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let request = NSMutableURLRequest(URL: urlWs!)
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
-        
         let urlsession = NSURLSession.sharedSession()
         let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
             do{
                 self.roomList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
                 print("xxxxxxxxxxxxxxxxx")
                 for index in 0...self.roomList.count-1{
-//                    print(self.roomList[index].valueForKey("postUser") as! Array<String>)
-//                    print(self.roomList[index].valueForKey("commentUser") as! Array<String>)
                     self.postUser.setValue(self.roomList[index].valueForKey("postUser") as! Array<String>, forKey: self.roomList[index].valueForKey("_id") as! String)
                     self.commentUser.setValue(self.roomList[index].valueForKey("commentUser") as! Array<String>, forKey: self.roomList[index].valueForKey("_id") as! String)
                 }
-
                 self.addObjToCoreData(self.postUser, key: "postUser")
                 self.addObjToCoreData(self.commentUser, key: "commentUser")
-//                self.readUserCoreData()
                 print("\(NSDate().formattedISO8601) Rooms Size \(self.roomList.count)")
                 self.refreshCollectionView()
             }catch let error as NSError{
@@ -115,12 +109,10 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         requestSent.resume()
     }
     
-    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return topicList.count
     }
 
-   
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("topicCell", forIndexPath: indexPath)
         let topicImg = cell.viewWithTag(11) as! UIImageView;
@@ -131,27 +123,22 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         let bean = topicList[indexPath.row]
 //        print("\(NSDate().formattedISO8601) bean : \(bean)")
         
-        
         if(modelName.rangeOfString("ipad Mini") != nil){
-            hotTopicLbl.font = FontModel.ipadminiTopicName
-            topicSubjectLbl.font = FontModel.ipadminiPainText
-//            topicUserAvatarNameLbl.font = FontModel.ipadminiHotTopicNameAvatar
-            countLikeLbl.font = FontModel.ipadminiHotTopicNameAvatar
-            dateTime.font = FontModel.ipadminiDateTime
+            hotTopicLbl.font = FontUtil.ipadminiTopicName
+            topicSubjectLbl.font = FontUtil.ipadminiPainText
+//            topicUserAvatarNameLbl.font = FontUtil.ipadminiHotTopicNameAvatar
+            countLikeLbl.font = FontUtil.ipadminiHotTopicNameAvatar
+            dateTime.font = FontUtil.ipadminiDateTime
         }else{
-            topicSubjectLbl.font = FontModel.iphoneTopicName
-            topicSubjectLbl.font = FontModel.iphonepainText
-            countLikeLbl.font = FontModel.iphoneHotTopicNameAvatar
-            dateTime.font = FontModel.iphoneDateTime
-
+            topicSubjectLbl.font = FontUtil.iphoneTopicName
+            topicSubjectLbl.font = FontUtil.iphonepainText
+            countLikeLbl.font = FontUtil.iphoneHotTopicNameAvatar
+            dateTime.font = FontUtil.iphoneDateTime
         }
-        
         topicSubjectLbl.text =  bean.valueForKey("subject") as? String
 //        topicUserAvatarNameLbl.text =  bean.valueForKey("avatarName") as? String
         countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
-        
         let roomID = bean.valueForKey("roomId") as! String
-        
         for item in RoomModelUtil.room { // loop through data items
             if(item.key as? String == roomID){
             topicImg.image = item.value as? UIImage
@@ -161,30 +148,24 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         return cell
     }
     
-    
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return roomList.count
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let collection = collectionView.dequeueReusableCellWithReuseIdentifier("roomCollectCell", forIndexPath: indexPath)
-        
         let roomImg = collection.viewWithTag(14) as! UIImageView
         let roomTitle = collection.viewWithTag(15) as! UILabel
-        
         let beanRoom = roomList[indexPath.row]
 //        print("\(NSDate().formattedISO8601) beanRoom : \(beanRoom)")
         if(modelName.rangeOfString("ipad Mini") != nil){
-            roomLbl.font = FontModel.ipadminiTopicName
-            roomTitle.font = FontModel.ipadminiPainText
+            roomLbl.font = FontUtil.ipadminiTopicName
+            roomTitle.font = FontUtil.ipadminiPainText
         }else{
-            roomLbl.font = FontModel.iphoneTopicName
-            roomTitle.font = FontModel.iphonepainText
-
+            roomLbl.font = FontUtil.iphoneTopicName
+            roomTitle.font = FontUtil.iphonepainText
         }
-        
         let roomID = beanRoom.valueForKey("_id") as? String
-        
         for item in RoomModelUtil.room { // loop through data items
             if(item.key as? String == roomID){
                 roomImg.image = item.value as? UIImage
@@ -194,8 +175,8 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         return collection
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {        self.performSegueWithIdentifier("openBoardContent", sender: topicList[indexPath.row])
-        
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
+        self.performSegueWithIdentifier("openBoardContent", sender: topicList[indexPath.row])
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {        self.performSegueWithIdentifier("openRoom", sender:roomList[indexPath.row])
@@ -209,7 +190,6 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
             let destVC = segue.destinationViewController as! BoardcontentViewController
             destVC.receiveBoardContentList = sender as! NSDictionary
         }
-        
     }
     
     func addObjToCoreData(val:AnyObject,key:String){

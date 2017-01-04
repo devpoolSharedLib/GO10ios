@@ -1118,6 +1118,16 @@
                                                         <action selector="likeButton:" destination="ZJu-wa-f5d" eventType="touchUpInside" id="BqI-3w-lW9"/>
                                                     </connections>
                                                 </button>
+                                                <button opaque="NO" tag="44" contentMode="scaleAspectFit" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0oq-1M-rrh" userLabel="LIKE (dis comment)">
+                                                    <rect key="frame" x="8" y="201" width="375" height="31"/>
+                                                    <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="0.49525862069999999" colorSpace="calibratedRGB"/>
+                                                    <state key="normal" title="LIKE">
+                                                        <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="likeButton:" destination="ZJu-wa-f5d" eventType="touchUpInside" id="Ieb-JY-L22"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="ugM-7i-ak7" firstAttribute="leading" secondItem="Nyh-eC-l0w" secondAttribute="trailing" id="0Bg-l6-iMC"/>
@@ -1139,6 +1149,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="scR-FJ-xfh" secondAttribute="trailing" constant="13" id="R33-1i-8n5"/>
                                                 <constraint firstItem="JAP-Mc-569" firstAttribute="leading" secondItem="dFV-3M-F7M" secondAttribute="leadingMargin" constant="15" id="V7u-vY-iIm"/>
                                                 <constraint firstItem="Nyh-eC-l0w" firstAttribute="top" secondItem="uO8-jL-QZz" secondAttribute="bottom" constant="11" id="Wfw-2e-RS0"/>
+                                                <constraint firstItem="0oq-1M-rrh" firstAttribute="leading" secondItem="dFV-3M-F7M" secondAttribute="leadingMargin" id="Wxw-Mg-WMV"/>
                                                 <constraint firstItem="ugM-7i-ak7" firstAttribute="leading" secondItem="Nyh-eC-l0w" secondAttribute="trailing" id="YOZ-ec-xeW"/>
                                                 <constraint firstItem="M9W-3W-9qq" firstAttribute="top" secondItem="Nyh-eC-l0w" secondAttribute="bottom" id="YcW-8V-RiG"/>
                                                 <constraint firstItem="kDP-67-OoR" firstAttribute="trailing" secondItem="dFV-3M-F7M" secondAttribute="trailingMargin" id="Ycq-wt-pxx"/>
@@ -1152,7 +1163,10 @@
                                                 <constraint firstItem="JAP-Mc-569" firstAttribute="top" secondItem="scR-FJ-xfh" secondAttribute="bottom" constant="10.5" id="fVe-g1-kCv"/>
                                                 <constraint firstAttribute="topMargin" secondItem="pfQ-HJ-ccF" secondAttribute="top" id="ghi-co-hpU"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="JAP-Mc-569" secondAttribute="trailing" constant="13" id="gsn-Hg-yeG"/>
+                                                <constraint firstItem="0oq-1M-rrh" firstAttribute="trailing" secondItem="dFV-3M-F7M" secondAttribute="trailingMargin" id="iEE-6b-XKp"/>
+                                                <constraint firstItem="0oq-1M-rrh" firstAttribute="top" secondItem="s9r-9k-rn3" secondAttribute="bottom" constant="7" id="iL3-YZ-8JU"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="ugM-7i-ak7" secondAttribute="trailing" constant="1.5" id="jkl-wf-Hj4"/>
+                                                <constraint firstItem="M9W-3W-9qq" firstAttribute="top" secondItem="0oq-1M-rrh" secondAttribute="bottom" constant="1" id="lxH-tc-feB"/>
                                                 <constraint firstItem="M9W-3W-9qq" firstAttribute="centerX" secondItem="dFV-3M-F7M" secondAttribute="centerX" id="mmi-No-oq6"/>
                                                 <constraint firstItem="M9W-3W-9qq" firstAttribute="leading" secondItem="dFV-3M-F7M" secondAttribute="leadingMargin" id="nSs-Ho-l7g"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="JQy-6j-MjQ" secondAttribute="trailing" constant="13" id="ng7-oQ-gRL"/>
@@ -1193,13 +1207,6 @@
                                             <rect key="frame" x="0.0" y="0.0" width="391" height="118"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" tag="37" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZvL-QJ-Uct">
-                                                    <rect key="frame" x="17" y="10" width="40" height="50"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="40" id="SbK-lw-A4p"/>
-                                                        <constraint firstAttribute="height" constant="50" id="y7B-46-soO"/>
-                                                    </constraints>
-                                                </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="36" contentMode="left" horizontalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pDN-Rg-JfL" customClass="ActiveLabel" customModule="ActiveLabel">
                                                     <rect key="frame" x="61" y="72" width="311" height="21"/>
                                                     <attributedString key="attributedText">
@@ -1237,6 +1244,13 @@
                                                     <color key="textColor" red="0.40000000600000002" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" tag="37" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZvL-QJ-Uct">
+                                                    <rect key="frame" x="13" y="8" width="40" height="50"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="40" id="SbK-lw-A4p"/>
+                                                        <constraint firstAttribute="height" constant="50" id="y7B-46-soO"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="bottomMargin" secondItem="Er5-fM-i6a" secondAttribute="bottom" constant="-8" id="2j2-0l-47v"/>

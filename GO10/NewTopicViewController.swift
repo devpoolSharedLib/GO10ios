@@ -18,7 +18,6 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     @IBOutlet weak var editor: RichEditorView!
     @IBOutlet weak var subjectTxtView: UITextView!
     @IBOutlet weak var contextTxtView: RichEditorView!
-    
     @IBOutlet var newTopicView: UIView!
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
@@ -46,19 +45,21 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         //set other button side back button
         self.navigationItem.leftItemsSupplementBackButton = true
 
-        
-        roomId = receiveNewTopic.valueForKey("_id") as! String
+        self.roomId = receiveNewTopic.valueForKey("_id") as! String
         print("\(NSDate().formattedISO8601) room id : \(roomId)")
+        
         // Do any additional setup after loading the view.
         subjectTxtView.layer.cornerRadius = 5
         contextTxtView.layer.cornerRadius = 5
         editor.layer.cornerRadius = 5
+        
+        // Set font to each model
         modelName = UIDevice.currentDevice().modelName
         if(modelName.rangeOfString("ipad Mini") != nil){
-            subjectTxtView.font = FontModel.ipadminiPainText
+            subjectTxtView.font = FontUtil.ipadminiPainText
             contextTxtView.setFontSize(17)
         }else{
-            subjectTxtView.font = FontModel.iphonepainText
+            subjectTxtView.font = FontUtil.iphonepainText
             
         }
         
@@ -66,9 +67,9 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            userNameAvatar = result[0].valueForKey("avatarName") as! String;
-            userPicAvatar = result[0].valueForKey("avatarPic") as! String;
-            empEmail = result[0].valueForKey("empEmail") as! String;
+            self.userNameAvatar = result[0].valueForKey("avatarName") as! String;
+            self.userPicAvatar = result[0].valueForKey("avatarPic") as! String;
+            self.empEmail = result[0].valueForKey("empEmail") as! String;
         }catch{
             print("\(NSDate().formattedISO8601) Error Reading Data");
         }
@@ -92,8 +93,6 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
 //                           RichEditorOptions.Indent,
 //                           RichEditorOptions.Outdent
                             ]
- 
-        
         
          //set toolbar by RichEditorViewUtil
          toolbar = RichEditor.setToolbar(self.view,width: self.view.bounds.width,height: 44)
@@ -107,8 +106,6 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         
         //setPlaceholderText
         editor.setPlaceholderText(" Write something ...")
-        
-  
          */
         
         //set toolbar by RichEditorViewUtil
@@ -119,12 +116,8 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         
         editor.delegate = self
         editor.inputAccessoryView = toolbar
-
-
-        
     }
 
-    
     func postTopicWebservice(){
         print("\(NSDate().formattedISO8601) postTopicWebService")
         let urlWs = NSURL(string: self.postTopicUrl)
@@ -144,7 +137,6 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         let jsonObj = "{\"subject\":\"\(strSubject)\",\"content\":\"\(strContent)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"date\":\" \",\"type\":\"host\",\"roomId\":\"\(roomId)\",\"countLike\":0}"
         
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
-        
         
         requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
         requestPost.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -167,12 +159,6 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
             print("\(NSDate().formattedISO8601) responseString = \(responseString!)")
             dispatch_async(dispatch_get_main_queue(), {
                 self.performSegueWithIdentifier("unwindToRoomVCID", sender:nil)
-//                let topicId:NSDictionary = ["_id":responseString!]
-//                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//                let boardVC =  storyboard.instantiateViewControllerWithIdentifier("boardContentVCID") as! BoardcontentViewController
-//                boardVC.receiveBoardContentList = topicId
-//                 self.presentViewController(boardVC, animated: true, completion: nil)
-                
             })
         }
         request.resume()
@@ -181,20 +167,16 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        
         //browse image from gallery
         var browseImg =  info[UIImagePickerControllerOriginalImage] as? UIImage
         browseImg = ImageUtil.resizeImage(browseImg!, modelName: modelName)
-        
-        uploadImage(browseImg!)
+        self.uploadImage(browseImg!)
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
 
     
     func uploadImage(objImage: UIImage) {
         print("\(NSDate().formattedISO8601) width : \(objImage.size.width) height :\(objImage.size.height)")
-        
-//        let imageData = UIImagePNGRepresentation(objImage)
         let imageData = UIImageJPEGRepresentation(objImage, 0.8)
         if(imageData == nil)
         {
@@ -220,20 +202,15 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData("Content-Disposition:form-data; name=\"test\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData("hi\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-        
         body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData("Content-Disposition:form-data; name=\"file\"; filename=\"\(fileName)\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData("Content-Type: \(mimeType)\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData(imageData!)
         body.appendData("\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-        
         request.HTTPBody = body
-    
         let session = NSURLSession.sharedSession()
-        
         let MRProgressAF = MRProgressOverlayView.showOverlayAddedTo(self.newTopicView, animated: true)
-        
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             if error == nil {
                 do{
@@ -244,18 +221,10 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
                     dispatch_async(dispatch_get_main_queue(), {
                         // Show Image
                         print("\(NSDate().formattedISO8601) Show Image")
-                        //                        let resultLength = ImageUtil.setSizeToSrc(objImage)
-                        
-                        //                        print("XXXX WIDTH : \(resultLength.valueForKey("width"))")
-                        //                        print("XXXX HEIGHT : \(resultLength.valueForKey("height"))")
-                        
                         var width = objImage.size.width
                         var height = objImage.size.height
                         let ratio = round(width/height*100)/100
-                        
                         print(">>>>>>> RATIO : \(ratio)")
-                        
-                        
                         if(ratio > 1) {
                             if(ratio == 1.33) {
                                 print("4:3 landscape")
@@ -275,13 +244,10 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
                                 print("3:4 portrait")
                                 width = 230
                                 height = 307
-                                print("aoisdfoadfsksakjdfbkajdfsbaljks")
-                                
                             } else if(ratio == 0.56) {
                                 print("9:16 portrait")
                                 width = 230
                                 height = 410
-                                
                             } else {
                                 print("Other Resulotion protrait")
                                 width = 230
@@ -292,16 +258,12 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
                             width = 295
                             height = 295
                         }
-
-                        
                         self.toolbar.editor?.insertImage(responseUrl,width: width,height: height,alt: "insertImageUrl")
                         MRProgressOverlayView.dismissOverlayForView(self.newTopicView, animated: true)
                     })
-                    
                 }catch let error as NSError{
                     print("\(NSDate().formattedISO8601) JSON Error: \(error.localizedDescription)");
                 }
-                
             }else{
                 print("\(NSDate().formattedISO8601) Error: \(error)")
             }
@@ -315,10 +277,8 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
             let alert = UIAlertController(title: "Alert", message:"Please enter your subject and comment message.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
-            
         }else{
             postTopicWebservice()
-//            self.performSegueWithIdentifier("unwindToRoomVCID", sender:nil)
         }
     }
     
@@ -339,9 +299,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         }else{
             return false
         }
-        
     }
-
 }
 
 

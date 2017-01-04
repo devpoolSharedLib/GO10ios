@@ -17,11 +17,8 @@ class ForgotPasswordViewController: UIViewController {
     @IBOutlet weak var emailLbl: UILabel!
     @IBOutlet weak var emailTxtField: UITextField!
     @IBOutlet weak var sendEmailBtn: UIButton!
-    
-    
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
     var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
-
     var resetPasswordByEmailUrl: String!
 
     override func viewDidLoad() {
@@ -29,15 +26,11 @@ class ForgotPasswordViewController: UIViewController {
         print("*** ForgotPasswordVC ViewDidLoad ***")
         self.resetPasswordByEmailUrl = "\(self.domainUrl)\(self.pathUserService)/resetPasswordByEmail?email="
         self.sendEmailBtn.layer.cornerRadius = 5
-        // Do any additional setup after loading the view.
     }
-
 
     @IBAction func sendEmail(sender: AnyObject) {
         let email = self.emailTxtField.text
-        
         print("E-MAIL : \(email)")
-        
         if((email == "") || checkSpace(email!)) {
             NSOperationQueue.mainQueue().addOperationWithBlock {
                 let alert = UIAlertController(title: "Alert", message: "Please enter your E-mail.", preferredStyle: UIAlertControllerStyle.Alert)
@@ -46,36 +39,26 @@ class ForgotPasswordViewController: UIViewController {
             }
         }else{
             MRProgressOverlayView.showOverlayAddedTo(self.forgotView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
-            resetPassword(email!)
-            
+            self.resetPassword(email!)
         }
-        
-        
     }
     
     func resetPassword(email: String){
         print("\(NSDate().formattedISO8601) getResetPasswordWebservice")
-        
         let url = resetPasswordByEmailUrl + email
-        let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(
-            NSCharacterSet.URLFragmentAllowedCharacterSet())
-        
+        let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet())
         let urlWs = NSURL(string: strUrlEncode!)
-        print("\(NSDate().formattedISO8601) URL -->  : \(urlWs)")
-        
-        
+        print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+
         let req = NSMutableURLRequest(URL: urlWs!)
         req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        
         let request = NSURLSession.sharedSession().dataTaskWithRequest(req) { (data, response, error) in
             do{
-                
                 let dataString = String(data: data!, encoding: NSUTF8StringEncoding)
                 print("\(NSDate().formattedISO8601) response : \(dataString)")
                 print("----------- \(response)")
                 let httpURLResponse = response as? NSHTTPURLResponse
                 print("----------- \(httpURLResponse!.statusCode)")
-                
                 if(dataString == "User does not exist on the system."){
                     NSOperationQueue.mainQueue().addOperationWithBlock {
                         let alert = UIAlertController(title: "Alert", message: "User does not exist on the system.", preferredStyle: UIAlertControllerStyle.Alert)
@@ -84,7 +67,6 @@ class ForgotPasswordViewController: UIViewController {
                         MRProgressOverlayView.dismissOverlayForView(self.forgotView, animated: true)
                     }
                 }else{
-                    
                     NSOperationQueue.mainQueue().addOperationWithBlock {
                         MRProgressOverlayView.dismissOverlayForView(self.forgotView, animated: true)
                         let alert = UIAlertController(title: "Alert", message: "You can check e-mail for reset password.", preferredStyle: UIAlertControllerStyle.Alert)
@@ -101,13 +83,13 @@ class ForgotPasswordViewController: UIViewController {
             }
         }
         request.resume()
-
     }
 
     func gotoLoginPage(){
         print("gotoLoginPage")
             self.performSegueWithIdentifier("gotoLoginPage", sender: nil)
     }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

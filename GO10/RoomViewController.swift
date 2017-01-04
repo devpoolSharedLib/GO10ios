@@ -17,13 +17,11 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var lblRoom: UILabel!
     @IBOutlet weak var imgView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
-    
     var getRoomByIdUrl: String!
-    
     var roomList = [NSDictionary]();
     var roomId: String!
     var roomName: String!
@@ -37,18 +35,17 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         override func viewDidLoad() {
             super.viewDidLoad()
             print("*** RoomVC viewDidLoad ***")
-            
             self.getRoomByIdUrl = "\(self.domainUrl)\(self.pathTopicService)/gettopiclistbyroom?roomId="
             roomId = receiveRoomList.valueForKey("_id") as! String
             roomName = receiveRoomList.valueForKey("name") as! String
             lblRoom.text = roomName;
-            
             for item in  RoomModelUtil.room { // loop through data items
                 if(item.key as? String == roomId){
                     self.imgView.image = item.value as? UIImage
                 }
             }
             
+            //get Value From Core Data
             getValuefromRoomManageInfo()
             getValuefromUserInfo()
             
@@ -59,9 +56,6 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 print("not Find Post User")
                 self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
             }
-            
-            
-//            checkPostBtn(self.roomId)
         }
     
     
@@ -73,7 +67,6 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         MRProgressOverlayView.showOverlayAddedTo(self.roomView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         getRoomByIdWebService(roomId)
     }
-
     
     func getRoomByIdWebService(roomId: String) {
         print("\(NSDate().formattedISO8601) getRoomByIdWebService")
@@ -116,16 +109,16 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let dateTime = cell.viewWithTag(24) as! UILabel;
         if(modelName.rangeOfString("ipad Mini") != nil){
             
-            roomLbl.font = FontModel.ipadminiTopicName
-            roomSubjectLbl.font = FontModel.ipadminiPainText
-//            roomUserAvatarNameLbl.font = FontModel.ipadminiHotTopicNameAvatar
-            countLikeLbl.font = FontModel.ipadminiHotTopicNameAvatar
-            dateTime.font = FontModel.ipadminiDateTime
+            roomLbl.font = FontUtil.ipadminiTopicName
+            roomSubjectLbl.font = FontUtil.ipadminiPainText
+//            roomUserAvatarNameLbl.font = FontUtil.ipadminiHotTopicNameAvatar
+            countLikeLbl.font = FontUtil.ipadminiHotTopicNameAvatar
+            dateTime.font = FontUtil.ipadminiDateTime
         }else{
-            roomLbl.font = FontModel.iphoneTopicName
-            roomSubjectLbl.font = FontModel.iphonepainText
-            countLikeLbl.font = FontModel.iphoneHotTopicNameAvatar
-            dateTime.font = FontModel.iphoneDateTime
+            roomLbl.font = FontUtil.iphoneTopicName
+            roomSubjectLbl.font = FontUtil.iphonepainText
+            countLikeLbl.font = FontUtil.iphoneHotTopicNameAvatar
+            dateTime.font = FontUtil.iphoneDateTime
         }
         
         let bean = roomList[indexPath.row]
@@ -137,8 +130,6 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
         let picAvatar = bean.valueForKey("avatarPic") as? String
         roomImg.image = UIImage(named: picAvatar!)
-//        let randnumbers =  arc4random_uniform(9)+1
-//        roomImg.image = UIImage(named: "girl0\(randnumbers)")
         
         return cell
     }
@@ -174,11 +165,10 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         do{
             let fetchReq = NSFetchRequest(entityName: "Room_Manage_Info");
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
             self.postUserCD = result[0].valueForKey("postUser") as! NSMutableDictionary
             self.commentUserCD = result[0].valueForKey("commentUser") as! NSMutableDictionary
-            print("Post User From Core Data : \(self.postUserCD)");
-            print("Comment User From Core Data : \(self.commentUserCD)");
+//            print("Post User From Core Data : \(self.postUserCD)");
+//            print("Comment User From Core Data : \(self.commentUserCD)");
         }catch{
             print("\(NSDate().formattedISO8601) Error Reading Data");
         }

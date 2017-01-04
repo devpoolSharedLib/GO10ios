@@ -14,21 +14,19 @@ class LoginViewController: UIViewController {
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
     var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
-    
     var getUserByUserPasswordUrl: String!
-    
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var profile = [NSDictionary]();
     var modelName: String!
-    @IBOutlet weak var emailLbl: UILabel!
     
+    @IBOutlet weak var emailLbl: UILabel!
     @IBOutlet weak var emailTxtField: UITextField!
     @IBOutlet weak var passwordLbl: UILabel!
     @IBOutlet weak var passwordTxtField: UITextField!
-    
     @IBOutlet var loginView: UIView!
     @IBOutlet weak var loginBtn: UIButton!
     @IBOutlet weak var forgotPasswordBtn: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.getUserByUserPasswordUrl = "\(self.domainUrl)\(self.pathUserService)/getUserByUserPassword?"
@@ -36,26 +34,23 @@ class LoginViewController: UIViewController {
         modelName = UIDevice.currentDevice().modelName
         self.loginBtn.layer.cornerRadius = 5
         if(modelName.rangeOfString("ipad Mini") != nil){
-            emailLbl.font = FontModel.ipadminiPainText
-            passwordLbl.font = FontModel.ipadminiPainText
-            loginBtn.titleLabel?.font = FontModel.ipadminiPainText
-            forgotPasswordBtn.titleLabel?.font = FontModel.ipadminiPainText
+            emailLbl.font = FontUtil.ipadminiPainText
+            passwordLbl.font = FontUtil.ipadminiPainText
+            loginBtn.titleLabel?.font = FontUtil.ipadminiPainText
+            forgotPasswordBtn.titleLabel?.font = FontUtil.ipadminiPainText
         }else{
-            emailLbl.font = FontModel.iphonepainText
-            passwordLbl.font = FontModel.iphonepainText
-            loginBtn.titleLabel?.font = FontModel.iphonepainText
-            forgotPasswordBtn.titleLabel?.font = FontModel.iphonepainText
+            emailLbl.font = FontUtil.iphonepainText
+            passwordLbl.font = FontUtil.iphonepainText
+            loginBtn.titleLabel?.font = FontUtil.iphonepainText
+            forgotPasswordBtn.titleLabel?.font = FontUtil.iphonepainText
         }
-        
-        // Do any additional setup after loading the view.
     }
+    
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         if UIDevice.currentDevice().orientation.isLandscape.boolValue{
             print("Change to Landscape")
-            
         }else{
             print("Change to Portrait")
-            
         }
     }
     
@@ -73,79 +68,62 @@ class LoginViewController: UIViewController {
         let email = self.emailTxtField.text
         let password = self.passwordTxtField.text
         
-//        print("E-MAIL : \(email)")
-//        print("PASSWORD : \(password)")
-        
         if((email == "") || checkSpace(email!) || password == "" || checkSpace(password!) ) {
-            
             let alert = UIAlertController(title: "Alert", message: "Please enter your E-mail and Password.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
-            
-            
         }else{
             MRProgressOverlayView.showOverlayAddedTo(self.loginView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
             checkLogin(email!,password: password!)
         }
     }
     
-   
     func checkLogin(email:String,password:String){
-        
-            print("\(NSDate().formattedISO8601) getLoginWebservice")
-            let url = "\(getUserByUserPasswordUrl)email=\(email)&password=\(password)"
-            let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(
-            NSCharacterSet.URLFragmentAllowedCharacterSet())
-        
-            let urlWs = NSURL(string: strUrlEncode!)
-//            print("\(NSDate().formattedISO8601) URL -->  : \(urlWs)")
-        
-            let req = NSMutableURLRequest(URL: urlWs!)
-            req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        
-           let request = NSURLSession.sharedSession().dataTaskWithRequest(req) { (data, response, error) in
-                do{
+        print("\(NSDate().formattedISO8601) getLoginWebservice")
+        let url = "\(getUserByUserPasswordUrl)email=\(email)&password=\(password)"
+        let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet())
+        let urlWs = NSURL(string: strUrlEncode!)
+        let req = NSMutableURLRequest(URL: urlWs!)
+        req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        let request = NSURLSession.sharedSession().dataTaskWithRequest(req) { (data, response, error) in
+            do{
                     
-                    self.profile = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
-                    print("\(NSDate().formattedISO8601) profile : \(self.profile)")
-                    if(self.profile.isEmpty){
-                        print("Profile is Empty")
+                self.profile = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
+                print("\(NSDate().formattedISO8601) profile : \(self.profile)")
+                if(self.profile.isEmpty){
+                    print("Profile is Empty")
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                        let alert = UIAlertController(title: "Alert", message: "The e-mail or password is incorrect.\n\nPlease try again.", preferredStyle: UIAlertControllerStyle.Alert)
+                        alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                        self.presentViewController(alert, animated: true, completion: nil)
+                        MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
+                    }
+                }else{
+                    if(self.profile[0].valueForKey("activate") as! Bool == false){
+                        print("activate is false")
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             let alert = UIAlertController(title: "Alert", message: "The e-mail or password is incorrect.\n\nPlease try again.", preferredStyle: UIAlertControllerStyle.Alert)
                             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                             self.presentViewController(alert, animated: true, completion: nil)
                             MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
                         }
-                        
-                    }else{
-                        if(self.profile[0].valueForKey("activate") as! Bool == false){
-                            print("activate is false")
-                            NSOperationQueue.mainQueue().addOperationWithBlock {
-                                let alert = UIAlertController(title: "Alert", message: "The e-mail or password is incorrect.\n\nPlease try again.", preferredStyle: UIAlertControllerStyle.Alert)
-                                alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
-                                self.presentViewController(alert, animated: true, completion: nil)
-                                MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
-                            }
-                        }
-                        else if(self.profile[0].valueForKey("avatarPic") as! String == "default_avatar" && self.profile[0].valueForKey("avatarName") as! String == "Avatar Name"){
-                            print("\(NSDate().formattedISO8601) Default Avatar")
-                            self.setUserInfo()
-                            MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
-                            self.gotoSetAvatar()
-                        }else{
-                            self.setUserInfo()
-                            MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
-                            self.loginToHomepage()
-                        }
-                        
                     }
-                    
-                }catch let error as NSError{
-                    print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
+                    else if(self.profile[0].valueForKey("avatarPic") as! String == "default_avatar" && self.profile[0].valueForKey("avatarName") as! String == "Avatar Name"){
+                        print("\(NSDate().formattedISO8601) Default Avatar")
+                        self.setUserInfoToCoredata()
+                        MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
+                        self.gotoSetAvatar()
+                    }else{
+                        self.setUserInfoToCoredata()
+                        MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
+                        self.loginToHomepage()
+                    }
                 }
+            }catch let error as NSError{
+                print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
             }
-            request.resume()
-
+        }
+        request.resume()
     }
     
     func gotoSetAvatar(){
@@ -159,11 +137,9 @@ class LoginViewController: UIViewController {
         if segue.identifier == "gotoSettingAvatar" {
             let navController = segue.destinationViewController as! UINavigationController
             let destVC = navController.topViewController as! EditAvatarTableViewController
-//            let destVC = segue.destinationViewController as! EditAvatarTableViewController
             destVC.recieveStatusLogin = sender as! String
         }
     }
-
     
     func loginToHomepage(){
         NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -172,8 +148,8 @@ class LoginViewController: UIViewController {
         
     }
     
-    func setUserInfo(){
-        // Write Data into CoreData
+    // Write Data into CoreData
+    func setUserInfoToCoredata(){
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");

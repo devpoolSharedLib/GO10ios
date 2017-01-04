@@ -36,11 +36,11 @@ class EditAvatarTableViewController: UITableViewController {
         modelName = UIDevice.currentDevice().modelName
         print("*** EditAvatarTableVC ViewDidLoad")
         if(modelName.rangeOfString("ipad Mini") != nil){
-            avartarNameLbl.font = FontModel.ipadminiPainText
-            editAvatarLbl.font = FontModel.ipadminiHotTopicNameAvatar
+            avartarNameLbl.font = FontUtil.ipadminiPainText
+            editAvatarLbl.font = FontUtil.ipadminiHotTopicNameAvatar
         }else{
-            avartarNameLbl.font = FontModel.iphonepainText
-            editAvatarLbl.font = FontModel.iphoneHotTopicNameAvatar
+            avartarNameLbl.font = FontUtil.iphonepainText
+            editAvatarLbl.font = FontUtil.iphoneHotTopicNameAvatar
         }
 
         if(recieveStatusLogin == nil){
@@ -58,38 +58,14 @@ class EditAvatarTableViewController: UITableViewController {
                             print("\(NSDate().formattedISO8601) Error Reading Data");
                         }
                 self.navigationItem.setHidesBackButton(true, animated:true)
-                
             }else{
                 print("not First Login")
                 submitBtn =  self.navigationItem.rightBarButtonItems![0]
                 self.navigationItem.rightBarButtonItems?.removeAtIndex(0)
-                
             }
-        
-//        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
-//        do{
-//            let fetchReq = NSFetchRequest(entityName: "User_Info");
-//            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-//            
-//            let activate = result[0].valueForKey("activate") as! Bool;
-//            print("activate :\(activate)")
-//            if(!activate){
-//                print("from verfify page")
-//                self.navigationItem.setHidesBackButton(true, animated:true);
-//                
-//            }else{
-//                print("not from verfify page")
-//                submitBtn =  self.navigationItem.rightBarButtonItems![0]
-//                self.navigationItem.rightBarButtonItems?.removeAtIndex(0)
-//            }
-//        }catch{
-//            print("\(NSDate().formattedISO8601) Error Reading Data");
-//        }
-
     }
     
     override func viewDidAppear(animated: Bool) {
-        
         super.viewDidAppear(animated)
         print("*** EditAvatarTableVC ViewDidAppear ***")
         MRProgressOverlayView.showOverlayAddedTo(self.editavatarTableView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
@@ -101,17 +77,10 @@ class EditAvatarTableViewController: UITableViewController {
             
             let userPicAvatar = result[0].valueForKey("avatarPic") as! String;
             let userNameAvatar = result[0].valueForKey("avatarName") as! String;
-//            let activate = result[0].valueForKey("activate") as! Bool;
+            
             print("\(NSDate().formattedISO8601) Data_Info :\(result)")
-//            if(!activate){
-//                 print("from verfify page")
-//                self.navigationItem.setHidesBackButton(true, animated:true);
-//                
-//            }
 
-            
             let avatarImage = UIImage(named: userPicAvatar)
-            
             if(avatarImage != nil){
                 print("\(NSDate().formattedISO8601) avatarImage : \(userPicAvatar)")
                 avatarImageButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
@@ -129,7 +98,7 @@ class EditAvatarTableViewController: UITableViewController {
     }
 
     @IBAction func submitAvatar(sender: AnyObject) {
-        
+        print("SUBMIT AVATAR")
         if(recieveStatusLogin == "First Login" && recieveStatusLogin != nil){
             print("First Login")
             let context: NSManagedObjectContext = appDelegate.managedObjectContext;
@@ -142,10 +111,8 @@ class EditAvatarTableViewController: UITableViewController {
                 print("\(NSDate().formattedISO8601) Error Reading Data");
             }
             self.navigationItem.setHidesBackButton(true, animated:true)
-            
         }
         
-        print("SUBMIT AVATAR")
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
             
@@ -161,7 +128,6 @@ class EditAvatarTableViewController: UITableViewController {
                     alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
-
             }else{
                 updateData()
                 NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -180,7 +146,6 @@ class EditAvatarTableViewController: UITableViewController {
         let urlWs = NSURL(string: url)
         print("\(NSDate().formattedISO8601) URL : \(url)")
         let urlsession = NSURLSession.sharedSession()
-        
         let request = urlsession.dataTaskWithURL(urlWs!) { (data, response, error) in
             do{
                 let profile = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
@@ -211,10 +176,8 @@ class EditAvatarTableViewController: UITableViewController {
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
             let _id = result[0].valueForKey("id_") as! String;
             let _rev = result[0].valueForKey("rev_") as! String;
-//            let accountId = result[0].valueForKey("accountId") as! String;
             let empName = result[0].valueForKey("empName") as! String;
             let empEmail = result[0].valueForKey("empEmail") as! String;
             let avatarName = result[0].valueForKey("avatarName") as! String;
@@ -228,8 +191,7 @@ class EditAvatarTableViewController: UITableViewController {
             let urlWs = NSURL(string: self.updateUserUrl )
             print("\(NSDate().formattedISO8601) URL : \(urlWs)")
             let requestPost = NSMutableURLRequest(URL: urlWs!)
-            
-            
+
             let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"birthday\":\"\(birthday)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
             print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
             

@@ -15,13 +15,13 @@ class VerifyTokenViewController: UIViewController {
     @IBOutlet weak var painTxt: UILabel!
     @IBOutlet weak var tokenTxtV: UITextView!
     @IBOutlet weak var verifyBtn: UIButton!
+    @IBOutlet var verifyView: UIView!
     
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var profile = [NSDictionary]();
     var activate: Bool!
     var modelName: String!
-    @IBOutlet var verifyView: UIView!
-    
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** VerifyTokenVC Viewdidload ***")
@@ -30,14 +30,13 @@ class VerifyTokenViewController: UIViewController {
         modelName = UIDevice.currentDevice().modelName
         if(modelName.rangeOfString("ipad Mini") != nil){
             print("SIMULATOR")
-            painTxt.font = FontModel.ipadminiPainText
-            tokenTxtV.font = FontModel.ipadminiPainText
-            verifyBtn.titleLabel?.font = FontModel.ipadminiPainText
+            painTxt.font = FontUtil.ipadminiPainText
+            tokenTxtV.font = FontUtil.ipadminiPainText
+            verifyBtn.titleLabel?.font = FontUtil.ipadminiPainText
         }
         
         MRProgressOverlayView.showOverlayAddedTo(self.verifyView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
     }
-    
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
@@ -57,7 +56,6 @@ class VerifyTokenViewController: UIViewController {
             
         }
     }
-    
     
     func checkToken(){
         print("\(NSDate().formattedISO8601) token : \(tokenTxtV.text)")
@@ -89,6 +87,7 @@ class VerifyTokenViewController: UIViewController {
                     }
                 }else{
 //                    self.saveTokenToCoredata()
+                    
                     // Write Data into CoreData
                     let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
                     do{
@@ -106,11 +105,9 @@ class VerifyTokenViewController: UIViewController {
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             self.performSegueWithIdentifier("gotoSetting", sender:nil)
                         }
-                        
                     }catch{
                         print("\(NSDate().formattedISO8601) Error Saving Profile Data");
                     }
-
                 }
                 
             }catch let error as NSError{
@@ -120,9 +117,8 @@ class VerifyTokenViewController: UIViewController {
         request.resume()
     }
     
-    
+    // Write Data into CoreData
     func saveTokenToCoredata(){
-        // Write Data into CoreData
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");

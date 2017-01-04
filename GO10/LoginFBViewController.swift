@@ -22,8 +22,8 @@ class LoginFBViewController: UIViewController, GIDSignInUIDelegate ,GIDSignInDel
         GIDSignIn.sharedInstance().delegate = self
         modelName = UIDevice.currentDevice().modelName
         if(modelName.rangeOfString("ipad Mini") != nil){
-            btnLoginFacebook.titleLabel?.font = FontModel.ipadminiTopicName
-            btnSigninGoogle.titleLabel?.font = FontModel.ipadminiTopicName
+            btnLoginFacebook.titleLabel?.font = FontUtil.ipadminiTopicName
+            btnSigninGoogle.titleLabel?.font = FontUtil.ipadminiTopicName
         }
     }
 
@@ -64,8 +64,7 @@ class LoginFBViewController: UIViewController, GIDSignInUIDelegate ,GIDSignInDel
             }
         })
     }
-    
-    
+
     //Google Signin Handle
     func signIn(signIn: GIDSignIn!, didSignInForUser user: GIDGoogleUser!,
                 withError error: NSError!) {
@@ -85,7 +84,6 @@ class LoginFBViewController: UIViewController, GIDSignInUIDelegate ,GIDSignInDel
         }
     }
     
-    
     //Google Signin Disconnect
     func signIn(signIn: GIDSignIn!, didDisconnectWithUser user:GIDGoogleUser!,
                 withError error: NSError!) {
@@ -95,12 +93,10 @@ class LoginFBViewController: UIViewController, GIDSignInUIDelegate ,GIDSignInDel
             userInfo: ["statusText": "User has disconnected."])
     }
     
-    
     func saveUserInfo(accountId: String){
         // Write Data into CoreData
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            
                 let newUser = NSEntityDescription.insertNewObjectForEntityForName("User_Info", inManagedObjectContext: context);
                 newUser.setValue(accountId, forKey: "accountId");
                 newUser.setValue("Name" , forKey: "empName");

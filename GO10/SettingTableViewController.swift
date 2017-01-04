@@ -11,28 +11,26 @@ import CoreData
 
 class SettingTableViewController: UITableViewController {
     
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    
     @IBOutlet weak var avatarImage: UIImageView!
     @IBOutlet weak var avatarNameLbl: UILabel!
-
-    
     @IBOutlet weak var logoutLbl: UILabel!
     @IBOutlet weak var editAvatarLbl: UILabel!
+    
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var modelName: String!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
          modelName = UIDevice.currentDevice().modelName
         if(modelName.rangeOfString("ipad Mini") != nil){
-            logoutLbl.font = FontModel.ipadminiPainText
-            editAvatarLbl.font = FontModel.ipadminiPainText
-            avatarNameLbl.font = FontModel.ipadminiPainText
+            logoutLbl.font = FontUtil.ipadminiPainText
+            editAvatarLbl.font = FontUtil.ipadminiPainText
+            avatarNameLbl.font = FontUtil.ipadminiPainText
         }else{
-            logoutLbl.font = FontModel.iphonepainText
-            editAvatarLbl.font = FontModel.iphonepainText
-            avatarNameLbl.font = FontModel.iphonepainText
+            logoutLbl.font = FontUtil.iphonepainText
+            editAvatarLbl.font = FontUtil.iphonepainText
+            avatarNameLbl.font = FontUtil.iphonepainText
         }
-        
         let singleTap = UITapGestureRecognizer(target: self, action:#selector(SettingTableViewController.tapDetected))
         singleTap.numberOfTapsRequired = 1
         avatarImage.userInteractionEnabled = true
@@ -51,15 +49,12 @@ class SettingTableViewController: UITableViewController {
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
             let userPicAvatar = result[0].valueForKey("avatarPic") as! String;
             let userNameAvatar = result[0].valueForKey("avatarName") as! String;
-            
             if(avatarImage != nil){
                 print("\(NSDate().formattedISO8601) avatarPicImage : \(userPicAvatar)")
                 avatarImage.image = UIImage(named: userPicAvatar)
             }
-            
             if(avatarNameLbl != nil){
                 avatarNameLbl.text = userNameAvatar
             }
@@ -90,19 +85,15 @@ class SettingTableViewController: UITableViewController {
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");
             let result = try context.executeFetchRequest(fetchReq);
-        
             result[0].setValue(false, forKey: "statusLogin");
             try context.save();
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let loginVC =  storyboard.instantiateViewControllerWithIdentifier("mainVCID")
             self.presentViewController(loginVC, animated: true, completion: nil)
             print("\(NSDate().formattedISO8601) Save Data Success")
- 
-            
         }catch{
             print("\(NSDate().formattedISO8601) Error Saving Profile Data");
         }
-
     }
     
     @IBAction func unwindToSetting(segue: UIStoryboardSegue) {

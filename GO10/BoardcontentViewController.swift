@@ -12,18 +12,15 @@ import MRProgress
 import CoreData
 
 class BoardcontentViewController: UIViewController,UITableViewDataSource,UITableViewDelegate{
-    @IBOutlet weak var goCommentBtn: UIButton!
     
+    @IBOutlet weak var goCommentBtn: UIButton!
     @IBOutlet weak var boardTableview: UITableView!
     @IBOutlet weak var commentBtnInCell: UIButton!
-    
     @IBOutlet var boardContentView: UIView!
-    
-    
+
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
     var pathTopicServiceV2 = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicServiceV2")
-    
     var getHotToppicByIdUrl: String!
     var checkIsLikeUrl: String!
     var updateLikeUrl: String!
@@ -33,6 +30,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var isLike: Bool!
     var countLikeLbl: UILabel!
     var likeBtn: UIButton!
+    var likeWithNoCommentBtn: UIButton!
     var BoardContentList = [NSDictionary]();
     var LikeModelList = [NSDictionary]();
     var topicId: String!
@@ -53,41 +51,36 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.leftItemsSupplementBackButton = true
-
         print("*** BoardContentVC viewDidLoad ***")
-        
         self.getHotToppicByIdUrl = "\(self.domainUrl)\(self.pathTopicServiceV2)/gettopicbyid?"
         self.checkIsLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/checkLikeTopic?"
         self.updateLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/updateLike"
         self.updateDisLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/updateDisLike"
         self.newLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/newLike"
         self.readTopicUrl = "\(self.domainUrl)\(self.pathTopicService)/newLike"
-        modelName = UIDevice.currentDevice().modelName
+        self.modelName = UIDevice.currentDevice().modelName
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
         self.roomId = receiveBoardContentList.valueForKey("roomId") as! String
+        
+        //get Value From Core Data
         getValuefromUserInfo()
         getValuefromRoomManageInfo()
         
         self.commentUserArray = self.commentUserCD.valueForKey(roomId) as! Array<String>
-        
         if(RoomAdminUtil.checkAccess(self.commentUserArray, empEmail: self.empEmail)){
             print("Find Comment User")
         }else{
             print("not Find Comment User")
             self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
         }
-
         
 //        checkCommentBtn(self.roomId)
-        
 //        readTopic()
 //        getBoardContentWebService()
-
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
         MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         print("*** BoardContentVC viewDidAppear ***")
         modelName = UIDevice.currentDevice().modelName
@@ -102,18 +95,14 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         self.boardContentView.setNeedsLayout()
         self.boardContentView.layoutIfNeeded()
 
-        getValuefromUserInfo()
-      
+//        getValuefromUserInfo()
         getBoardContentWebService()
-        
         checkPushButton = false
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-
         print("\(NSDate().formattedISO8601) WILLDISAPPAER isLike = \(self.isLike )")
-        
         if(self.statusLike != self.isLike && checkPushButton){
             if(self.LikeModelList.isEmpty){
                 newLikeWS()
@@ -128,9 +117,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         }else{
             print("Not Push Like Button or CountLike not Change")
         }
-        
     }
-    
     
     //refresh Table View
     func refreshTableView(){
@@ -146,9 +133,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
             self.empEmail = result[0].valueForKey("empEmail") as! String;
-            
         }catch{
             print("\(NSDate().formattedISO8601) Error Saving Data");
         }
@@ -159,7 +144,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         do{
             let fetchReq = NSFetchRequest(entityName: "Room_Manage_Info");
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
             self.postUserCD = result[0].valueForKey("postUser") as! NSMutableDictionary
             self.commentUserCD = result[0].valueForKey("commentUser") as! NSMutableDictionary
 //            print("Post User From Core Data : \(self.postUserCD)");
@@ -169,32 +153,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         }
     }
     
-//    func checkCommentBtn(roomId:String){
-//        let commentUserArray = self.commentUserCD.valueForKey(roomId) as! Array<String>
-//        if commentUserArray.contains("all") {
-//            print("Find All Comment User")
-//        }else if commentUserArray.contains(self.empEmail) {
-//            print("Find Comment User")
-//        }else{
-//            print("not Find Comment User")
-//            self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
-//        }
-//    }
-    
-//    func checkCommentBtnFromCell(roomId:String){
-//        let commentUserArray = self.commentUserCD.valueForKey(roomId) as! Array<String>
-//        if commentUserArray.contains("all") {
-//            print("Find All Comment User")
-//        }else if commentUserArray.contains(self.empEmail) {
-//            print("Find Comment User")
-//        }else{
-//            print("not Find Comment User")
-//            self.commentBtnInCell.enabled = false
-//        }
-//    }
     
     func getBoardContentWebService(){
-        
         print("\(NSDate().formattedISO8601) getBoardContentWebService")
         let urlWs = NSURL(string: "\(self.getHotToppicByIdUrl)topicId=\(self.topicId)&empEmail=\(self.empEmail)")
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
@@ -211,7 +171,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             }
         }
         requestSent.resume()
-        
     }
     
     
@@ -226,9 +185,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             do{
                 self.LikeModelList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
 //                print("\(NSDate().formattedISO8601) LikeModel \(self.LikeModelList)")
-                
                   dispatch_async(dispatch_get_main_queue(), {
-                    
                 if(self.LikeModelList.isEmpty){
                     self.isLike = false
                     print("LIKEMODEL IS NULL")
@@ -237,12 +194,10 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                     self._rev = self.LikeModelList[0].valueForKey("_rev") as! String
                     self.statusLike = self.LikeModelList[0].valueForKey("statusLike") as! Bool
                     if(self.statusLike == true){
-//                        self.likeBtn.backgroundColor = UIColor.blueColor()
                         self.likeBtn.setTitleColor(UIColor(red: 0, green: 128/255, blue: 1, alpha: 1), forState: .Normal)
                         self.isLike = true
                         print("LIKEMODEL IS TRUE")
                     }else{
-//                        self.likeBtn.backgroundColor = UIColor.whiteColor()
                         self.likeBtn.setTitleColor(UIColor.blackColor().colorWithAlphaComponent(0.5), forState: .Normal)
                         self.isLike = false
                         print("LIKEMODEL IS FALSE")
@@ -259,20 +214,17 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     func readTopic(){
             print("\(NSDate().formattedISO8601) readTopicWs")
             let urlreadTopicWs = NSURL(string: "\(self.readTopicUrl)topicId=\(self.topicId)&empEmail=\(self.empEmail)")
-        
             print("\(NSDate().formattedISO8601) URL : \(urlreadTopicWs)")
             let request = NSMutableURLRequest(URL: urlreadTopicWs!)
             request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
             let urlsession = NSURLSession.sharedSession()
             let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
                 do{
-                
                 }catch let error as NSError{
                     print("\(NSDate().formattedISO8601)  error : \(error.localizedDescription)")
                 }
             }
             requestSent.resume()
-
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -283,10 +235,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         let boardContentBean = self.BoardContentList[indexPath.row]
         print(boardContentBean)
         let cell: UITableViewCell
-        
         if boardContentBean.valueForKey("type") as! String == "host" {
             cell = tableView.dequeueReusableCellWithIdentifier("hostCell", forIndexPath: indexPath)
-            
             let hostSubjectLbl = cell.viewWithTag(31) as! UILabel;
             let hostContentLbl = cell.viewWithTag(32) as! ActiveLabel;
             let hostImg = cell.viewWithTag(33) as! UIImageView;
@@ -297,41 +247,39 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             self.commentBtnInCell = cell.viewWithTag(42) as! UIButton;
             
             //disabled comment Button if Ineligible
-//            checkCommentBtnFromCell(self.roomId)
             if(RoomAdminUtil.checkAccess(self.commentUserArray, empEmail: self.empEmail)){
+                self.likeBtn = cell.viewWithTag(44) as! UIButton;
+                self.likeBtn.hidden = true
+                self.likeBtn = cell.viewWithTag(41) as! UIButton;
                 print("Find Comment User")
             }else{
+                
                 print("not Find Comment User")
-                self.commentBtnInCell.enabled = false
-            }
+                self.commentBtnInCell.removeFromSuperview()
+                self.likeBtn.removeFromSuperview()
+                self.likeBtn = cell.viewWithTag(44) as! UIButton;
 
-            
-            
+            }
             
             if(modelName.rangeOfString("ipad Mini") != nil){
-                hostSubjectLbl.font = FontModel.ipadminiTopicName
-//                hostContentLbl.font = FontModel.ipadminiPainText
-                hostNameLbl.font = FontModel.ipadminiDateTime
-                hostTimeLbl.font = FontModel.ipadminiDateTime
-                self.countLikeLbl.font = FontModel.ipadminiDateTime
+                hostSubjectLbl.font = FontUtil.ipadminiTopicName
+//                hostContentLbl.font = FontUtil.ipadminiPainText
+                hostNameLbl.font = FontUtil.ipadminiDateTime
+                hostTimeLbl.font = FontUtil.ipadminiDateTime
+                self.countLikeLbl.font = FontUtil.ipadminiDateTime
             }
             
             hostSubjectLbl.text =  boardContentBean.valueForKey("subject") as? String
-                        
             let htmlData = boardContentBean.valueForKey("content") as? String
-            
             let htmlReplace = htmlData!.stringByReplacingOccurrencesOfString("\\\"", withString: "\"")
             print("\(NSDate().formattedISO8601) htmlReplace : \(htmlReplace)")
             do{
-                
-               
 //                var myAttribute = [ NSFontAttributeName: FontModel.iphonepainText! ]
 //                
 //                if(modelName.rangeOfString("ipad Mini") != nil){
 //                    myAttribute = [ NSFontAttributeName: FontModel.ipadminiPainText! ]
 //                }
-                
-                
+            
                 let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
                                     NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
                 
@@ -349,80 +297,62 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 hostContentLbl.lineSpacing = 20
                 hostContentLbl.attributedText = strNS
                 openLink(hostContentLbl)
-                
             }catch let error as NSError{
                 print("error : \(error.localizedDescription)")
             }
             
             print(">>>>> count read >>>> \(boardContentBean.valueForKey("countRead"))")
-            
             let picAvatar = boardContentBean.valueForKey("avatarPic") as? String
             hostImg.image = UIImage(named: picAvatar!)
             hostNameLbl.text =  boardContentBean.valueForKey("avatarName") as? String
             hostTimeLbl.text =  boardContentBean.valueForKey("date") as? String
             self.countLikeLbl.text = String(boardContentBean.valueForKey("countLike") as! Int)
-            
-            
         }else if boardContentBean.valueForKey("type") as! String == "comment" {
             cell = tableView.dequeueReusableCellWithIdentifier("commentCell", forIndexPath: indexPath)
             let commentContentLbl = cell.viewWithTag(36) as! ActiveLabel;
             let commentImg = cell.viewWithTag(37) as! UIImageView;
             let commentNameLbl = cell.viewWithTag(38) as! UILabel;
             let commentTimeLbl = cell.viewWithTag(39) as! UILabel;
-            
             if(modelName.rangeOfString("ipad Mini") != nil){
 //                commentContentLbl.font = FontModel.ipadminiPainText
-                commentNameLbl.font = FontModel.ipadminiDateTime
-                commentTimeLbl.font = FontModel.ipadminiDateTime
+                commentNameLbl.font = FontUtil.ipadminiDateTime
+                commentTimeLbl.font = FontUtil.ipadminiDateTime
             }else{
-                commentNameLbl.font = FontModel.iphoneDateTime
-                commentTimeLbl.font = FontModel.iphoneDateTime
+                commentNameLbl.font = FontUtil.iphoneDateTime
+                commentTimeLbl.font = FontUtil.iphoneDateTime
             }
-            
             let htmlData = boardContentBean.valueForKey("content") as? String
             let htmlReplace = htmlData!.stringByReplacingOccurrencesOfString("\\\"", withString: "\"")
             print("\(NSDate().formattedISO8601) htmlReplace : \(htmlReplace)")
             do{
-                
 //                var myAttribute = [ NSFontAttributeName: FontModel.iphonepainText! ]
-//                
 //                if(modelName.rangeOfString("ipad Mini") != nil){
 //                    myAttribute = [ NSFontAttributeName: FontModel.ipadminiPainText! ]
 //                }
                 
-
                 let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
                     NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
                 
-                
 //                let strMU = try NSMutableAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
-//                
 //                strMU.addAttributes(myAttribute,range:NSMakeRange(0, strMU.length))
-//
 //                strMU.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, strMU.length))
                 
                 commentContentLbl.lineSpacing = 20
                 commentContentLbl.numberOfLines = 0
                 commentContentLbl.attributedText = strNS
                 openLink(commentContentLbl)
-                
             }catch let error as NSError{
                 print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
             }
-            
-
             let picAvatar = boardContentBean.valueForKey("avatarPic") as? String
             commentImg.image = UIImage(named: picAvatar!)
             commentNameLbl.text =  boardContentBean.valueForKey("avatarName") as? String
             commentTimeLbl.text =  boardContentBean.valueForKey("date") as? String
-            
         }else{
             cell = tableView.dequeueReusableCellWithIdentifier("noCell", forIndexPath: indexPath)
         }
         
-            return cell
-        
-        
+        return cell
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -442,24 +372,21 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             label.mentionColor = UIColor.blueColor()
             label.URLColor = UIColor.blueColor()
             if(self.modelName.rangeOfString("ipad Mini") != nil){
-                label.font = FontModel.ipadminiPainText
+                label.font = FontUtil.ipadminiPainText
             }else{
-                label.font = FontModel.iphonepainText
+                label.font = FontUtil.iphonepainText
             }
             
             label.handleURLTap({ (url) in
-                
                 let strUrl: String!
                 let openUrl: NSURL!
                 if(url.absoluteString.rangeOfString("http://") == nil && url.absoluteString.rangeOfString("https://") == nil){
                     strUrl = "http://\(url)"
-                     openUrl = NSURL(string: strUrl)!
+                    openUrl = NSURL(string: strUrl)!
                 }else{
                     openUrl = url
                 }
-                
                 print("\(NSDate().formattedISO8601) OpenUrl: \(openUrl)")
-                
                 UIApplication.sharedApplication().openURL(openUrl)
             })
         }
@@ -471,8 +398,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         let urlWs = NSURL(string: self.newLikeUrl)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let requestPost = NSMutableURLRequest(URL: urlWs!)
-        
-//        let jsonObj = "{\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\(self.isLike),\"type\":\"like\",\"date\":\"\"}"
         
         let jsonObj = "{\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\(self.isLike),\"type\":\"like\"}"
         
@@ -510,15 +435,9 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         let requestPost = NSMutableURLRequest(URL: urlWs!)
         
         
-        //***** field "isLike" Swift ต้องใช้ "like" *******
-        
         let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\"}"
         
-      //          let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\",\"date\":\"\"}"
-
-        
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
-        
         requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
         requestPost.setValue("application/json", forHTTPHeaderField: "Content-Type")
         requestPost.setValue("application/json",forHTTPHeaderField: "Accept")
@@ -526,13 +445,12 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         let urlsession = NSURLSession.sharedSession()
         let request = urlsession.dataTaskWithRequest(requestPost) { (data, response, error) in
         guard error == nil && data != nil else {
-        print("error=\(error)")
-        return
+            print("error=\(error)")
+            return
         }
-        
         if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {
-        print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus.statusCode)")
-        print("\(NSDate().formattedISO8601) response = \(response)")
+            print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus.statusCode)")
+            print("\(NSDate().formattedISO8601) response = \(response)")
         }
         
         let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
@@ -547,14 +465,9 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let requestPost = NSMutableURLRequest(URL: urlWs!)
         
-        
-        //***** field "isLike" Swift ต้องใช้ "like" *******
         let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\"}"
         
-      //  let jsonObj = "{\"_id\":\"\(self._id)\",\"_rev\":\"\(self._rev)\",\"topicId\":\"\(self.topicId)\",\"empEmail\":\"\(self.empEmail)\",\"statusLike\":\"\(self.isLike)\",\"type\":\"like\",\"date\":\"\"}"
-        
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
-        
         requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
         requestPost.setValue("application/json", forHTTPHeaderField: "Content-Type")
         requestPost.setValue("application/json",forHTTPHeaderField: "Accept")
@@ -565,18 +478,15 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 print("error=\(error)")
                 return
             }
-            
             if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {
                 print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus.statusCode)")
                 print("\(NSDate().formattedISO8601) response = \(response)")
             }
-            
             let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             print("\(NSDate().formattedISO8601) responseString = \(responseString)")
         }
         request.resume()
     }
-
     
     @IBAction func likeButton(sender: AnyObject) {
         checkPushButton = true
@@ -591,7 +501,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             self.likeBtn.setTitleColor(UIColor.blackColor().colorWithAlphaComponent(0.5), forState: .Normal)
             self.isLike = false
         }
-        
     }
     
     @IBAction func showComment(sender: AnyObject) {
@@ -606,7 +515,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         if segue.identifier == "openComment" {
             let destVC = segue.destinationViewController as! CommentViewController
             destVC.receiveComment = receiveBoardContentList
-
         }
     }
     
