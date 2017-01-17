@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>urlDomainHttp</key>
-	<string>http://localhost:9080</string>
+	<string>http://go10.au-syd.mybluemix.net</string>
 	<key>urlDomainHttps</key>
-	<string>http://localhost:9080</string>
+	<string>https://go10.au-syd.mybluemix.net</string>
 	<key>pathTopicService</key>
 	<string>/GO10WebService/api/newtopic</string>
 	<key>pathTopicServiceV2</key>

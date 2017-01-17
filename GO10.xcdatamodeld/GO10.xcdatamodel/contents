@@ -3,6 +3,7 @@
     <entity name="Room_Manage_Info" syncable="YES">
         <attribute name="commentUser" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="postUser" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="readUser" optional="YES" attributeType="Transformable" syncable="YES"/>
     </entity>
     <entity name="User_Info" syncable="YES">
         <attribute name="accountId" optional="YES" transient="YES" attributeType="String" defaultValueString="nil" indexed="YES" syncable="YES"/>
@@ -20,7 +21,7 @@
         <attribute name="type" optional="YES" attributeType="String" defaultValueString="nil" syncable="YES"/>
     </entity>
     <elements>
+        <element name="Room_Manage_Info" positionX="-63" positionY="81" width="128" height="90"/>
         <element name="User_Info" positionX="-63" positionY="-18" width="128" height="240"/>
-        <element name="Room_Manage_Info" positionX="-63" positionY="81" width="128" height="75"/>
     </elements>
 </model>

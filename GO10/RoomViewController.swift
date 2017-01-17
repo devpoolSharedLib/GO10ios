@@ -29,6 +29,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var modelName: String!
     var postUserCD: NSMutableDictionary = NSMutableDictionary()
     var commentUserCD: NSMutableDictionary = NSMutableDictionary()
+    var readUserCD: NSMutableDictionary = NSMutableDictionary()
     var postTopicBtn: UIBarButtonItem!
     var empEmail: String!
     
@@ -167,8 +168,10 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
             let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
             self.postUserCD = result[0].valueForKey("postUser") as! NSMutableDictionary
             self.commentUserCD = result[0].valueForKey("commentUser") as! NSMutableDictionary
-//            print("Post User From Core Data : \(self.postUserCD)");
-//            print("Comment User From Core Data : \(self.commentUserCD)");
+            self.readUserCD = result[0].valueForKey("readUser") as! NSMutableDictionary
+            print("Post User From Core Data : \(self.postUserCD)");
+            print("Comment User From Core Data : \(self.commentUserCD)");
+            print("Read User From Core Data : \(self.readUserCD)");
         }catch{
             print("\(NSDate().formattedISO8601) Error Reading Data");
         }

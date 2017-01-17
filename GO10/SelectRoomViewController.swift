@@ -32,6 +32,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     var empEmail: String!
     var postUser: NSMutableDictionary = NSMutableDictionary()
     var commentUser: NSMutableDictionary = NSMutableDictionary()
+    var readUser: NSMutableDictionary = NSMutableDictionary()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,13 +94,15 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
             do{
                 self.roomList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
-                print("xxxxxxxxxxxxxxxxx")
+                
                 for index in 0...self.roomList.count-1{
                     self.postUser.setValue(self.roomList[index].valueForKey("postUser") as! Array<String>, forKey: self.roomList[index].valueForKey("_id") as! String)
                     self.commentUser.setValue(self.roomList[index].valueForKey("commentUser") as! Array<String>, forKey: self.roomList[index].valueForKey("_id") as! String)
+                    self.readUser.setValue(self.roomList[index].valueForKey("readUser") as! Array<String>, forKey: self.roomList[index].valueForKey("_id") as! String)
                 }
                 self.addObjToCoreData(self.postUser, key: "postUser")
                 self.addObjToCoreData(self.commentUser, key: "commentUser")
+                self.addObjToCoreData(self.readUser, key: "readUser")
                 print("\(NSDate().formattedISO8601) Rooms Size \(self.roomList.count)")
                 self.refreshCollectionView()
             }catch let error as NSError{

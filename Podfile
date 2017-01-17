@@ -15,6 +15,7 @@ target 'GO10' do
 	pod 'MRProgress'
 	pod 'IQKeyboardManagerSwift'
 	pod 'MRProgress/AFNetworking'
+	pod 'Siren', '0.9.5'
 end
 
 target 'GO10Tests' do

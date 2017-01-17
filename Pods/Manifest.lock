@@ -111,6 +111,7 @@ PODS:
   - MRProgress/Stopable (0.8.3):
     - MRProgress/Helper
   - RichEditorView (3.2.0)
+  - Siren (0.9.5)
   - Toucan (0.5.0)
 
 DEPENDENCIES:
@@ -124,6 +125,7 @@ DEPENDENCIES:
   - MRProgress
   - MRProgress/AFNetworking
   - RichEditorView
+  - Siren (= 0.9.5)
   - Toucan (~> 0.5)
 
 SPEC CHECKSUMS:
@@ -146,8 +148,9 @@ SPEC CHECKSUMS:
   KMPlaceholderTextView: cae8ee889bd38d20587eee6b2623b8218f31b8f5
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
   RichEditorView: b4ee60a4f5301cbe8f3fcb1f065cdd7de74ddd10
+  Siren: a536a4fed41def10e540a9804b2a63a4b3634f6b
   Toucan: 0519c341148252ae114c5a657d2a85bb9ada9e40
 
-PODFILE CHECKSUM: 1d088a328778ce629a6acf87c209693220a4eca2
+PODFILE CHECKSUM: 92fd4941c788fa14637f367c71792f599767b73e
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.1
