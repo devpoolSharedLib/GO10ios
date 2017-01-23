@@ -19,7 +19,8 @@ class EditAvatarTableViewController: UITableViewController {
     @IBOutlet var editavatarTableView: UITableView!
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
-    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var getUserByTokenUrl: String!
     var updateUserUrl: String!
     var recieveformverify: String!
@@ -31,8 +32,8 @@ class EditAvatarTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.getUserByTokenUrl = "\(self.domainUrl)\(self.pathUserService)/getUserByToken?token="
-        self.updateUserUrl = "\(self.domainUrl)\(self.pathUserService)/updateUser"
+        self.getUserByTokenUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/getUserByToken?token="
+        self.updateUserUrl = "\\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/updateUser"
         modelName = UIDevice.currentDevice().modelName
         print("*** EditAvatarTableVC ViewDidLoad")
         if(modelName.rangeOfString("ipad Mini") != nil){

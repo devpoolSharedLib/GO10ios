@@ -21,7 +21,8 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     @IBOutlet var newTopicView: UIView!
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
-    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+//    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
     var postTopicUrl: String!
     var uploadServletUrl: String!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -39,8 +40,8 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** NewTopicVC ViewDidLoad ***")
-        self.postTopicUrl = "\(self.domainUrl)\(self.pathTopicService)/post"
-        self.uploadServletUrl = "\(self.domainUrl)/GO10WebService/UploadServlet"
+        self.postTopicUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/post"
+        self.uploadServletUrl = "\(self.domainUrl)GO10WebService/UploadServlet"
         
         //set other button side back button
         self.navigationItem.leftItemsSupplementBackButton = true

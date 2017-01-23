@@ -19,8 +19,9 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     @IBOutlet var boardContentView: UIView!
 
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
-    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
-    var pathTopicServiceV2 = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicServiceV2")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+//    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
+//    var pathTopicServiceV2 = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicServiceV2")
     var getHotToppicByIdUrl: String!
     var checkIsLikeUrl: String!
     var updateLikeUrl: String!
@@ -52,12 +53,12 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         super.viewDidLoad()
         self.navigationItem.leftItemsSupplementBackButton = true
         print("*** BoardContentVC viewDidLoad ***")
-        self.getHotToppicByIdUrl = "\(self.domainUrl)\(self.pathTopicServiceV2)/gettopicbyid?"
-        self.checkIsLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/checkLikeTopic?"
-        self.updateLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/updateLike"
-        self.updateDisLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/updateDisLike"
-        self.newLikeUrl = "\(self.domainUrl)\(self.pathTopicService)/newLike"
-        self.readTopicUrl = "\(self.domainUrl)\(self.pathTopicService)/newLike"
+        self.getHotToppicByIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/gettopicbyid?"
+        self.checkIsLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/checkLikeTopic?"
+        self.updateLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/updateLike"
+        self.updateDisLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/updateDisLike"
+        self.newLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/newLike"
+        self.readTopicUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/newLike"
         self.modelName = UIDevice.currentDevice().modelName
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
         self.roomId = receiveBoardContentList.valueForKey("roomId") as! String

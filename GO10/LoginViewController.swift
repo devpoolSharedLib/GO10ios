@@ -12,8 +12,9 @@ import MRProgress
 
 class LoginViewController: UIViewController {
     
-    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
-    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
+    var domainUrlHttps = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var getUserByUserPasswordUrl: String!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var profile = [NSDictionary]();
@@ -29,7 +30,7 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.getUserByUserPasswordUrl = "\(self.domainUrl)\(self.pathUserService)/getUserByUserPassword?"
+        self.getUserByUserPasswordUrl = "\(self.domainUrlHttps)GO10WebService/api/\(self.versionServer)user/getUserByUserPassword?"
         print("*** LoginVC ViewDidLoad ***")
         modelName = UIDevice.currentDevice().modelName
         self.loginBtn.layer.cornerRadius = 5
@@ -81,6 +82,7 @@ class LoginViewController: UIViewController {
     func checkLogin(email:String,password:String){
         print("\(NSDate().formattedISO8601) getLoginWebservice")
         let url = "\(getUserByUserPasswordUrl)email=\(email)&password=\(password)"
+        print("url : \(url)")
         let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet())
         let urlWs = NSURL(string: strUrlEncode!)
         let req = NSMutableURLRequest(URL: urlWs!)

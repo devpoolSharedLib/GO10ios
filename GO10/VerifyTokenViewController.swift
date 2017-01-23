@@ -18,6 +18,10 @@ class VerifyTokenViewController: UIViewController {
     @IBOutlet var verifyView: UIView!
     
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
+    var getUserByToken:String!
     var profile = [NSDictionary]();
     var activate: Bool!
     var modelName: String!
@@ -25,6 +29,7 @@ class VerifyTokenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** VerifyTokenVC Viewdidload ***")
+        self.getUserByToken =  "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/getUserByToken?"
         //Radius verify textview Border
         tokenTxtV.layer.cornerRadius = 5
         modelName = UIDevice.currentDevice().modelName
@@ -60,7 +65,7 @@ class VerifyTokenViewController: UIViewController {
     func checkToken(){
         print("\(NSDate().formattedISO8601) token : \(tokenTxtV.text)")
         print("\(NSDate().formattedISO8601) getTokenWebservice")
-        let url = "http://go10webservice.au-syd.mybluemix.net/GO10WebService/api/user/getUserByToken?token=\(tokenTxtV.text)"
+        let url = "\(self.getUserByToken)token=\(tokenTxtV.text)"
         let urlWs = NSURL(string: url)
         print("\(NSDate().formattedISO8601) URL : \(url)")
         let urlsession = NSURLSession.sharedSession()

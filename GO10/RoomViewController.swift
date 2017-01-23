@@ -20,7 +20,8 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
-    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+//    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
     var getRoomByIdUrl: String!
     var roomList = [NSDictionary]();
     var roomId: String!
@@ -36,7 +37,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         override func viewDidLoad() {
             super.viewDidLoad()
             print("*** RoomVC viewDidLoad ***")
-            self.getRoomByIdUrl = "\(self.domainUrl)\(self.pathTopicService)/gettopiclistbyroom?roomId="
+            self.getRoomByIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/gettopiclistbyroom?roomId="
             roomId = receiveRoomList.valueForKey("_id") as! String
             roomName = receiveRoomList.valueForKey("name") as! String
             lblRoom.text = roomName;

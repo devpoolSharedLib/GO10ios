@@ -14,7 +14,8 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
     @IBOutlet weak var avatarNametxt: UITextField!
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
-    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var updateUserUrl: String!
     var checkAvatarNameUrl: String!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -23,8 +24,8 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.updateUserUrl = "\(self.domainUrl)\(self.pathUserService)/updateUser"
-        self.checkAvatarNameUrl = "\(self.domainUrl)\(self.pathUserService)/checkAvatarName?avatarName="
+        self.updateUserUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/updateUser"
+        self.checkAvatarNameUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/checkAvatarName?avatarName="
         avatarNametxt.delegate = self
         modelName = UIDevice.currentDevice().modelName
         if(modelName.rangeOfString("ipad Mini") != nil){

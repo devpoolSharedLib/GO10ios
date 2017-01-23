@@ -1,4 +1,4 @@
-//
+	//
 //  SelectRoomViewController.swift
 //  GO10
 //
@@ -20,10 +20,12 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
 //    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
 //    var pathRoomService = PropertyUtil.getPropertyFromPlist("data",key: "pathRoomService")
-    var pathTopicServiceV2 = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicServiceV2")
-    var pathRoomServiceV1 = PropertyUtil.getPropertyFromPlist("data",key: "pathRoomServiceV1")
+//    var pathTopicServiceV2 = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicServiceV2")
+//    var pathRoomServiceV1 = PropertyUtil.getPropertyFromPlist("data",key: "pathRoomServiceV1")
+    
     var getHotToppicUrl:String!
     var getRoomUrl:String!
     var topicList = [NSDictionary]();
@@ -38,16 +40,15 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true
     }
-    
+ 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         getValuefromUserInfo()
-        self.getHotToppicUrl = "\(self.domainUrl)\(self.pathTopicServiceV2)/gethottopiclist?empEmail=\(self.empEmail)"
-        self.getRoomUrl = "\(self.domainUrl)\(self.pathRoomServiceV1)/get?empEmail=\(self.empEmail)"
+        self.getHotToppicUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/gethottopiclist?empEmail=\(self.empEmail)"
+        self.getRoomUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)room/get?empEmail=\(self.empEmail)"
         modelName = UIDevice.currentDevice().modelName
         print("*** SelectRoomVC ViewDidAppear ***")
         MRProgressOverlayView.showOverlayAddedTo(self.selectroomView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
-        
         getTopicWebService()
         getRoomsWebService()
     }

@@ -13,7 +13,8 @@ class MainUINavigationController: UINavigationController {
     
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
-    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var getUserByAccountIdUrl: String!
     var profile = [NSDictionary]();
     var status: Bool!
@@ -24,7 +25,7 @@ class MainUINavigationController: UINavigationController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("*** MainVC ViewDidAppear ***")
-        self.getUserByAccountIdUrl = "\(self.domainUrl)\(self.pathUserService)/checkUserActivation?empEmail="
+        self.getUserByAccountIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/checkUserActivation?empEmail="
         let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
             let fetchReq = NSFetchRequest(entityName: "User_Info");

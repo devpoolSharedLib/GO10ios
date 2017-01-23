@@ -24,7 +24,7 @@ import Siren
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     var window: UIWindow?
     var signInType: String?
-    
+    var badgeCount: Int = 9
     func application(application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
@@ -33,7 +33,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         GGLContext.sharedInstance().configureWithError(&configureError)
         assert(configureError == nil, "Error configuring Google services: \(configureError)")
         
-        Fabric.with([Crashlytics.self])
+        var helloWorldTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("sayHello"), userInfo: nil, repeats: true)
+        
+
+        
+//        Fabric.with([Crashlytics.self])
         
         IQKeyboardManager.sharedManager().enable = true
         
@@ -41,9 +45,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         setupSiren()
         
-        
         return true
         
+    }
+    
+    func sayHello()
+    {
+        self.badgeCount += 1
+        
+        NSLog("hello World + \(self.badgeCount)")
+        //        let badgeCount: Int = 9
+        let application = UIApplication.sharedApplication()
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Badge, .Alert, .Sound], categories: nil))
+        application.applicationIconBadgeNumber = badgeCount
     }
     
     func setupSiren() {
@@ -55,23 +69,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         // Optional
         siren.debugEnabled = true
+        // Optional
+//        siren.appName = "Test App Name"
         
         // Optional - Defaults to .Option
         //        siren.alertType = .Option // or .Force, .Skip, .None
         // Optional - Can set differentiated Alerts for Major, Minor, Patch, and Revision Updates (Must be called AFTER siren.alertType, if you are using siren.alertType)
-        siren.majorUpdateAlertType = .Force
-        siren.minorUpdateAlertType = .Force
-        siren.patchUpdateAlertType = .Force
-        siren.revisionUpdateAlertType = .Force
-//        siren.alertType = .Force
+        siren.majorUpdateAlertType = .Option
+        siren.minorUpdateAlertType = .Option
+        siren.patchUpdateAlertType = .Option
+        siren.revisionUpdateAlertType = .Option
+        
         // Optional - Sets all messages to appear in Spanish. Siren supports many other languages, not just English and Russian.
         //        siren.forceLanguageLocalization = .Russian
         // Optional - Set this variable if your app is not available in the U.S. App Store. List of codes: https://developer.apple.com/library/content/documentation/LanguagesUtilities/Conceptual/iTunesConnect_Guide/Appendices/AppStoreTerritories.html
         //        siren.countryCode = ""
         // Optional - Set this variable if you would only like to show an alert if your app has been available on the store for a few days. The number 5 is used as an example.
         //        siren.showAlertAfterCurrentVersionHasBeenReleasedForDays = 5
-        
-        print("xxxxxxxxxxxxx \(siren.checkVersion(.Immediately))")
         // Required
         siren.checkVersion(.Immediately)
     }

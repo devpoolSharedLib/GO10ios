@@ -17,14 +17,15 @@ class ForgotPasswordViewController: UIViewController {
     @IBOutlet weak var emailLbl: UILabel!
     @IBOutlet weak var emailTxtField: UITextField!
     @IBOutlet weak var sendEmailBtn: UIButton!
-    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
-    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
+    var domainUrlHttps = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var resetPasswordByEmailUrl: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** ForgotPasswordVC ViewDidLoad ***")
-        self.resetPasswordByEmailUrl = "\(self.domainUrl)\(self.pathUserService)/resetPasswordByEmail?email="
+        self.resetPasswordByEmailUrl = "\(self.domainUrlHttps)GO10WebService/api/\(self.versionServer)user/resetPasswordByEmail?email="
         self.sendEmailBtn.layer.cornerRadius = 5
     }
 
