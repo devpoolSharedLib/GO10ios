@@ -20,7 +20,6 @@ class VerifyTokenViewController: UIViewController {
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var getUserByToken:String!
     var profile = [NSDictionary]();
     var activate: Bool!

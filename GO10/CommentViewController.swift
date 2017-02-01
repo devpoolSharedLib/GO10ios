@@ -20,8 +20,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     @IBOutlet weak var commentTxtView: RichEditorView!
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
-     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-//    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var postCommentUrl: String!
     var uploadServletUrl: String!
   
@@ -41,7 +40,6 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** CommentVC ViewDidiLoad ***")
-        
         self.postCommentUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/post"
         self.uploadServletUrl = "\(self.domainUrl)GO10WebService/UploadServlet"
         topicId = receiveComment.valueForKey("_id") as! String

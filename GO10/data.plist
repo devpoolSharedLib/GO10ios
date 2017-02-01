@@ -18,5 +18,9 @@
 	<string>GO10WebService/api/user/</string>
 	<key>versionServer</key>
 	<string>v116103/</string>
+	<key>AppGUID</key>
+	<string>3c5e9860-be2b-4276-a53b-b12f0d3db6bb</string>
+	<key>clientSecret</key>
+	<string>f1b7da23-fe5e-40d4-99b5-ca39eaae8b35</string>
 </dict>
 </plist>

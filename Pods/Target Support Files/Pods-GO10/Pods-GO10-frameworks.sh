@@ -86,6 +86,9 @@ strip_invalid_archs() {
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/AFNetworking/AFNetworking.framework"
   install_framework "$BUILT_PRODUCTS_DIR/ActiveLabel/ActiveLabel.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/BMSAnalyticsAPI/BMSAnalyticsAPI.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/BMSCore/BMSCore.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/BMSPush/BMSPush.framework"
   install_framework "$BUILT_PRODUCTS_DIR/CarbonKit/CarbonKit.framework"
   install_framework "$BUILT_PRODUCTS_DIR/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework"
   install_framework "$BUILT_PRODUCTS_DIR/KMPlaceholderTextView/KMPlaceholderTextView.framework"
@@ -97,6 +100,9 @@ fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/AFNetworking/AFNetworking.framework"
   install_framework "$BUILT_PRODUCTS_DIR/ActiveLabel/ActiveLabel.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/BMSAnalyticsAPI/BMSAnalyticsAPI.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/BMSCore/BMSCore.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/BMSPush/BMSPush.framework"
   install_framework "$BUILT_PRODUCTS_DIR/CarbonKit/CarbonKit.framework"
   install_framework "$BUILT_PRODUCTS_DIR/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework"
   install_framework "$BUILT_PRODUCTS_DIR/KMPlaceholderTextView/KMPlaceholderTextView.framework"

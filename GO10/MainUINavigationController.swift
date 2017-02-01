@@ -14,7 +14,6 @@ class MainUINavigationController: UINavigationController {
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var getUserByAccountIdUrl: String!
     var profile = [NSDictionary]();
     var status: Bool!

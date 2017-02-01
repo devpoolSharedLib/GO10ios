@@ -22,7 +22,6 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-//    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
     var postTopicUrl: String!
     var uploadServletUrl: String!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate

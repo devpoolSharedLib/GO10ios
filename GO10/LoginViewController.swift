@@ -14,7 +14,6 @@ class LoginViewController: UIViewController {
     
     var domainUrlHttps = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var getUserByUserPasswordUrl: String!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var profile = [NSDictionary]();
@@ -61,11 +60,9 @@ class LoginViewController: UIViewController {
     
     @IBAction func gotoTermConditon(sender: AnyObject) {
         self.performSegueWithIdentifier("gotoTerm_Cond", sender: nil)
-        
     }
     
     @IBAction func gotoSelectRoomPage(sender: AnyObject) {
-        
         let email = self.emailTxtField.text
         let password = self.passwordTxtField.text
         
@@ -89,7 +86,6 @@ class LoginViewController: UIViewController {
         req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         let request = NSURLSession.sharedSession().dataTaskWithRequest(req) { (data, response, error) in
             do{
-                    
                 self.profile = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
                 print("\(NSDate().formattedISO8601) profile : \(self.profile)")
                 if(self.profile.isEmpty){
@@ -193,12 +189,10 @@ class LoginViewController: UIViewController {
         }catch{
             print("\(NSDate().formattedISO8601) Error Saving Profile Data");
         }
-        
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func checkSpace(strCheck: String) -> Bool {

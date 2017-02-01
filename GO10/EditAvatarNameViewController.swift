@@ -15,7 +15,6 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var updateUserUrl: String!
     var checkAvatarNameUrl: String!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate

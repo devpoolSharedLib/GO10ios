@@ -21,7 +21,6 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-//    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
     var getRoomByIdUrl: String!
     var roomList = [NSDictionary]();
     var roomId: String!
@@ -127,7 +126,14 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
 //        print("\(NSDate().formattedISO8601) bean : \(bean)")
         roomSubjectLbl.text = bean.valueForKey("subject") as? String
 //        roomUserAvatarNameLbl.text = bean.valueForKey("avatarName") as? String
-        countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
+        
+        if(bean.valueForKey("countLike") != nil){
+            countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
+        }else{
+            countLikeLbl.text = "0"
+        }
+        
+//        countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
         dateTime.text = bean.valueForKey("date") as? String
 
         let picAvatar = bean.valueForKey("avatarPic") as? String

@@ -19,7 +19,6 @@ class ForgotPasswordViewController: UIViewController {
     @IBOutlet weak var sendEmailBtn: UIButton!
     var domainUrlHttps = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var resetPasswordByEmailUrl: String!
 
     override func viewDidLoad() {

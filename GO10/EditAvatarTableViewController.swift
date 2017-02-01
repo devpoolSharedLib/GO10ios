@@ -20,7 +20,6 @@ class EditAvatarTableViewController: UITableViewController {
     
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-//    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var getUserByTokenUrl: String!
     var updateUserUrl: String!
     var recieveformverify: String!

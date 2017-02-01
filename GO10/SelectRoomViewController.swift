@@ -141,7 +141,12 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         }
         topicSubjectLbl.text =  bean.valueForKey("subject") as? String
 //        topicUserAvatarNameLbl.text =  bean.valueForKey("avatarName") as? String
-        countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
+        if(bean.valueForKey("countLike") != nil){
+            countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
+        }else{
+            countLikeLbl.text = "0"
+        }
+        
         let roomID = bean.valueForKey("roomId") as! String
         for item in RoomModelUtil.room { // loop through data items
             if(item.key as? String == roomID){

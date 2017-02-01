@@ -20,8 +20,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-//    var pathTopicService = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicService")
-//    var pathTopicServiceV2 = PropertyUtil.getPropertyFromPlist("data",key: "pathTopicServiceV2")
     var getHotToppicByIdUrl: String!
     var checkIsLikeUrl: String!
     var updateLikeUrl: String!
@@ -302,12 +300,23 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 print("error : \(error.localizedDescription)")
             }
             
-            print(">>>>> count read >>>> \(boardContentBean.valueForKey("countRead"))")
             let picAvatar = boardContentBean.valueForKey("avatarPic") as? String
             hostImg.image = UIImage(named: picAvatar!)
             hostNameLbl.text =  boardContentBean.valueForKey("avatarName") as? String
             hostTimeLbl.text =  boardContentBean.valueForKey("date") as? String
-            self.countLikeLbl.text = String(boardContentBean.valueForKey("countLike") as! Int)
+            if(boardContentBean.valueForKey("countLike") != nil){
+                self.countLikeLbl.text = String(boardContentBean.valueForKey("countLike") as! Int)
+            }else{
+                self.countLikeLbl.text = "0"
+            }
+//            self.countLikeLbl.text = String(boardContentBean.valueForKey("countLike") as! Int)
+            
+            if(boardContentBean.valueForKey("countRead") != nil){
+                print(">>>>> count read >>>> \(boardContentBean.valueForKey("countRead"))")
+            }else{
+                print(">>>>> count read >>>> 0)")
+            }
+            
         }else if boardContentBean.valueForKey("type") as! String == "comment" {
             cell = tableView.dequeueReusableCellWithIdentifier("commentCell", forIndexPath: indexPath)
             let commentContentLbl = cell.viewWithTag(36) as! ActiveLabel;
