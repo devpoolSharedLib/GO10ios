@@ -14,6 +14,7 @@ class LoginFBViewController: UIViewController, GIDSignInUIDelegate ,GIDSignInDel
     @IBOutlet weak var btnLoginFacebook: UIButton!
     @IBOutlet weak var btnSigninGoogle: UIButton!
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     var modelName: String!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,15 +95,14 @@ class LoginFBViewController: UIViewController, GIDSignInUIDelegate ,GIDSignInDel
     }
     
     func saveUserInfo(accountId: String){
-        // Write Data into CoreData
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+        print("saveUserInfo")
         do{
-                let newUser = NSEntityDescription.insertNewObjectForEntityForName("User_Info", inManagedObjectContext: context);
-                newUser.setValue(accountId, forKey: "accountId");
-                newUser.setValue("Name" , forKey: "empName");
-                newUser.setValue("email@gosoft.co.th", forKey: "empEmail");
-                newUser.setValue("default_avatar", forKey: "avatarPic");
-                newUser.setValue("default_avatar", forKey: "avatarPicTemp");
+                let newUser = NSEntityDescription.insertNewObjectForEntityForName("User_Info", inManagedObjectContext: self.context)
+                newUser.setValue(accountId, forKey: "accountId")
+                newUser.setValue("Name" , forKey: "empName")
+                newUser.setValue("email@gosoft.co.th", forKey: "empEmail")
+                newUser.setValue("default_avatar", forKey: "avatarPic")
+                newUser.setValue("default_avatar", forKey: "avatarPicTemp")
                 newUser.setValue("avatar", forKey: "avatarName")
                 newUser.setValue(true, forKey: "avatarCheckSelect")
                 newUser.setValue(false, forKey: "activate")
@@ -110,12 +110,10 @@ class LoginFBViewController: UIViewController, GIDSignInUIDelegate ,GIDSignInDel
                 newUser.setValue("user", forKey: "type")
                 newUser.setValue("_id", forKey: "id_")
                 newUser.setValue("_rev", forKey: "rev_")
-            try context.save();
+            try context.save()
             print("\(NSDate().formattedISO8601) Save Data Success")
         }catch{
-            print("\(NSDate().formattedISO8601) Error Saving Profile Data");
+            print("\(NSDate().formattedISO8601) Error Saving Profile Data")
         }
-        
     }
-    
 }

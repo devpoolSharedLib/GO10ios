@@ -17,7 +17,9 @@ class EditAvatarTableViewController: UITableViewController {
     @IBOutlet weak var editAvatarLbl: UILabel!
     @IBOutlet weak var cameraImg: UIImageView!
     @IBOutlet var editavatarTableView: UITableView!
-    
+    //    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var getUserByTokenUrl: String!
@@ -26,7 +28,6 @@ class EditAvatarTableViewController: UITableViewController {
     var recieveStatusLogin: String!
     var backbtn: UIBarButtonItem!
     var submitBtn: UIBarButtonItem!
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var modelName: String!
     
     override func viewDidLoad() {
@@ -42,20 +43,17 @@ class EditAvatarTableViewController: UITableViewController {
             avartarNameLbl.font = FontUtil.iphonepainText
             editAvatarLbl.font = FontUtil.iphoneHotTopicNameAvatar
         }
-
         if(recieveStatusLogin == nil){
             recieveStatusLogin = "not First Login"
         }
             if(recieveStatusLogin == "First Login" && recieveStatusLogin != nil){
                 print("First Login")
-                let context: NSManagedObjectContext = appDelegate.managedObjectContext;
                     do{
-                        let fetchReq = NSFetchRequest(entityName: "User_Info");
-                        let result = try context.executeFetchRequest(fetchReq);
+                        let result = try self.context.executeFetchRequest(self.fetchReqUserInfo)
                         result[0].setValue(false, forKey: "statusLogin")
-                        try context.save();
+                        try self.context.save()
                         }catch{
-                            print("\(NSDate().formattedISO8601) Error Reading Data");
+                            print("\(NSDate().formattedISO8601) Error Reading Data")
                         }
                 self.navigationItem.setHidesBackButton(true, animated:true)
             }else{
@@ -69,17 +67,11 @@ class EditAvatarTableViewController: UITableViewController {
         super.viewDidAppear(animated)
         print("*** EditAvatarTableVC ViewDidAppear ***")
         MRProgressOverlayView.showOverlayAddedTo(self.editavatarTableView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
-            let userPicAvatar = result[0].valueForKey("avatarPic") as! String;
-            let userNameAvatar = result[0].valueForKey("avatarName") as! String;
-            
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+            let userPicAvatar = result[0].valueForKey("avatarPic") as! String
+            let userNameAvatar = result[0].valueForKey("avatarName") as! String
             print("\(NSDate().formattedISO8601) Data_Info :\(result)")
-
             let avatarImage = UIImage(named: userPicAvatar)
             if(avatarImage != nil){
                 print("\(NSDate().formattedISO8601) avatarImage : \(userPicAvatar)")
@@ -87,41 +79,30 @@ class EditAvatarTableViewController: UITableViewController {
                 avatarImageButton.setImage(avatarImage, forState: .Normal)
                 cameraImg.image = UIImage(named: "camera")
             }
-            
             editAvatarLbl.text = userNameAvatar
-//            updateRev(token)
             MRProgressOverlayView.dismissOverlayForView(self.editavatarTableView, animated: true)
         }catch{
-            print("\(NSDate().formattedISO8601) Error Reading Data");
+            print("\(NSDate().formattedISO8601) Error Reading Data")
         }
-        
     }
 
     @IBAction func submitAvatar(sender: AnyObject) {
         print("SUBMIT AVATAR")
         if(recieveStatusLogin == "First Login" && recieveStatusLogin != nil){
             print("First Login")
-            let context: NSManagedObjectContext = appDelegate.managedObjectContext;
             do{
-                let fetchReq = NSFetchRequest(entityName: "User_Info");
-                let result = try context.executeFetchRequest(fetchReq);
+                let result = try self.context.executeFetchRequest(self.fetchReqUserInfo)
                 result[0].setValue(false, forKey: "statusLogin")
-                try context.save();
+                try self.context.save()
             }catch{
-                print("\(NSDate().formattedISO8601) Error Reading Data");
+                print("\(NSDate().formattedISO8601) Error Reading Data")
             }
             self.navigationItem.setHidesBackButton(true, animated:true)
         }
-        
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
-            let userPicAvatar = result[0].valueForKey("avatarPic") as! String;
-            let userNameAvatar = result[0].valueForKey("avatarName") as! String;
-            
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+            let userPicAvatar = result[0].valueForKey("avatarPic") as! String
+            let userNameAvatar = result[0].valueForKey("avatarName") as! String
             if(userNameAvatar=="Avatar Name" || userPicAvatar == "default_avatar"){
                 NSOperationQueue.mainQueue().addOperationWithBlock {
                     let alert = UIAlertController(title: "Alert", message: "Please Set Your Avatar Picture and Avatar Name.", preferredStyle: UIAlertControllerStyle.Alert)
@@ -135,63 +116,27 @@ class EditAvatarTableViewController: UITableViewController {
                 }
             }
         }catch{
-            print("\(NSDate().formattedISO8601) Error Reading Data");
+            print("\(NSDate().formattedISO8601) Error Reading Data")
         }
-        
     }
     
-    func updateRev(token: String){
-        print("\(NSDate().formattedISO8601) getTokenWebservice")
-        let url = self.getUserByTokenUrl + token
-        let urlWs = NSURL(string: url)
-        print("\(NSDate().formattedISO8601) URL : \(url)")
-        let urlsession = NSURLSession.sharedSession()
-        let request = urlsession.dataTaskWithURL(urlWs!) { (data, response, error) in
-            do{
-                let profile = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
-                print("\(NSDate().formattedISO8601) profile : \(profile)")
-                
-                // Write Data into CoreData
-                let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
-                do{
-                    let fetchReq = NSFetchRequest(entityName: "User_Info");
-                    let result = try context.executeFetchRequest(fetchReq);
-                    result[0].setValue(profile[0].valueForKey("_rev"), forKey: "rev_")
-                    try context.save();
-                    print("\(NSDate().formattedISO8601) Save Data Success")
-                    
-                    }catch{
-                        print("\(NSDate().formattedISO8601) Error Saving Profile Data");
-                    }
-                
-                }catch let error as NSError{
-                    print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
-                }
-            }
-            request.resume()
-    }
-
     func updateData(){
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            let _id = result[0].valueForKey("id_") as! String;
-            let _rev = result[0].valueForKey("rev_") as! String;
-            let empName = result[0].valueForKey("empName") as! String;
-            let empEmail = result[0].valueForKey("empEmail") as! String;
-            let avatarName = result[0].valueForKey("avatarName") as! String;
-            let avatarPic = result[0].valueForKey("avatarPic") as! String;
-            let activate = result[0].valueForKey("activate") as! Bool;
-            let type = result[0].valueForKey("type") as! String;
-            let birthday = result[0].valueForKey("birthday") as! String;
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+            let _id = result[0].valueForKey("id_") as! String
+            let _rev = result[0].valueForKey("rev_") as! String
+            let empName = result[0].valueForKey("empName") as! String
+            let empEmail = result[0].valueForKey("empEmail") as! String
+            let avatarName = result[0].valueForKey("avatarName") as! String
+            let avatarPic = result[0].valueForKey("avatarPic") as! String
+            let activate = result[0].valueForKey("activate") as! Bool
+            let type = result[0].valueForKey("type") as! String
+            let birthday = result[0].valueForKey("birthday") as! String
             result[0].setValue(true, forKey: "activate")
-            
             print("\(NSDate().formattedISO8601) putUpdateWebservice")
             let urlWs = NSURL(string: self.updateUserUrl )
             print("\(NSDate().formattedISO8601) URL : \(urlWs)")
             let requestPost = NSMutableURLRequest(URL: urlWs!)
-
             let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"birthday\":\"\(birthday)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
             print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
             
@@ -205,7 +150,6 @@ class EditAvatarTableViewController: UITableViewController {
                     print("error=\(error)")
                     return
                 }
-                
                 if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {
                     print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus.statusCode)")
                     print("\(NSDate().formattedISO8601) response = \(response)")
@@ -215,13 +159,11 @@ class EditAvatarTableViewController: UITableViewController {
                 result[0].setValue(responseString, forKey: "rev_")
             }
             request.resume()
-            
-            
         }catch{
-            print("\(NSDate().formattedISO8601) Error Reading and Saving Data");
+            print("\(NSDate().formattedISO8601) Error Reading and Saving Data")
         }
-
     }
+    
     @IBAction func unwindToEditAvatar(segue: UIStoryboardSegue) {
         print("\(NSDate().formattedISO8601) unwindToEditAvatar")
     }

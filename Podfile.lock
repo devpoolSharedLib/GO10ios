@@ -21,11 +21,7 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - BMSAnalyticsAPI (2.2.0)
-  - BMSCore (2.2.0):
-    - BMSAnalyticsAPI (~> 2.2)
-  - BMSPush (3.1.0):
-    - BMSCore (~> 2.0)
+  - BadgeSwift (4.0.0)
   - CarbonKit (2.1.7)
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
@@ -115,14 +111,14 @@ PODS:
   - MRProgress/ProgressBaseClass (0.8.3)
   - MRProgress/Stopable (0.8.3):
     - MRProgress/Helper
+  - OneSignal (2.3.4)
   - RichEditorView (3.2.0)
   - Siren (0.9.5)
   - Toucan (0.5.0)
 
 DEPENDENCIES:
   - ActiveLabel (~> 0.6.0)
-  - BMSCore
-  - BMSPush
+  - BadgeSwift (~> 4.0)
   - CarbonKit (~> 2.1)
   - Crashlytics
   - Fabric
@@ -131,6 +127,7 @@ DEPENDENCIES:
   - KMPlaceholderTextView (~> 1.2.0)
   - MRProgress
   - MRProgress/AFNetworking
+  - OneSignal
   - RichEditorView
   - Siren (= 0.9.5)
   - Toucan (~> 0.5)
@@ -138,9 +135,7 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   ActiveLabel: ec8c7a0995ab2d789ab74b72b105397dc079ff97
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  BMSAnalyticsAPI: 2dae02bc3321b944ae947a7d2f0f009d8035f8e7
-  BMSCore: 13febb1f39d0dff611d453bd0b75349bbbe1eba0
-  BMSPush: 00f59b3ba3cc3b54a3d071d671c1cf96887a293d
+  BadgeSwift: b291cf8ca88674d61cd781f14988272988f4dff4
   CarbonKit: 88f90b6290af1306c82fd5ba8d2aa4dd19e08083
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
@@ -157,10 +152,11 @@ SPEC CHECKSUMS:
   IQKeyboardManagerSwift: e0964d04d6a29b71016fd346dca13ecb80a2823a
   KMPlaceholderTextView: cae8ee889bd38d20587eee6b2623b8218f31b8f5
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
+  OneSignal: c8f0d08ffa30fcf751c97a29639725877027e788
   RichEditorView: b4ee60a4f5301cbe8f3fcb1f065cdd7de74ddd10
   Siren: a536a4fed41def10e540a9804b2a63a4b3634f6b
   Toucan: 0519c341148252ae114c5a657d2a85bb9ada9e40
 
-PODFILE CHECKSUM: d447ef1cda597afb2e6ae91b4e8ee80e32928c81
+PODFILE CHECKSUM: 2609be421619cb3dd11da35da7173a09453909c7
 
 COCOAPODS: 1.1.1

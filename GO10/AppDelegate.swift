@@ -13,145 +13,134 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
+    
+import Foundation
 import UIKit
 import CoreData
 import Fabric
 import Crashlytics
 import IQKeyboardManagerSwift
 import Siren
-import BMSCore
-import BMSPush
+import OneSignal
 
-    
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
     var window: UIWindow?
     var signInType: String?
-    var badgeCount: Int = 9
+    var badgeCount: Int = 0
+    var appId = PropertyUtil.getPropertyFromPlist("data",key: "appID")
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var getbadgenumbernotificationUrl: String!
+    var empEmail: String!
+    var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     
     func application(application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        print("UUID : \(UIDevice.currentDevice().identifierForVendor?.UUIDString)")
+        print("appID : \(self.appId)")
+        application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+        OneSignal.initWithLaunchOptions(launchOptions, appId: self.appId, handleNotificationReceived: { (notification) in
+            print("Received Notification - \(notification.payload.notificationID)")
+            }, handleNotificationAction: { (result) in
+                
+                // This block gets called when the user reacts to a notification received
+                let payload = result.notification.payload
+                let fullMessage = payload.title
+                
+                print("Title Notification : \(fullMessage) >>>>> Content Notification : \(payload.body  )" )
+                
+            }, settings: [kOSSettingsKeyAutoPrompt : false, kOSSettingsKeyInFocusDisplayOption : OSNotificationDisplayType.None.rawValue])
         
-//        print("UUID : \(UIDevice.currentDevice().identifierForVendor?.UUIDString)")
-        NSLog((UIDevice.currentDevice().identifierForVendor?.UUIDString)!, "asdlfkjsldkfnkdwafkl;adfl;k")
-        
-        let myBMSClient = BMSClient.sharedInstance
-        myBMSClient.initialize(bluemixRegion: BMSClient.Region.sydney)
-        
-        let push =  BMSPushClient.sharedInstance
-//        push.initializeWithAppGUID(appGUID: "3c5e9860-be2b-4276-a53b-b12f0d3db6bb", clientSecret:"f1b7da23-fe5e-40d4-99b5-ca39eaae8b35")
-        
-        let actionOne = BMSPushNotificationAction(identifierName: "FIRST", buttonTitle: "Accept", isAuthenticationRequired: false, defineActivationMode: UIUserNotificationActivationMode.Background)
-        
-        let actionTwo = BMSPushNotificationAction(identifierName: "SECOND", buttonTitle: "Reject", isAuthenticationRequired: false, defineActivationMode: UIUserNotificationActivationMode.Background)
-        
-        let category = BMSPushNotificationActionCategory(identifierName: "category", buttonActions: [actionOne, actionTwo])
-        
-        let notificationOptions = BMSPushClientOptions(categoryName: [category])
-        
-        push.initializeWithAppGUID(PropertyUtil.getPropertyFromPlist("data",key: "AppGUID"), clientSecret:PropertyUtil.getPropertyFromPlist("data",key: "clientSecret"), options: notificationOptions)
-        
-        let remoteNotif = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary
-        
-        if remoteNotif != nil {
-            let urlField = remoteNotif?.valueForKey("url") as! String
-            UIApplication.sharedApplication().openURL(NSURL(string: urlField)!)
-        }
-
-                FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-                var configureError: NSError?
-                GGLContext.sharedInstance().configureWithError(&configureError)
-                assert(configureError == nil, "Error configuring Google services: \(configureError)")
-        
-//        showBadgeNumber()
-        addObjToCoreData("Notification",val:100, key: "badgeNumber")
 //        Fabric.with([Crashlytics.self])
         IQKeyboardManager.sharedManager().enable = true
-//        window?.makeKeyAndVisible()
-//        setupSiren()
+        window?.makeKeyAndVisible()
+        setupSiren()
         return true
         
     }
     
     func application(application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: NSError){
+        print("One Signal")
         print("**************************** didFailToRegisterForRemoteNotificationsWithError")
         print(error)
     }
     
-    func application (application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData){
-        print("**************************** didRegisterForRemoteNotificationsWithDeviceToken \(deviceToken) ")
-        let push =  BMSPushClient.sharedInstance
-        
-        push.registerWithDeviceToken(deviceToken, WithUserId: "jirapaschi") { (response, statusCode, error) -> Void in
-            if error.isEmpty {
-                print( "Response during device registration : \(response)")
-                print( "status code during device registration : \(statusCode)")
-            }else{
-                print( "Error during device registration \(error) ")
-                print( "Error during device registration \n  - status code: \(statusCode) \n Error :\(error) \n")
+    func getBadgeNumberNotification() {
+        print("\(NSDate().formattedISO8601) getBadgeNumberNotification empEmail : \(self.empEmail)")
+        self.getbadgenumbernotificationUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/getbadgenumbernotification?"
+        let urlWs = NSURL(string: "\(self.getbadgenumbernotificationUrl)empEmail=\(self.empEmail)")
+        print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+        let request = NSMutableURLRequest(URL: urlWs!)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        let urlsession = NSURLSession.sharedSession()
+        let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
+            guard error == nil && data != nil else {
+                print("\(NSDate().formattedISO8601) error=\(error)")
+                return
             }
+            
+            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 201 {
+                print("\(NSDate().formattedISO8601) statusCode should be 201, but is \(httpStatus.statusCode)")
+                print("\(NSDate().formattedISO8601) response = \(response)")
+            }else{
+                let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                print("\(NSDate().formattedISO8601) responseString = \(responseString!)")
+                self.badgeCount = Int(responseString as! String)!
+                self.showBadgeNumber()
+            }
+//            completionHandler(UIBackgroundFetchResult.NoData)
         }
-    }
-    
-    // Send notification status when app is opened by clicking the notifications
-//    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-//        print("**************************** didReceiveRemoteNotification clicking the notifications")
-//        let respJson = (userInfo as NSDictionary).valueForKey("payload") as! String
-//        let data = respJson.dataUsingEncoding(NSUTF8StringEncoding)
-//        
-//        do {
-//            let responseObject:NSDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as! NSDictionary
-//            let nid = responseObject.valueForKey("nid") as! String
-//            print(nid)
-//            
-//            let push =  BMSPushClient.sharedInstance
-//            
-//            push.sendMessageDeliveryStatus(nid, completionHandler: { (response, statusCode, error) in
-//                
-//                print("Send message status to the Push server")
-//            })
-//            
-//        } catch let error as NSError {
-//            print("error: \(error.localizedDescription)")
-//        }
-//    }
-    
-    
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        
-        print("**************************** didReceiveRemoteNotification")
-        
-        let payLoad = ((((userInfo as NSDictionary).valueForKey("aps") as! NSDictionary).valueForKey("alert") as! NSDictionary).valueForKey("body") as! NSString)
-        print("payload \(payLoad)")
-        let alert = UIAlertController(title: "Recieved Push notifications", message: payLoad as String, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
-        self.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+        requestSent.resume()
 
-        let respJson = (userInfo as NSDictionary).valueForKey("payload") as! String
-        let data = respJson.dataUsingEncoding(NSUTF8StringEncoding)
-        
-        do {
-            let responseObject:NSDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as! NSDictionary
-            let nid = responseObject.valueForKey("nid") as! String
-            print("nid \(nid)")
-            let push =  BMSPushClient.sharedInstance
+    }
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        print("xxxxxx didReceiveRemoteNotification xxxxxx")
+        self.badgeCount = 88888
+        showBadgeNumber()
+        if (application.applicationState == UIApplicationState.Active) {
+            print("******* State Active")
+        }
+        else {
+            print("******* State Inactive")
+            //        completionHandler(UIBackgroundFetchResult.NewData)
+                    self.getValuefromUserInfo()
+            //        self.getBadgeNumberNotification()
+                    print("\(NSDate().formattedISO8601) getBadgeNumberNotification empEmail : \(self.empEmail)")
+                    self.getbadgenumbernotificationUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/getbadgenumbernotification?"
+                    let urlWs = NSURL(string: "\(self.getbadgenumbernotificationUrl)empEmail=\(self.empEmail)")
+                    print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+                    let request = NSMutableURLRequest(URL: urlWs!)
+                    request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+                    let urlsession = NSURLSession.sharedSession()
+                    let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
+                        guard error == nil && data != nil else {
+                            print("\(NSDate().formattedISO8601) error=\(error)")
+                            return
+                        }
             
-            push.sendMessageDeliveryStatus(nid, completionHandler: { (response, statusCode, error) in
-                completionHandler(UIBackgroundFetchResult.NewData)
-            })
-            
-        } catch let error as NSError {
-            print("error: \(error.localizedDescription)")
+                        if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 201 {
+                            print("\(NSDate().formattedISO8601) statusCode should be 201, but is \(httpStatus.statusCode)")
+                            print("\(NSDate().formattedISO8601) response = \(response)")
+                        }else{
+                            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                            print("\(NSDate().formattedISO8601) responseString = \(responseString!)")
+                            self.badgeCount = Int(responseString as! String)!
+                            self.showBadgeNumber()
+                        }
+                            completionHandler(UIBackgroundFetchResult.NewData)
+                    }
+                    requestSent.resume()
         }
     }
+    
     
     func showBadgeNumber()
     {
-//        self.badgeCount += 1
-        NSLog("badgeCount : \(self.badgeCount)")
+        print("badgeCount : \(self.badgeCount)")
         let application = UIApplication.sharedApplication()
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Badge, .Alert, .Sound], categories: nil))
+//        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Badge, .Alert, .Sound], categories: nil))
         application.applicationIconBadgeNumber = self.badgeCount
     }
     
@@ -167,83 +156,80 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         siren.checkVersion(.Immediately)
     }
     
+//    func applicationWillEnterForeground(application: UIApplication) {
+//        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+//        print(">>>>>>>>>>>>>>>>>>>>  : applicationWillEnterForeground")
+//        Siren.sharedInstance.checkVersion(.Immediately)
+//    }
     
-    func applicationWillEnterForeground(application: UIApplication) {
-        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-        print("XXXXXXXXXXXXXXX : applicationWillEnterForeground")
-        Siren.sharedInstance.checkVersion(.Immediately)
+    func applicationDidEnterBackground(application: UIApplication) {
+        print("applicationDidEnterBackground")
+        self.badgeCount = 98
+        showBadgeNumber()
     }
     
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        print("XXXXXXXXXXXXXXX : applicationDidBecomeActive")
-        print("XXXXXXXXXXXXXXX BadgeNumberFromCoreDate \(getValuefromCoreDate("Notification", key: "badgeNumber") as! Int)")
-//        self.badgeCount = 0
-//        showBadgeNumber()
+        print(">>>>>>>>>>>>>>>>>>>> applicationDidBecomeActive")
         Siren.sharedInstance.checkVersion(.Daily)
     }
     
-    func addObjToCoreData(entityName:String,val:AnyObject,key:String){
-        print("XXXXXXXXXXXXXXX : addObjToCoreData")
-        let context: NSManagedObjectContext = self.managedObjectContext
-        do{             let fetchReq = NSFetchRequest(entityName: entityName)
-            let result = try context.executeFetchRequest(fetchReq)
-            if(result.count > 0){
-                print("set Old User")
-                result[0].setValue(val, forKey: key)
-            }else{
-                print("set New User")
-                let newUser = NSEntityDescription.insertNewObjectForEntityForName(entityName, inManagedObjectContext: context)
-                newUser.setValue(val, forKey: key)
-            }
-            try context.save()
-            print("\(NSDate().formattedISO8601) Save Data Success")
-        }catch{
-            print("\(NSDate().formattedISO8601) Error Saving Profile Data")
-        }
+    func applicationWillTerminate(application: UIApplication) {
+        print(">>>>>>>>>>>>>>>>>>>> applicationWillTerminate")
+        
+        UIApplication.sharedApplication().backgroundTimeRemaining
+
+        self.badgeCount = 99999
+        showBadgeNumber()
+//         Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+//         Saves changes in the application's managed object context before the application terminates.
+//        self.saveContext()
     }
     
-    func getValuefromCoreDate(entityName:String,key:String) -> AnyObject{
-        let context: NSManagedObjectContext = self.managedObjectContext
+    
+    func getValuefromUserInfo(){
+        
         do{
-            let fetchReq = NSFetchRequest(entityName: entityName)
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject]
-            return result[0].valueForKey(key)!
+            let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+            let result = try context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+            
+            self.empEmail = result[0].valueForKey("empEmail") as! String
         }catch{
             print("\(NSDate().formattedISO8601) Error Reading Data")
-            return false
         }
     }
-
     
-    func application(application: UIApplication,
-                     openURL url: NSURL, sourceApplication: String?,
-                             annotation: AnyObject) -> Bool {
-        
-        print("signInType \(signInType)")
-        if(signInType == "Facebook"){
-            return FBSDKApplicationDelegate.sharedInstance().application(
-                application,
-                openURL: url,
-                sourceApplication: sourceApplication,
-                annotation: annotation)
-        } else {
-            return GIDSignIn.sharedInstance().handleURL(url,
-                                                        sourceApplication: sourceApplication,
-                                                        annotation: annotation)
-        }
-        
-    }
+//    func addObjToCoreData(entityName:String,val:AnyObject,key:String){
+//        print(">>>>>>>>>>>>>>>>>>>>  : addObjToCoreData")
+//        let context: NSManagedObjectContext = self.managedObjectContext
+//        do{             let fetchReq = NSFetchRequest(entityName: entityName)
+//            let result = try context.executeFetchRequest(fetchReq)
+//            if(result.count > 0){
+//                print("set Old User")
+//                result[0].setValue(val, forKey: key)
+//            }else{
+//                print("set New User")
+//                let newUser = NSEntityDescription.insertNewObjectForEntityForName(entityName, inManagedObjectContext: context)
+//                newUser.setValue(val, forKey: key)
+//            }
+//            try context.save()
+//            print("\(NSDate().formattedISO8601) Save Data Success")
+//        }catch{
+//            print("\(NSDate().formattedISO8601) Error Saving Profile Data")
+//        }
+//    }
     
-    func signIn(signIn: GIDSignIn!, didSignInForUser user: GIDGoogleUser!,
-                withError error: NSError!) {
-        print("signin AppDeligate")
-    }
-    
-    func signIn(signIn: GIDSignIn!, didDisconnectWithUser user:GIDGoogleUser!,
-                withError error: NSError!) {
-    }
-    
+//    func getValuefromCoreDate(entityName:String,key:String) -> AnyObject{
+//        let context: NSManagedObjectContext = self.managedObjectContext
+//        do{
+//            let fetchReq = NSFetchRequest(entityName: entityName)
+//            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject]
+//            return result[0].valueForKey(key)!
+//        }catch{
+//            print("\(NSDate().formattedISO8601) Error Reading Data")
+//            return false
+//        }
+//    }
     
     // MARK: - Core Data stack
     lazy var applicationDocumentsDirectory: NSURL = {

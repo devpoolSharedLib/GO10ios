@@ -11,8 +11,6 @@ import Foundation
 import MRProgress
 
 class ForgotPasswordViewController: UIViewController {
-
-    
     @IBOutlet var forgotView: UIView!
     @IBOutlet weak var emailLbl: UILabel!
     @IBOutlet weak var emailTxtField: UITextField!
@@ -49,7 +47,6 @@ class ForgotPasswordViewController: UIViewController {
         let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet())
         let urlWs = NSURL(string: strUrlEncode!)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
-
         let req = NSMutableURLRequest(URL: urlWs!)
         req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         let request = NSURLSession.sharedSession().dataTaskWithRequest(req) { (data, response, error) in
@@ -92,7 +89,6 @@ class ForgotPasswordViewController: UIViewController {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func checkSpace(strCheck: String) -> Bool {
@@ -105,5 +101,4 @@ class ForgotPasswordViewController: UIViewController {
             return false
         }
     }
-
 }

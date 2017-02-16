@@ -18,11 +18,15 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var imgView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
     
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    //    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var fetchReqRoomManageInfo = NSFetchRequest(entityName: "Room_Manage_Info")
+    var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
+    var fetchReqApplication = NSFetchRequest(entityName: "Application")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var getRoomByIdUrl: String!
-    var roomList = [NSDictionary]();
+    var roomList = [NSDictionary]()
     var roomId: String!
     var roomName: String!
     var receiveRoomList: NSDictionary!
@@ -32,23 +36,26 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var readUserCD: NSMutableDictionary = NSMutableDictionary()
     var postTopicBtn: UIBarButtonItem!
     var empEmail: String!
+    var refreshControl = UIRefreshControl()
+    var startDate: String!
     
         override func viewDidLoad() {
             super.viewDidLoad()
             print("*** RoomVC viewDidLoad ***")
-            self.getRoomByIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/gettopiclistbyroom?roomId="
+            self.getRoomByIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/gettopiclistbyroom?"
             roomId = receiveRoomList.valueForKey("_id") as! String
             roomName = receiveRoomList.valueForKey("name") as! String
-            lblRoom.text = roomName;
-            for item in  RoomModelUtil.room { // loop through data items
+            lblRoom.text = roomName
+            for item in  RoomModelUtil.roomImageName { // loop through data items
                 if(item.key as? String == roomId){
                     self.imgView.image = item.value as? UIImage
                 }
             }
             
             //get Value From Core Data
-            getValuefromRoomManageInfo()
-            getValuefromUserInfo()
+            self.getValuefromRoomManageInfo()
+            self.getValuefromUserInfo()
+            self.getvaluefromApplicationCD()
             
             let postUserArray = self.postUserCD.valueForKey(roomId) as! Array<String>
             if(RoomAdminUtil.checkAccess(postUserArray, empEmail: self.empEmail)){
@@ -57,21 +64,31 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 print("not Find Post User")
                 self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
             }
+            
+            refreshControl.addTarget(self, action: #selector(SelectRoomViewController.refreshPage), forControlEvents: .ValueChanged)
+            tableView.addSubview(refreshControl)
         }
-    
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("*** RoomVC viewDidAppear ***")
         modelName = UIDevice.currentDevice().modelName
-        print("\(NSDate().formattedISO8601) room id : \(roomId)")
+        print("\(NSDate().formattedISO8601) room id : \(self.roomId)")
         MRProgressOverlayView.showOverlayAddedTo(self.roomView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
-        getRoomByIdWebService(roomId)
+        getRoomByIdWebService()
     }
     
-    func getRoomByIdWebService(roomId: String) {
+    func refreshPage(){
+        getRoomByIdWebService()
+        refeshTableView()
+        refreshControl.endRefreshing()
+    }
+    
+    func getRoomByIdWebService(){
         print("\(NSDate().formattedISO8601) getRoomByIdWebService")
-        let urlWs = NSURL(string: self.getRoomByIdUrl + roomId)
+        let strUrl = "\(self.getRoomByIdUrl)roomId=\(self.roomId)&empEmail=\(self.empEmail)&startDate=\(self.startDate)"
+        let strUrlEncode = strUrl.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet())
+        let urlWs = NSURL(string: strUrlEncode!)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let request = NSMutableURLRequest(URL: urlWs!)
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
@@ -103,16 +120,13 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("roomCell", forIndexPath: indexPath)
-        let roomImg = cell.viewWithTag(21) as! UIImageView;
-        let roomSubjectLbl = cell.viewWithTag(22) as! UILabel;
-//        let roomUserAvatarNameLbl = cell.viewWithTag(23) as! UILabel;
-        let countLikeLbl = cell.viewWithTag(23) as! UILabel;
-        let dateTime = cell.viewWithTag(24) as! UILabel;
+        let roomImg = cell.viewWithTag(21) as! UIImageView
+        let roomSubjectLbl = cell.viewWithTag(22) as! UILabel
+        let countLikeLbl = cell.viewWithTag(23) as! UILabel
+        let dateTime = cell.viewWithTag(24) as! UILabel
         if(modelName.rangeOfString("ipad Mini") != nil){
-            
             roomLbl.font = FontUtil.ipadminiTopicName
             roomSubjectLbl.font = FontUtil.ipadminiPainText
-//            roomUserAvatarNameLbl.font = FontUtil.ipadminiHotTopicNameAvatar
             countLikeLbl.font = FontUtil.ipadminiHotTopicNameAvatar
             dateTime.font = FontUtil.ipadminiDateTime
         }else{
@@ -121,32 +135,39 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
             countLikeLbl.font = FontUtil.iphoneHotTopicNameAvatar
             dateTime.font = FontUtil.iphoneDateTime
         }
-        
         let bean = roomList[indexPath.row]
+      
+        let statusRead: Bool!
+        if (bean.valueForKey("statusRead") != nil){
+            print("statusRead != nil")
+            statusRead = bean.valueForKey("statusRead") as! Bool
+        }else{
+            print("statusRead = nil")
+            statusRead = true
+        }
+        
+        print("StartusRead >>>>>>>> \(statusRead)")
+        if (statusRead == false){
+            cell.backgroundColor = ColorUtil.unreadTopicColor
+        }else{
+            cell.backgroundColor = ColorUtil.normalTopicColor
+        }
+        
 //        print("\(NSDate().formattedISO8601) bean : \(bean)")
         roomSubjectLbl.text = bean.valueForKey("subject") as? String
-//        roomUserAvatarNameLbl.text = bean.valueForKey("avatarName") as? String
-        
         if(bean.valueForKey("countLike") != nil){
             countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
         }else{
             countLikeLbl.text = "0"
         }
-        
-//        countLikeLbl.text = String(bean.valueForKey("countLike") as! Int)
         dateTime.text = bean.valueForKey("date") as? String
-
         let picAvatar = bean.valueForKey("avatarPic") as? String
         roomImg.image = UIImage(named: picAvatar!)
-        
         return cell
     }
     
-    
-    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.performSegueWithIdentifier("openBoardContent", sender: roomList[indexPath.row])
-        
     }
     
     @IBAction func showNewTopicPage(sender: UIBarButtonItem) {
@@ -157,7 +178,6 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if segue.identifier == "openBoardContent" {
             let destVC = segue.destinationViewController as! BoardcontentViewController
             destVC.receiveBoardContentList = sender as! NSDictionary // send room model by topicList (topic_id)
-            
         }else if segue.identifier == "openNewTopic" {
             let destVC = segue.destinationViewController as! NewTopicViewController
             destVC.receiveNewTopic = self.receiveRoomList  //send room model (room_id)
@@ -169,33 +189,39 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func getValuefromRoomManageInfo(){
-        let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
         do{
-            let fetchReq = NSFetchRequest(entityName: "Room_Manage_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
+            let result = try self.context.executeFetchRequest(self.fetchReqRoomManageInfo) as! [NSManagedObject]
             self.postUserCD = result[0].valueForKey("postUser") as! NSMutableDictionary
             self.commentUserCD = result[0].valueForKey("commentUser") as! NSMutableDictionary
             self.readUserCD = result[0].valueForKey("readUser") as! NSMutableDictionary
-            print("Post User From Core Data : \(self.postUserCD)");
-            print("Comment User From Core Data : \(self.commentUserCD)");
-            print("Read User From Core Data : \(self.readUserCD)");
+//            print("Post User From Core Data : \(self.postUserCD)")
+//            print("Comment User From Core Data : \(self.commentUserCD)")
+//            print("Read User From Core Data : \(self.readUserCD)")
         }catch{
-            print("\(NSDate().formattedISO8601) Error Reading Data");
+            print("\(NSDate().formattedISO8601) Error Reading Data")
         }
     }
     
     func getValuefromUserInfo(){
-        let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
         do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
             self.empEmail = result[0].valueForKey("empEmail") as! String
-            print("empEmail : \(self.empEmail)");
+            print("empEmail : \(self.empEmail)")
         }catch{
-            print("\(NSDate().formattedISO8601) Error Reading Data");
+            print("\(NSDate().formattedISO8601) Error Reading Data")
         }
     }
+    
+    func getvaluefromApplicationCD(){
+        do{
+            let result = try self.context.executeFetchRequest(self.fetchReqApplication) as! [NSManagedObject]
+            
+            self.startDate = result[0].valueForKey("startDate") as! String
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Reading Data")
+        }
+    }
+
     
 //    func checkPostBtn(roomId:String){
 //        let postUserArray = self.postUserCD.valueForKey(roomId) as! Array<String>

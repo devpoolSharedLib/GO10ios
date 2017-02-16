@@ -17,11 +17,14 @@ class VerifyTokenViewController: UIViewController {
     @IBOutlet weak var verifyBtn: UIButton!
     @IBOutlet var verifyView: UIView!
     
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    //    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var fetchReqRoomManageInfo = NSFetchRequest(entityName: "Room_Manage_Info")
+    var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var getUserByToken:String!
-    var profile = [NSDictionary]();
+    var profile = [NSDictionary]()
     var activate: Bool!
     var modelName: String!
    
@@ -29,6 +32,7 @@ class VerifyTokenViewController: UIViewController {
         super.viewDidLoad()
         print("*** VerifyTokenVC Viewdidload ***")
         self.getUserByToken =  "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/getUserByToken?"
+        
         //Radius verify textview Border
         tokenTxtV.layer.cornerRadius = 5
         modelName = UIDevice.currentDevice().modelName
@@ -71,7 +75,6 @@ class VerifyTokenViewController: UIViewController {
         
         let request = urlsession.dataTaskWithURL(urlWs!) { (data, response, error) in
             do{
-
                 self.profile = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
                 print("\(NSDate().formattedISO8601) profile : \(self.profile)")
                 self.activate = self.profile[0].valueForKey("activate") as! Bool
@@ -90,30 +93,11 @@ class VerifyTokenViewController: UIViewController {
                         self.presentViewController(alert, animated: true, completion: nil)
                     }
                 }else{
-//                    self.saveTokenToCoredata()
-                    
-                    // Write Data into CoreData
-                    let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
-                    do{
-                        let fetchReq = NSFetchRequest(entityName: "User_Info");
-                        let result = try context.executeFetchRequest(fetchReq);
-                        result[0].setValue(self.tokenTxtV.text, forKey: "token");
-                        result[0].setValue(self.profile[0].valueForKey("empName"), forKey: "empName")
-                        result[0].setValue(self.profile[0].valueForKey("empEmail"), forKey: "empEmail")
-                        result[0].setValue(self.profile[0].valueForKey("type"), forKey: "type")
-                        result[0].setValue(self.profile[0].valueForKey("activate"), forKey: "activate")
-                        result[0].setValue(self.profile[0].valueForKey("_id"), forKey: "id_")
-                        result[0].setValue(self.profile[0].valueForKey("_rev"), forKey: "rev_")
-                        try context.save();
-                        print("\(NSDate().formattedISO8601) Save Data Success")
-                        NSOperationQueue.mainQueue().addOperationWithBlock {
-                            self.performSegueWithIdentifier("gotoSetting", sender:nil)
-                        }
-                    }catch{
-                        print("\(NSDate().formattedISO8601) Error Saving Profile Data");
+                    self.saveTokenToCoredata()
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                        self.performSegueWithIdentifier("gotoSetting", sender:nil)
                     }
                 }
-                
             }catch let error as NSError{
                 print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
             }
@@ -123,24 +107,20 @@ class VerifyTokenViewController: UIViewController {
     
     // Write Data into CoreData
     func saveTokenToCoredata(){
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq);
-            result[0].setValue(self.tokenTxtV.text, forKey: "token");
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo)
+            result[0].setValue(self.tokenTxtV.text, forKey: "token")
             result[0].setValue(self.profile[0].valueForKey("empName"), forKey: "empName")
             result[0].setValue(self.profile[0].valueForKey("empEmail"), forKey: "empEmail")
             result[0].setValue(self.profile[0].valueForKey("type"), forKey: "type")
             result[0].setValue(self.profile[0].valueForKey("activate"), forKey: "activate")
             result[0].setValue(self.profile[0].valueForKey("_id"), forKey: "id_")
             result[0].setValue(self.profile[0].valueForKey("_rev"), forKey: "rev_")
-            try context.save();
+            try self.context.save()
             print("\(NSDate().formattedISO8601) Save Data Success")
-            self.performSegueWithIdentifier("gotoSetting", sender:nil)
-        }catch{
-            print("\(NSDate().formattedISO8601) Error Saving Profile Data");
+                   }catch{
+            print("\(NSDate().formattedISO8601) Error Saving Profile Data")
         }
-        
     }
     
     func checkSpace(strCheck: String) -> Bool {
@@ -153,5 +133,4 @@ class VerifyTokenViewController: UIViewController {
             return false
         }
     }
-
 }

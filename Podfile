@@ -6,7 +6,7 @@ use_frameworks!
 target 'GO10' do
 	pod 'Google/SignIn'
 	pod 'CarbonKit', '~>2.1'
-	pod "RichEditorView"
+	pod 'RichEditorView'
 	pod 'Toucan', '~> 0.5'
 	pod 'ActiveLabel', '~> 0.6.0'
 	pod 'Fabric'
@@ -16,8 +16,8 @@ target 'GO10' do
 	pod 'IQKeyboardManagerSwift'
 	pod 'MRProgress/AFNetworking'
 	pod 'Siren', '0.9.5'
- 	pod 'BMSCore'
- 	pod 'BMSPush'
+    pod 'BadgeSwift', '~> 4.0'
+    pod 'OneSignal'
 end
 
 target 'GO10Tests' do

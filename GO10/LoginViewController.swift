@@ -9,16 +9,22 @@
 import UIKit
 import CoreData
 import MRProgress
+import OneSignal
 
 class LoginViewController: UIViewController {
     
+//    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
+    var fetchReqApplication = NSFetchRequest(entityName: "Application")
     var domainUrlHttps = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var getUserByUserPasswordUrl: String!
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    var profile = [NSDictionary]();
+    var checkRoomNotificationModel: String!
+    var profile = [NSDictionary]()
     var modelName: String!
-    
+    var startDate: String!
+    var appId = PropertyUtil.getPropertyFromPlist("data",key: "appID")
     @IBOutlet weak var emailLbl: UILabel!
     @IBOutlet weak var emailTxtField: UITextField!
     @IBOutlet weak var passwordLbl: UILabel!
@@ -30,6 +36,7 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.getUserByUserPasswordUrl = "\(self.domainUrlHttps)GO10WebService/api/\(self.versionServer)user/getUserByUserPassword?"
+        self.checkRoomNotificationModel = "\(self.domainUrlHttps)GO10WebService/api/\(self.versionServer)user/checkRoomNotificationModel?"
         print("*** LoginVC ViewDidLoad ***")
         modelName = UIDevice.currentDevice().modelName
         self.loginBtn.layer.cornerRadius = 5
@@ -76,13 +83,14 @@ class LoginViewController: UIViewController {
         }
     }
     
-    func checkLogin(email:String,password:String){
+    func checkLogin(empEmail:String,password:String){
         print("\(NSDate().formattedISO8601) getLoginWebservice")
-        let url = "\(getUserByUserPasswordUrl)email=\(email)&password=\(password)"
+        let url = "\(self.getUserByUserPasswordUrl)email=\(empEmail)&password=\(password)"
         print("url : \(url)")
         let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet())
         let urlWs = NSURL(string: strUrlEncode!)
         let req = NSMutableURLRequest(URL: urlWs!)
+        req.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
         req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         let request = NSURLSession.sharedSession().dataTaskWithRequest(req) { (data, response, error) in
             do{
@@ -112,8 +120,11 @@ class LoginViewController: UIViewController {
                         MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
                         self.gotoSetAvatar()
                     }else{
-                        self.setUserInfoToCoredata()
                         MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
+                        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> \(empEmail)")
+                        self.callRoomNotification(empEmail)
+                        self.setUserInfoToCoredata()
+                        self.registerNotification(empEmail)
                         self.loginToHomepage()
                     }
                 }
@@ -122,6 +133,41 @@ class LoginViewController: UIViewController {
             }
         }
         request.resume()
+    }
+    
+    func callRoomNotification(empEmail:String){
+        print("\(NSDate().formattedISO8601) callRoomNotification")
+        let urlWs = NSURL(string: "\(self.checkRoomNotificationModel)empEmail=\(empEmail)")
+        print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+        let request = NSMutableURLRequest(URL: urlWs!)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        let urlsession = NSURLSession.sharedSession()
+        let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
+            guard error == nil && data != nil else {
+                print("\(NSDate().formattedISO8601) error=\(error)")
+                return
+            }
+            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {
+                print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus.statusCode)")
+                print("\(NSDate().formattedISO8601) response = \(response)")
+            }
+            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            print("\(NSDate().formattedISO8601) responseString = \(responseString!)")
+            self.startDate = responseString as! String
+            self.setStartDateToCoreDate()
+        }
+        requestSent.resume()
+    }
+    
+    func registerNotification(empEmail: String){
+//        // get a reference to the app delegate
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        
+//        // call didFinishLaunchWithOptions ... why?
+//        appDelegate.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: nil)
+//     
+        OneSignal.setSubscription(true)
+       OneSignal.registerForPushNotifications()
     }
     
     func gotoSetAvatar(){
@@ -143,25 +189,44 @@ class LoginViewController: UIViewController {
         NSOperationQueue.mainQueue().addOperationWithBlock {
             self.performSegueWithIdentifier("LoginToHomepage", sender: nil)
         }
-        
+    }
+    
+    // Write Data into CoreData
+    func setStartDateToCoreDate(){
+        print("setStartDateToCoreDate")
+        do{
+            let result = try self.context.executeFetchRequest(self.fetchReqApplication)
+            if(result.count > 0){
+                print("set Old User")
+                result[0].setValue(self.startDate, forKey: "startDate")
+            }else{
+                print("set New User")
+                print("startDate >>>> \(self.startDate)")
+                let newUser = NSEntityDescription.insertNewObjectForEntityForName("Application", inManagedObjectContext: context)
+                newUser.setValue(self.startDate, forKey: "startDate")
+            }
+            try self.context.save()
+            print("\(NSDate().formattedISO8601) Save StartDate Data Success")
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Saving Profile Data")
+        }
     }
     
     // Write Data into CoreData
     func setUserInfoToCoredata(){
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
+        print("setUserInfoToCoredata")
         do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq);
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo)
             if(result.count > 0){
                 print("set Old User")
                 result[0].setValue(self.profile[0].valueForKey("_id"), forKey: "id_")
                 result[0].setValue(self.profile[0].valueForKey("_rev"), forKey: "rev_")
-                result[0].setValue("xxxxxxxxxx", forKey: "accountId");
+                result[0].setValue("xxxxxxxxxx", forKey: "accountId")
                 result[0].setValue(self.profile[0].valueForKey("activate"), forKey: "activate")
-                result[0].setValue(self.profile[0].valueForKey("empName") , forKey: "empName");
-                result[0].setValue(self.profile[0].valueForKey("empEmail"), forKey: "empEmail");
-                result[0].setValue(self.profile[0].valueForKey("avatarPic"), forKey: "avatarPic");
-                result[0].setValue("default_avatar", forKey: "avatarPicTemp");
+                result[0].setValue(self.profile[0].valueForKey("empName") , forKey: "empName")
+                result[0].setValue(self.profile[0].valueForKey("empEmail"), forKey: "empEmail")
+                result[0].setValue(self.profile[0].valueForKey("avatarPic"), forKey: "avatarPic")
+                result[0].setValue("default_avatar", forKey: "avatarPicTemp")
                 result[0].setValue(self.profile[0].valueForKey("avatarName"), forKey: "avatarName")
                 result[0].setValue(true, forKey: "avatarCheckSelect")
                 result[0].setValue(self.profile[0].valueForKey("birthday"), forKey: "birthday")
@@ -169,25 +234,25 @@ class LoginViewController: UIViewController {
                 result[0].setValue(true, forKey: "statusLogin")
             }else{
                 print("set New User")
-                let newUser = NSEntityDescription.insertNewObjectForEntityForName("User_Info", inManagedObjectContext: context);
+                let newUser = NSEntityDescription.insertNewObjectForEntityForName("User_Info", inManagedObjectContext: context)
                 newUser.setValue(self.profile[0].valueForKey("_id"), forKey: "id_")
                 newUser.setValue(self.profile[0].valueForKey("_rev"), forKey: "rev_")
-                newUser.setValue("xxxxxxxxxx", forKey: "accountId");
+                newUser.setValue("xxxxxxxxxx", forKey: "accountId")
                 newUser.setValue(self.profile[0].valueForKey("activate"), forKey: "activate")
-                newUser.setValue(self.profile[0].valueForKey("empName") , forKey: "empName");
-                newUser.setValue(self.profile[0].valueForKey("empEmail"), forKey: "empEmail");
-                newUser.setValue(self.profile[0].valueForKey("avatarPic"), forKey: "avatarPic");
-                newUser.setValue("default_avatar", forKey: "avatarPicTemp");
+                newUser.setValue(self.profile[0].valueForKey("empName") , forKey: "empName")
+                newUser.setValue(self.profile[0].valueForKey("empEmail"), forKey: "empEmail")
+                newUser.setValue(self.profile[0].valueForKey("avatarPic"), forKey: "avatarPic")
+                newUser.setValue("default_avatar", forKey: "avatarPicTemp")
                 newUser.setValue(self.profile[0].valueForKey("avatarName"), forKey: "avatarName")
                 newUser.setValue(true, forKey: "avatarCheckSelect")
                 newUser.setValue(self.profile[0].valueForKey("birthday"), forKey: "birthday")
                 newUser.setValue(self.profile[0].valueForKey("type"), forKey: "type")
                 newUser.setValue(true, forKey: "statusLogin")
             }
-            try context.save();
-            print("\(NSDate().formattedISO8601) Save Data Success")
+            try self.context.save()
+            print("\(NSDate().formattedISO8601) Save User_Info Data Success")
         }catch{
-            print("\(NSDate().formattedISO8601) Error Saving Profile Data");
+            print("\(NSDate().formattedISO8601) Error Saving Profile Data")
         }
     }
     
@@ -205,6 +270,4 @@ class LoginViewController: UIViewController {
             return false
         }
     }
-
-    
 }

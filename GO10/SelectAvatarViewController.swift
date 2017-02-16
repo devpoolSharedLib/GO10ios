@@ -12,12 +12,14 @@ import CoreData
 
 class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDelegate {
     
+    //    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
 //    var pathUserService = PropertyUtil.getPropertyFromPlist("data",key: "pathUserService")
     var updateUserUrl: String!
     var items = NSArray()
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var carbonTabSwipeNavigation: CarbonTabSwipeNavigation = CarbonTabSwipeNavigation()
     var recieveFromPage = "editTablePage"
     
@@ -26,17 +28,14 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
         self.updateUserUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/updateUser"
         print("*** SelectAvatarVC ViewDidLoad ***")
         self.title = "Select Avatar"
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            let userAvatar = result[0].valueForKey("avatarPic") as! String;
-            result[0].setValue(userAvatar, forKey: "avatarPicTemp");
-            try context.save();
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+            let userAvatar = result[0].valueForKey("avatarPic") as! String
+            result[0].setValue(userAvatar, forKey: "avatarPicTemp")
+            try self.context.save()
         }catch{
-            print("\(NSDate().formattedISO8601) Error Saving Data");
+            print("\(NSDate().formattedISO8601) Error Saving Data")
         }
-    
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -45,7 +44,6 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
         carbonTabSwipeNavigation = CarbonTabSwipeNavigation(items: items as [AnyObject], delegate: self)
         carbonTabSwipeNavigation.insertIntoRootViewController(self)
         self.style()
-
     }
     
     func carbonTabSwipeNavigation(carbonTabSwipeNavigation: CarbonTabSwipeNavigation, viewControllerAtIndex index: UInt) -> UIViewController {
@@ -55,7 +53,6 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
         default:
             return self.storyboard!.instantiateViewControllerWithIdentifier("WomenAvatarVC") as! WomenAvatarViewController
         }
-
     }
     
     func style() {
@@ -75,22 +72,16 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
         
         carbonTabSwipeNavigation.setNormalColor(UIColor.blackColor().colorWithAlphaComponent(0.6))
         carbonTabSwipeNavigation.setSelectedColor(color, font: UIFont.boldSystemFontOfSize(14))
-        
     }
     
     @IBAction func clickSelectAvatar(sender: AnyObject) {
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
-            let userAvatarTemp = result[0].valueForKey("avatarPicTemp") as! String;
-            
-            let avatarCheckSelect = result[0].valueForKey("avatarCheckSelect") as! Bool;
-
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+            let userAvatarTemp = result[0].valueForKey("avatarPicTemp") as! String
+            let avatarCheckSelect = result[0].valueForKey("avatarCheckSelect") as! Bool
             if(avatarCheckSelect){
-                result[0].setValue(userAvatarTemp, forKey: "avatarPic");
-                try context.save();
+                result[0].setValue(userAvatarTemp, forKey: "avatarPic")
+                try context.save()
                 updateDataToCoreData()
                 if(self.recieveFromPage=="SettingAvatar"){
                     self.performSegueWithIdentifier("unwindToSettingVCID", sender: nil)
@@ -103,29 +94,26 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
                 self.presentViewController(alert, animated: true, completion: nil)
             }
         }catch{
-            print("\(NSDate().formattedISO8601) Error Saving Data");
+            print("\(NSDate().formattedISO8601) Error Saving Data")
         }
     }
     
     func updateDataToCoreData(){
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            let _id = result[0].valueForKey("id_") as! String;
-            let _rev = result[0].valueForKey("rev_") as! String;
-            let empName = result[0].valueForKey("empName") as! String;
-            let empEmail = result[0].valueForKey("empEmail") as! String;
-            let avatarName = result[0].valueForKey("avatarName") as! String;
-            let avatarPic = result[0].valueForKey("avatarPic") as! String;
-            let activate = result[0].valueForKey("activate") as! Bool;
-            let type = result[0].valueForKey("type") as! String;
-            let birthday = result[0].valueForKey("birthday") as! String;
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+            let _id = result[0].valueForKey("id_") as! String
+            let _rev = result[0].valueForKey("rev_") as! String
+            let empName = result[0].valueForKey("empName") as! String
+            let empEmail = result[0].valueForKey("empEmail") as! String
+            let avatarName = result[0].valueForKey("avatarName") as! String
+            let avatarPic = result[0].valueForKey("avatarPic") as! String
+            let activate = result[0].valueForKey("activate") as! Bool
+            let type = result[0].valueForKey("type") as! String
+            let birthday = result[0].valueForKey("birthday") as! String
             print("\(NSDate().formattedISO8601) putUpdateWebservice")
             let urlWs = NSURL(string: self.updateUserUrl)
             print("\(NSDate().formattedISO8601) URL : \(urlWs)")
             let requestPost = NSMutableURLRequest(URL: urlWs!)
-            
             let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"empName\":\"\(empName)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"birthday\":\"\(birthday)\",\"activate\":\"\(activate)\",\"type\":\"\(type)\"}"
             print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
             
@@ -149,7 +137,7 @@ class SelectAvatarViewController: UIViewController, CarbonTabSwipeNavigationDele
             }
             request.resume()
         }catch{
-            print("\(NSDate().formattedISO8601) Error Reading and Saving Data");
+            print("\(NSDate().formattedISO8601) Error Reading and Saving Data")
         }
     }
 

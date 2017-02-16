@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15G1217" minimumToolsVersion="Xcode 4.2">
+    <entity name="Application" syncable="YES">
+        <attribute name="startDate" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="Notification" syncable="YES">
         <attribute name="badgeNumber" optional="YES" attributeType="Integer 64" defaultValueString="0.0" syncable="YES"/>
     </entity>
@@ -27,5 +30,6 @@
         <element name="Notification" positionX="-54" positionY="90" width="128" height="60"/>
         <element name="Room_Manage_Info" positionX="-63" positionY="81" width="128" height="90"/>
         <element name="User_Info" positionX="-63" positionY="-18" width="128" height="240"/>
+        <element name="Application" positionX="-54" positionY="81" width="128" height="60"/>
     </elements>
 </model>

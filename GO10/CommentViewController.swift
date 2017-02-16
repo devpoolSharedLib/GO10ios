@@ -19,12 +19,13 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     @IBOutlet weak var editor: RichEditorView!
     @IBOutlet weak var commentTxtView: RichEditorView!
     
+//    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var postCommentUrl: String!
     var uploadServletUrl: String!
-  
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var toolbar: RichEditorToolbar!
     var topicId: String!
     var roomId: String!
@@ -34,8 +35,6 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     var receiveComment: NSDictionary!
     var ImagePicker = UIImagePickerController()
     var modelName: String!
-    
-  
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +46,6 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         print("\(NSDate().formattedISO8601) topic id : \(topicId) room id : \(roomId)")
         modelName = UIDevice.currentDevice().modelName
         
-        
         //set other button side back button
         self.navigationItem.leftItemsSupplementBackButton = true
         
@@ -57,54 +55,15 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         if(modelName.rangeOfString("ipad Mini") != nil){
             commentTxtView.setFontSize(17)
         }
-
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            
-            userNameAvatar = result[0].valueForKey("avatarName") as! String;
-            userPicAvatar = result[0].valueForKey("avatarPic") as! String;
-            empEmail = result[0].valueForKey("empEmail") as! String;
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+            userNameAvatar = result[0].valueForKey("avatarName") as! String
+            userPicAvatar = result[0].valueForKey("avatarPic") as! String
+            empEmail = result[0].valueForKey("empEmail") as! String
         }catch{
-            print("\(NSDate().formattedISO8601) Error: Reading Data");
+            print("\(NSDate().formattedISO8601) Error: Reading Data")
             
         }
-        /*
-        //set toolbar
-        toolbar = RichEditorToolbar(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44))
-        
-        //custom toolbar
-        toolbar.options = [RichEditorOptions.Undo,
-                           RichEditorOptions.Redo,
-                           RichEditorOptions.Bold,
-                           RichEditorOptions.Image,
-                           RichEditorOptions.Link,
-//                           RichEditorOptions.AlignLeft,
-//                           RichEditorOptions.AlignCenter,
-//                           RichEditorOptions.AlignRight,
-//                           RichEditorOptions.Indent,
-//                           RichEditorOptions.Outdent
-                          ]
-        
-        //set toolbar by RichEditorViewUtil
-//        toolbar = RichEditor.setToolbar(self.view,width: self.view.bounds.width,height: 44)
-        
-         
-        
-        //set toolbar by RichEditorViewUtil
-//        toolbar = RichEditor.setToolbar(self.view,width: self.view.bounds.width,height: 44)
-        
-        //set toolbar to editor
-        toolbar.delegate = self
-        toolbar.editor = self.editor
-        
-        editor.delegate = self
-        editor.inputAccessoryView = toolbar
-        
-        //setPlaceholderText
-        editor.setPlaceholderText("Write something ...")
-        */
         
         //set toolbar by RichEditorViewUtil
         toolbar = RichEditorUtil.setToolbar(self.view.bounds.width,height: 44,editor: self.editor)
@@ -125,11 +84,8 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         //Replace " with \"
         let strComment = self.editor.contentHTML.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
-        
         let userNameAvatarReplaceLine = userNameAvatar.stringByReplacingOccurrencesOfString("\n", withString: "\\n").stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
-        
         let jsonObj = "{\"topicId\":\"\(topicId)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"content\":\"\(strComment)\",\"date\":\" \",\"type\":\"comment\",\"roomId\":\"\(roomId)\"}"
-        
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         
         requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
@@ -153,7 +109,6 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
             print("\(NSDate().formattedISO8601) responseString = \(responseString)")
         }
         request.resume()
-        
     }
         
     @IBAction func submitComment(sender: AnyObject) {
@@ -173,35 +128,23 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
             let destVC = segue.destinationViewController as! BoardcontentViewController
             destVC.receiveBoardContentList = self.receiveComment    // send topic model (topic_id)
         }
-        
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        
         //browse image from gallery
         var browseImg =  info[UIImagePickerControllerOriginalImage] as? UIImage
-        
-        print("WIDTH : \(browseImg?.size.width)")
-        print("HEIGHT: \(browseImg?.size.height)")
-        print("RATIO: \((browseImg?.size.width)!/(browseImg?.size.height)!)")
         browseImg = ImageUtil.resizeImage(browseImg!, modelName: modelName)
         uploadImage(browseImg!)
-        
         picker.dismissViewControllerAnimated(true, completion: nil)
-        
     }
 
     func uploadImage(objImage: UIImage) {
-
         print("\(NSDate().formattedISO8601) width : \(objImage.size.width) height :\(objImage.size.height)")
-        
-//        let imageData = UIImagePNGRepresentation(objImage)
         let imageData = UIImageJPEGRepresentation(objImage, 0.8)
         if(imageData == nil)
         {
             return
         }
-        
         // Generate Request
         print("\(NSDate().formattedISO8601) Upload Image")
         let url = NSURL(string: self.uploadServletUrl)
@@ -221,40 +164,28 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData("Content-Disposition:form-data; name=\"test\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData("hi\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-        
         body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData("Content-Disposition:form-data; name=\"file\"; filename=\"\(fileName)\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData("Content-Type: \(mimeType)\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData(imageData!)
         body.appendData("\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-        
         request.HTTPBody = body
-        
         let session = NSURLSession.sharedSession()
-        
         let MRProgressAF = MRProgressOverlayView.showOverlayAddedTo(self.commentView, animated: true)
-        
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
-            
             if error == nil {
                 do{
-                    let jsonData = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSMutableDictionary;
+                    let jsonData = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSMutableDictionary
                     let responseUrl = jsonData.valueForKey("imgUrl") as! String
                     print("\(NSDate().formattedISO8601) imgUrl: \(responseUrl)")
-                    
                      dispatch_async(dispatch_get_main_queue(), {
-                        
                         // Show Image
                         print("\(NSDate().formattedISO8601) Show Image")
-                        
                         var width = objImage.size.width
                         var height = objImage.size.height
                         let ratio = round(width/height*100)/100
-                        
                         print(">>>>>>> RATIO : \(ratio)")
-                        
-                        
                         if(ratio > 1) {
                             if(ratio == 1.33) {
                                 print("4:3 landscape")
@@ -274,13 +205,10 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
                                 print("3:4 portrait")
                                 width = 230
                                 height = 307
-                                print("aoisdfoadfsksakjdfbkajdfsbaljks")
-                                
                             } else if(ratio == 0.56) {
                                 print("9:16 portrait")
                                 width = 230
                                 height = 410
-
                             } else {
                                 print("Other Resulotion protrait")
                                 width = 230
@@ -292,17 +220,13 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
                             height = 295
                         }
                         self.toolbar.editor?.insertImage(responseUrl,width: width,height: height,alt: "insertImageUrl")
-                        
                         MRProgressOverlayView.dismissOverlayForView(self.commentView, animated: true)
-
-                        
                         print("\(NSDate().formattedISO8601)  REFRESHTABLE")
                     })
                     
                 }catch let error as NSError{
-                    print("\(NSDate().formattedISO8601) JSON Error: \(error.localizedDescription)");
+                    print("\(NSDate().formattedISO8601) JSON Error: \(error.localizedDescription)")
                 }
-    
             }else{
                 print("\(NSDate().formattedISO8601) Error: \(error)")
             }
@@ -320,7 +244,6 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
         }else{
             return false
         }
-        
     }
 }
 
@@ -328,13 +251,7 @@ extension CommentViewController: RichEditorDelegate {
     
     func richEditor(editor: RichEditorView, heightDidChange height: Int) { }
     
-    func richEditor(editor: RichEditorView, contentDidChange content: String) {
-//        if content.isEmpty {
-//            //htmlTextView.text = "HTML Preview"
-//        } else {
-//            //htmlTextView.text = content
-//        }
-    }
+    func richEditor(editor: RichEditorView, contentDidChange content: String) { }
     
     func richEditorTookFocus(editor: RichEditorView) { }
     
@@ -349,7 +266,6 @@ extension CommentViewController: RichEditorDelegate {
 }
 
 extension CommentViewController: RichEditorToolbarDelegate {
-    
     private func randomColor() -> UIColor {
         let colors = [
             UIColor.redColor(),

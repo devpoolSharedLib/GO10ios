@@ -11,11 +11,13 @@ import CoreData
 
 class MainUINavigationController: UINavigationController {
     
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var getUserByAccountIdUrl: String!
-    var profile = [NSDictionary]();
+    var profile = [NSDictionary]()
     var status: Bool!
     var accountId: String!
     var statusLogin: Bool!
@@ -25,57 +27,43 @@ class MainUINavigationController: UINavigationController {
         super.viewDidAppear(animated)
         print("*** MainVC ViewDidAppear ***")
         self.getUserByAccountIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/checkUserActivation?empEmail="
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
+            if(checkStatusLogin()){
+                print("statusLogin true")
+                let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+                self.empEmail = result[0].valueForKey("empEmail") as! String
+                checkUserActivation(self.empEmail)
+            }else{
+                print("statusLogin false")
+                self.performSegueWithIdentifier("gotoLoginPage", sender: nil)
+            }
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Reading Data")
+        }
+    }
+    
+    func checkStatusLogin() -> BooleanType{
+        do{
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
             print("count Results : \(result.count)")
             if(result.count == 0){
-                print("count=0")
-                self.statusLogin = false;
+                print("No data in coredata")
+                return false
             }else if((result[0].valueForKey("statusLogin")) as! Bool == false){
-                print("status=false")
-                self.statusLogin = false
+                  return false
             }else{
-                print("true")
                 for results in result as [NSManagedObject] {
                     print("\(NSDate().formattedISO8601) results : \(results)")
                 }
-                self.statusLogin = true
+                return true
             }
-            print("Status Login : \(self.statusLogin)")
-            if((self.statusLogin) == true){
-                self.empEmail = result[0].valueForKey("empEmail") as! String
-                checkStatus(self.empEmail)
-            }else{
-                self.performSegueWithIdentifier("gotoLoginPage", sender: nil)
-            }
-            
-
-            
         }catch{
-            print("\(NSDate().formattedISO8601) Error Reading Data");
+            print("\(NSDate().formattedISO8601) Error Reading Data")
+            return false
         }
-        
-       //        if (FBSDKAccessToken.currentAccessToken() != nil) || (GIDSignIn.sharedInstance().hasAuthInKeychain()){
-//            print("\(NSDate().formattedISO8601) : Facebook or Google is login")
-//            do{
-//                let fetchReq = NSFetchRequest(entityName: "User_Info");
-//                let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-//                
-//                self.accountId = result[0].valueForKey("accountId") as! String;
-//            }catch{
-//                print("\(NSDate().formattedISO8601) Error Reading Data");
-//            }
-//            checkStatus()
-//            
-//        } else {
-//            print("\(NSDate().formattedISO8601) : Facebook or Google is not login")
-//            self.performSegueWithIdentifier("gotoLogin", sender: nil)
-//        }
     }
     
-    func checkStatus(empEmail: String){
+    func checkUserActivation(empEmail: String){
         print("\(NSDate().formattedISO8601) empEmail : \(empEmail)")
         print("\(NSDate().formattedISO8601) getStatusWebservice")
         let urlWs = NSURL(string: self.getUserByAccountIdUrl + empEmail)
@@ -96,16 +84,14 @@ class MainUINavigationController: UINavigationController {
                             alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
                             self.presentViewController(alert, animated: true, completion: nil)
                         }
-                        let context: NSManagedObjectContext = self.appDelegate.managedObjectContext;
                         do{
-                            let fetchReq = NSFetchRequest(entityName: "User_Info");
-                            let result = try context.executeFetchRequest(fetchReq);
-                            result[0].setValue(false, forKey: "statusLogin");
-                            try context.save();
+                            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo)
+                            result[0].setValue(false, forKey: "statusLogin")
+                            try self.context.save()
                             print("\(NSDate().formattedISO8601) Save status Login Success")
                             self.viewDidAppear(true)
                         }catch{
-                            print("\(NSDate().formattedISO8601) Error Saving Data");
+                            print("\(NSDate().formattedISO8601) Error Saving Data")
                         }
                     }else{
                         print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus!.statusCode)")
@@ -118,6 +104,4 @@ class MainUINavigationController: UINavigationController {
         }
         request.resume()
     }
-
 }
-

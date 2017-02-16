@@ -20,11 +20,13 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     @IBOutlet weak var contextTxtView: RichEditorView!
     @IBOutlet var newTopicView: UIView!
     
+    //    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var postTopicUrl: String!
     var uploadServletUrl: String!
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var receiveNewTopic: NSDictionary!
     var empEmail: String!
     var userNameAvatar: String!
@@ -60,60 +62,23 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
             contextTxtView.setFontSize(17)
         }else{
             subjectTxtView.font = FontUtil.iphonepainText
-            
         }
-        
-        let context: NSManagedObjectContext = appDelegate.managedObjectContext;
         do{
-            let fetchReq = NSFetchRequest(entityName: "User_Info");
-            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject];
-            self.userNameAvatar = result[0].valueForKey("avatarName") as! String;
-            self.userPicAvatar = result[0].valueForKey("avatarPic") as! String;
-            self.empEmail = result[0].valueForKey("empEmail") as! String;
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+            self.userNameAvatar = result[0].valueForKey("avatarName") as! String
+            self.userPicAvatar = result[0].valueForKey("avatarPic") as! String
+            self.empEmail = result[0].valueForKey("empEmail") as! String
         }catch{
-            print("\(NSDate().formattedISO8601) Error Reading Data");
+            print("\(NSDate().formattedISO8601) Error Reading Data")
         }
-        
         let placeholderTextView = KMPlaceholderTextView(frame: subjectTxtView.bounds)
         view.addSubview(placeholderTextView)
-        
-        /*
-        //set toolbar
-//        toolbar = RichEditorToolbar(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44))
-        
-        //custom toolbar
-        toolbar.options = [RichEditorOptions.Undo,
-                           RichEditorOptions.Redo,
-                           RichEditorOptions.Bold,
-                           RichEditorOptions.Image,
-                           RichEditorOptions.Link,
-//                           RichEditorOptions.AlignLeft,
-//                           RichEditorOptions.AlignCenter,
-//                           RichEditorOptions.AlignRight,
-//                           RichEditorOptions.Indent,
-//                           RichEditorOptions.Outdent
-                            ]
-        
-         //set toolbar by RichEditorViewUtil
-         toolbar = RichEditor.setToolbar(self.view,width: self.view.bounds.width,height: 44)
-
-        //set toolbar to editor
-        toolbar.delegate = self
-        toolbar.editor = self.editor
-       
-        editor.delegate = self
-        editor.inputAccessoryView = toolbar
-        
-        //setPlaceholderText
-        editor.setPlaceholderText(" Write something ...")
-         */
         
         //set toolbar by RichEditorViewUtil
         toolbar = RichEditorUtil.setToolbar(self.view.bounds.width,height: 44,editor: self.editor)
         //set toolbar to editor
         toolbar.delegate = self
         toolbar.editor = self.editor
-        
         editor.delegate = self
         editor.inputAccessoryView = toolbar
     }
@@ -133,9 +98,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         //Replace " with \"
         let strContent = self.editor.contentHTML.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
         let strSubject = strSubjectReplaceLine.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
-
         let jsonObj = "{\"subject\":\"\(strSubject)\",\"content\":\"\(strContent)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(userNameAvatarReplaceLine)\",\"avatarPic\":\"\(userPicAvatar)\",\"date\":\" \",\"type\":\"host\",\"roomId\":\"\(roomId)\",\"countLike\":0}"
-        
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         
         requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
@@ -144,17 +107,14 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         requestPost.HTTPMethod = "POST"
         let urlsession = NSURLSession.sharedSession()
         let request = urlsession.dataTaskWithRequest(requestPost) { (data, response, error) in
-            
             guard error == nil && data != nil else {
                 print("\(NSDate().formattedISO8601) error=\(error)")
                 return
             }
-            
             if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {
                 print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus.statusCode)")
                 print("\(NSDate().formattedISO8601) response = \(response)")
             }
-            
             let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             print("\(NSDate().formattedISO8601) responseString = \(responseString!)")
             dispatch_async(dispatch_get_main_queue(), {
@@ -162,9 +122,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
             })
         }
         request.resume()
-        
     }
-    
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         //browse image from gallery
@@ -173,7 +131,6 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         self.uploadImage(browseImg!)
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
-
     
     func uploadImage(objImage: UIImage) {
         print("\(NSDate().formattedISO8601) width : \(objImage.size.width) height :\(objImage.size.height)")
@@ -214,9 +171,8 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             if error == nil {
                 do{
-                    let jsonData = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSMutableDictionary;
+                    let jsonData = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSMutableDictionary
                     let responseUrl = jsonData.valueForKey("imgUrl") as! String
-                    
                     print("\(NSDate().formattedISO8601) imgUrl: \(responseUrl)")
                     dispatch_async(dispatch_get_main_queue(), {
                         // Show Image
@@ -262,7 +218,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
                         MRProgressOverlayView.dismissOverlayForView(self.newTopicView, animated: true)
                     })
                 }catch let error as NSError{
-                    print("\(NSDate().formattedISO8601) JSON Error: \(error.localizedDescription)");
+                    print("\(NSDate().formattedISO8601) JSON Error: \(error.localizedDescription)")
                 }
             }else{
                 print("\(NSDate().formattedISO8601) Error: \(error)")
@@ -287,7 +243,6 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
             let destVC = segue.destinationViewController as! RoomViewController
             destVC.receiveRoomList = self.receiveNewTopic  //send room Model (room_id , room_name)
         }
-
     }
     
     func checkSpace(strCheck: String) -> Bool {
@@ -338,7 +293,6 @@ extension NewTopicViewController: RichEditorToolbarDelegate {
             UIColor.blueColor(),
             UIColor.purpleColor()
         ]
-        
         let color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
         return color
     }
