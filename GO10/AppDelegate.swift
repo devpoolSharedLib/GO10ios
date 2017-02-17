@@ -40,6 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
         print("UUID : \(UIDevice.currentDevice().identifierForVendor?.UUIDString)")
         print("appID : \(self.appId)")
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+        
         OneSignal.initWithLaunchOptions(launchOptions, appId: self.appId, handleNotificationReceived: { (notification) in
             print("Received Notification - \(notification.payload.notificationID)")
             }, handleNotificationAction: { (result) in
@@ -59,6 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
         return true
         
     }
+    
     
     func application(application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: NSError){
@@ -97,8 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
     }
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         print("xxxxxx didReceiveRemoteNotification xxxxxx")
-        self.badgeCount = 88888
-        showBadgeNumber()
+
         if (application.applicationState == UIApplicationState.Active) {
             print("******* State Active")
         }
@@ -164,7 +165,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
     
     func applicationDidEnterBackground(application: UIApplication) {
         print("applicationDidEnterBackground")
-        self.badgeCount = 98
+        self.badgeCount = 0
         showBadgeNumber()
     }
     
@@ -176,14 +177,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
     
     func applicationWillTerminate(application: UIApplication) {
         print(">>>>>>>>>>>>>>>>>>>> applicationWillTerminate")
-        
-        UIApplication.sharedApplication().backgroundTimeRemaining
-
-        self.badgeCount = 99999
-        showBadgeNumber()
-//         Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-//         Saves changes in the application's managed object context before the application terminates.
-//        self.saveContext()
+        UIApplicationState.Inactive
+        UIApplicationWillTerminateNotification
     }
     
     
@@ -198,38 +193,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
             print("\(NSDate().formattedISO8601) Error Reading Data")
         }
     }
-    
-//    func addObjToCoreData(entityName:String,val:AnyObject,key:String){
-//        print(">>>>>>>>>>>>>>>>>>>>  : addObjToCoreData")
-//        let context: NSManagedObjectContext = self.managedObjectContext
-//        do{             let fetchReq = NSFetchRequest(entityName: entityName)
-//            let result = try context.executeFetchRequest(fetchReq)
-//            if(result.count > 0){
-//                print("set Old User")
-//                result[0].setValue(val, forKey: key)
-//            }else{
-//                print("set New User")
-//                let newUser = NSEntityDescription.insertNewObjectForEntityForName(entityName, inManagedObjectContext: context)
-//                newUser.setValue(val, forKey: key)
-//            }
-//            try context.save()
-//            print("\(NSDate().formattedISO8601) Save Data Success")
-//        }catch{
-//            print("\(NSDate().formattedISO8601) Error Saving Profile Data")
-//        }
-//    }
-    
-//    func getValuefromCoreDate(entityName:String,key:String) -> AnyObject{
-//        let context: NSManagedObjectContext = self.managedObjectContext
-//        do{
-//            let fetchReq = NSFetchRequest(entityName: entityName)
-//            let result = try context.executeFetchRequest(fetchReq) as! [NSManagedObject]
-//            return result[0].valueForKey(key)!
-//        }catch{
-//            print("\(NSDate().formattedISO8601) Error Reading Data")
-//            return false
-//        }
-//    }
     
     // MARK: - Core Data stack
     lazy var applicationDocumentsDirectory: NSURL = {
