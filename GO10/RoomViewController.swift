@@ -178,6 +178,8 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if segue.identifier == "openBoardContent" {
             let destVC = segue.destinationViewController as! BoardcontentViewController
             destVC.receiveBoardContentList = sender as! NSDictionary // send room model by topicList (topic_id)
+            destVC.receiveRoomList = self.receiveRoomList
+            destVC.receiveFromPage = "RoomPage"
         }else if segue.identifier == "openNewTopic" {
             let destVC = segue.destinationViewController as! NewTopicViewController
             destVC.receiveNewTopic = self.receiveRoomList  //send room model (room_id)

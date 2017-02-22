@@ -208,7 +208,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         }
         let roomID = beanRoom.valueForKey("_id") as? String
         let badgeNumber = beanRoom.valueForKey("badgeNumber") as? Int
-        print("roomId : \(roomID) badgeNumber : \(badgeNumber!)")
+        print("roomId : \(roomID) roomName : \(beanRoom.valueForKey("name") as? String) badgeNumber : \(badgeNumber!)")
         if(badgeNumber<1){
             badgeNumberLbl.hidden = true
         }else if(badgeNumber>99){
@@ -221,6 +221,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         
         for item in RoomModelUtil.roomImageName {
             if(item.key as? String == roomID){
+                print(">>>>>>>>>>>>>>>>>>>>>> \(beanRoom.valueForKey("name") as? String)")
                 roomImg.image = item.value as? UIImage
                 roomTitle.text = beanRoom.valueForKey("name") as? String
             }
@@ -243,6 +244,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         }else if segue.identifier == "openBoardContent" {
             let destVC = segue.destinationViewController as! BoardcontentViewController
             destVC.receiveBoardContentList = sender as! NSDictionary
+            destVC.receiveFromPage = "SelectRoomPage"
         }
     }
     

@@ -42,8 +42,9 @@ class SettingTableViewController: UITableViewController {
     }
     
     func tapDetected() {
-        print("Single Tap on imageview gotoSelectAvatar")
-        self.performSegueWithIdentifier("gotoSelectAvatar", sender:nil)
+        print("Single Tap on imageview gotoEditAvatarTable")
+        self.performSegueWithIdentifier("gotoEditAvatar", sender:nil)
+//        self.performSegueWithIdentifier("gotoSelectAvatar", sender:nil)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -95,9 +96,9 @@ class SettingTableViewController: UITableViewController {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "gotoSelectAvatar" {
-            let destVC = segue.destinationViewController as! SelectAvatarViewController
-            destVC.recieveFromPage = "SettingAvatar"
+        if segue.identifier == "gotoEditAvatar" {
+            segue.destinationViewController as! EditAvatarTableViewController
         }
+        
     }
 }

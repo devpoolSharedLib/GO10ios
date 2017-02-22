@@ -30,6 +30,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var updateDisLikeUrl: String!
     var newLikeUrl: String!
     var readTopicUrl: String!
+    var deletObjUrl: String!
     var isLike: Bool!
     var countLikeLbl: UILabel!
     var likeBtn: UIButton!
@@ -39,6 +40,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var topicId: String!
     var empEmail: String!
     var receiveBoardContentList: NSDictionary!
+    var receiveRoomList: NSDictionary!
+    var receiveFromPage: String!
     var modelName: String!
     let cache = NSCache.init()
     var _id: String!
@@ -49,6 +52,9 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var commentUserCD: NSMutableDictionary = NSMutableDictionary()
     var roomId: String!
     var commentUserArray: Array<String>!
+    var hostDeleteBtn : UIButton!
+    var commentDeleteBtn: UIButton!
+    var roomName: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,6 +65,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         self.updateLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/updateLike"
         self.updateDisLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/updateDisLike"
         self.newLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/newLike"
+        self.deletObjUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/deleteObj"
         self.modelName = UIDevice.currentDevice().modelName
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
         self.roomId = receiveBoardContentList.valueForKey("roomId") as! String
@@ -80,10 +87,9 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         super.viewDidAppear(animated)
         MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         print("*** BoardContentVC viewDidAppear ***")
-        modelName = UIDevice.currentDevice().modelName
-        topicId = receiveBoardContentList.valueForKey("_id") as! String
-        print("\(NSDate().formattedISO8601) topic id : \(topicId)")
-        
+        self.modelName = UIDevice.currentDevice().modelName
+        self.topicId = receiveBoardContentList.valueForKey("_id") as! String
+        self.roomId = receiveBoardContentList.valueForKey("roomId") as! String
         // Auto Scale Height
         self.boardTableview.rowHeight = UITableViewAutomaticDimension
 //       self.boardTableview.estimatedRowHeight = 100
@@ -216,9 +222,23 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             let hostImg = cell.viewWithTag(33) as! UIImageView
             let hostNameLbl = cell.viewWithTag(34) as! UILabel
             let hostTimeLbl = cell.viewWithTag(35) as! UILabel
+            
             self.countLikeLbl = cell.viewWithTag(40) as! UILabel
             self.likeBtn = cell.viewWithTag(41) as! UIButton
             self.commentBtnInCell = cell.viewWithTag(42) as! UIButton
+            
+            self.hostDeleteBtn = cell.viewWithTag(46) as! UIButton
+           
+//            self.hostDeleteBtn.tag = indexPath.row
+            if(boardContentBean.valueForKey("empEmail") as! String == self.empEmail){
+                print("This user is post topic")
+//                hostDeleteBtn.tag = indexPath.row
+//                hostDeleteBtn.addTarget(self, action: #selector(BoardcontentViewController.buttonDeletePressed(_:)), forControlEvents: .TouchUpInside)
+            }else{
+                print("This user isn't post topic")
+                hostDeleteBtn.hidden = true
+                
+            }
             
             //disabled comment Button if Ineligible
             if(RoomAdminUtil.checkAccess(self.commentUserArray, empEmail: self.empEmail)){
@@ -277,6 +297,17 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             let commentImg = cell.viewWithTag(37) as! UIImageView
             let commentNameLbl = cell.viewWithTag(38) as! UILabel
             let commentTimeLbl = cell.viewWithTag(39) as! UILabel
+            let commentDeleteBtn = cell.viewWithTag(45) as! UIButton
+//            commentDeleteBtn.tag = indexPath.row
+            if(boardContentBean.valueForKey("empEmail") as! String == self.empEmail){
+                print("This user is comment topic")
+//                commentDeleteBtn.tag = indexPath.row
+//                commentDeleteBtn.addTarget(self, action: #selector(BoardcontentViewController.buttonDeletePressed(_:)), forControlEvents: .TouchUpInside)
+            }else{
+                print("This user isn't comment topic")
+                commentDeleteBtn.hidden = true
+            }
+            
             if(modelName.rangeOfString("ipad Mini") != nil){
                 commentNameLbl.font = FontUtil.ipadminiDateTime
                 commentTimeLbl.font = FontUtil.ipadminiDateTime
@@ -342,6 +373,133 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 UIApplication.sharedApplication().openURL(openUrl)
             })
         }
+    }
+    
+    //function must begin with small letter as per iOs naming convention
+//    @IBAction func buttonDeletePressed(sender: AnyObject) {
+//        //println("Called Action"). This method has been renamed to print() in Swift 2.0
+//        print("Called buttonDeletePressed")
+//        let index = sender.tag
+//        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+//        
+//        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
+//            // ...
+//        }
+//        alertController.addAction(cancelAction)
+//        
+//        let deletePost = UIAlertAction(title: "Delete", style: .Default) { action in
+//            print("Press Delete Post")
+//            self.getDeleteWS(self.BoardContentList[index])
+//        }
+//        alertController.addAction(deletePost)
+//        self.presentViewController(alertController, animated: true, completion: nil)
+//    }
+    
+    @IBAction func hostSelectButton(sender: AnyObject) {
+        if let superview = sender.superview, let cell = superview!.superview as? UITableViewCell {
+            if let indexPath = boardTableview.indexPathForCell(cell) {
+                selectTypeManageTopic(indexPath.row)
+                print("IndexPath : \(indexPath.row)")
+            }
+        }
+    }
+    
+    func selectTypeManageTopic(indexPath: Int){
+        print("Called buttonDeletePressed")
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
+            // ...
+        }
+        alertController.addAction(cancelAction)
+        
+        let deletePost = UIAlertAction(title: "Delete", style: .Default) { action in
+            print("Press Delete Post")
+            self.getDeleteWS(self.BoardContentList[indexPath])
+        }
+        alertController.addAction(deletePost)
+        self.presentViewController(alertController, animated: true, completion: nil)
+    }
+    
+    @IBAction func commentSelectButton(sender: AnyObject) {
+        if let superview = sender.superview, let cell = superview!.superview as? UITableViewCell {
+            if let indexPath = boardTableview.indexPathForCell(cell) {
+                print("IndexPath : \(indexPath.row)")
+                selectTypeManageTopic(indexPath.row)
+            }
+        }
+    }
+    
+    func getDeleteWS(boardContentBean: NSDictionary){
+         let MRProgressAF = MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, animated: true)
+        print("\(NSDate().formattedISO8601) getDeleteWS")
+        let urlWs = NSURL(string: self.deletObjUrl)
+        print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+        let requestPost = NSMutableURLRequest(URL: urlWs!)
+        let _id = boardContentBean.valueForKey("_id") as! String
+        let _rev = boardContentBean.valueForKey("_rev") as! String
+        
+        let empEmail = boardContentBean.valueForKey("empEmail") as! String
+        let avatarName = boardContentBean.valueForKey("avatarName") as! String
+        let avatarPic = boardContentBean.valueForKey("avatarPic") as! String
+        let content = boardContentBean.valueForKey("content") as! String
+       
+        let date = boardContentBean.valueForKey("date") as! String
+        let type = boardContentBean.valueForKey("type") as! String
+        let roomId = boardContentBean.valueForKey("roomId") as! String
+        var subject: String!
+        var topicId: String!
+        
+        if(type == "host"){
+            subject = boardContentBean.valueForKey("subject") as! String
+            topicId = ""
+        }else{
+            subject = ""
+            topicId = boardContentBean.valueForKey("topicId") as! String
+        }
+
+        let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"topicId\":\"\(topicId)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"content\":\"\(content)\",\"subject\":\"\(subject)\",\"date\":\"\(date)\",\"type\":\"\(type)\",\"roomId\":\"\(roomId)\"}"
+     
+        print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
+        
+        requestPost.HTTPBody = jsonObj.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+        requestPost.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        requestPost.setValue("application/json",forHTTPHeaderField: "Accept")
+        requestPost.HTTPMethod = "POST"
+        let urlsession = NSURLSession.sharedSession()
+        let request = urlsession.dataTaskWithRequest(requestPost) { (data, response, error) in
+            guard error == nil && data != nil else {
+                print("error=\(error)")
+                return
+            }
+            
+            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {
+                print("\(NSDate().formattedISO8601) statusCode should be 200, but is \(httpStatus.statusCode)")
+                print("\(NSDate().formattedISO8601) response = \(response)")
+            }
+            
+            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            print("\(NSDate().formattedISO8601) responseString = \(responseString)")
+            
+            if(type == "host"){
+                if(self.receiveFromPage == "SelectRoomPage"){
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.performSegueWithIdentifier("unwindToSelectRoomVCID", sender:nil)
+                    })
+                }else{
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.performSegueWithIdentifier("unwindToRoomVCID", sender:nil)
+                    })
+                }
+            }else{
+               self.getBoardContentWebService()
+            }
+           
+//            MRProgressOverlayView.dismissOverlayForView(self.boardContentView, animated: true)
+        }
+        request.resume()
+        MRProgressAF.setModeAndProgressWithStateOfTask(request)
     }
     
     func newLikeWS(){
@@ -430,7 +588,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         }
         request.resume()
     }
-    
+
     @IBAction func likeButton(sender: AnyObject) {
         checkPushButton = true
         if(self.isLike == false){
@@ -456,6 +614,11 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         if segue.identifier == "openComment" {
             let destVC = segue.destinationViewController as! CommentViewController
             destVC.receiveComment = receiveBoardContentList
+        }else if segue.identifier == "unwindToRoomVCID" {
+            let destVC = segue.destinationViewController as! RoomViewController
+            destVC.receiveRoomList = self.receiveRoomList  //send room Model (room_id , room_name)
+        }else if segue.identifier == "unwindToSelectRoomVCID" {
+            segue.destinationViewController as! SelectRoomViewController
         }
     }
     
@@ -463,5 +626,5 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         print("\(NSDate().formattedISO8601) unwindToBoardVC")
     }
     
-    
+ 
 }

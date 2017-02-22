@@ -61,6 +61,7 @@ extension UINavigationBar {
   }
 }
 
+
 public extension UIDevice {
     
     var modelName: String {
