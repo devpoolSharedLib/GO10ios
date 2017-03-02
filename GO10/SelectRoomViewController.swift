@@ -27,6 +27,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var getHotToppicUrl:String!
     var getRoomUrl:String!
+    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
     var topicList = [NSDictionary]()
     var roomList = [NSDictionary]()
     var modelName: String!
@@ -163,7 +164,6 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
             statusRead = true
         }
         
-        print("StartusRead >>>>>>>> \(statusRead)")
         if (statusRead == false){
             cell.backgroundColor = ColorUtil.unreadTopicColor
         }else{
@@ -178,11 +178,28 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         }
         
         let roomID = bean.valueForKey("roomId") as! String
-        for item in RoomModelUtil.roomImageName {
-            if(item.key as? String == roomID){
-                topicImg.image = item.value as? UIImage
-            }
+        
+        if(RoomModelUtil.roomImageName.valueForKey(roomID) != nil){
+            topicImg.image = RoomModelUtil.roomImageName.valueForKey(roomID) as? UIImage
         }
+        else{
+            let picUrl = self.objectStorageUrl + roomID + ".png"
+            let url = NSURL(string:picUrl)!
+            print("URL Pic :  \(url)")
+            //roomImg.af_setImageWithURL(url)
+            topicImg.af_setImageRoomWithURL(url)
+        }
+
+//        for item in RoomModelUtil.roomImageName {
+//            if(item.key as? String == roomID){
+//                topicImg.image = item.value as? UIImage
+//            }else{
+//                let picUrl = self.objectStorageUrl + roomID + ".png"
+//                let url = NSURL(string:picUrl)!
+////                topicImg.af_setImageWithURL(url)
+//             topicImg.af_setImageRoomWithURL(url)
+//            }
+//        }
         dateTime.text = bean.valueForKey("date") as? String
         return cell
     }
@@ -219,13 +236,32 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
             badgeNumberLbl.text = "\(badgeNumber!)"
         }
         
-        for item in RoomModelUtil.roomImageName {
-            if(item.key as? String == roomID){
-                print(">>>>>>>>>>>>>>>>>>>>>> \(beanRoom.valueForKey("name") as? String)")
-                roomImg.image = item.value as? UIImage
-                roomTitle.text = beanRoom.valueForKey("name") as? String
-            }
+        if(RoomModelUtil.roomImageName.valueForKey(roomID!) != nil){
+            roomImg.image = RoomModelUtil.roomImageName.valueForKey(roomID!) as? UIImage
+            roomTitle.text = beanRoom.valueForKey("name") as? String
         }
+        else{
+            let picUrl = self.objectStorageUrl + roomID! + ".png"
+            let url = NSURL(string:picUrl)!
+            print("URL Pic :  \(url)")
+            //roomImg.af_setImageWithURL(url)
+            roomImg.af_setImageRoomWithURL(url)
+            roomTitle.text = beanRoom.valueForKey("name") as? String
+        }
+        
+//        for item in RoomModelUtil.roomImageName {
+//            if(item.key as? String == roomID){
+//                roomImg.image = item.value as? UIImage
+//                roomTitle.text = beanRoom.valueForKey("name") as? String
+//            }else{
+//                let picUrl = self.objectStorageUrl + roomID! + ".png"
+//                let url = NSURL(string:picUrl)!
+////                print("URL Pic :  \(url)")
+////                roomImg.af_setImageWithURL(url)
+//                roomImg.af_setImageRoomWithURL(url)
+//                roomTitle.text = beanRoom.valueForKey("name") as? String
+//            }
+//        }
         return collection
     }
     

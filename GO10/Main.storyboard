@@ -26,47 +26,26 @@
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xBD-I1-8ON">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Syo-e2-Kbi" userLabel="Avatar Iamge">
                                     <rect key="frame" x="127" y="23" width="120" height="150"/>
                                     <constraints>
-                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="XgI-jG-OLt"/>
-                                        <constraint firstAttribute="height" constant="150" id="a26-aT-dUa"/>
-                                        <constraint firstAttribute="width" constant="120" id="nGD-rA-wmK"/>
+                                        <constraint firstAttribute="height" constant="150" id="AFv-hW-6aF"/>
+                                        <constraint firstAttribute="width" constant="120" id="hc9-xc-ZcM"/>
                                     </constraints>
-                                    <variation key="default">
-                                        <mask key="constraints">
-                                            <exclude reference="XgI-jG-OLt"/>
-                                        </mask>
-                                    </variation>
-                                </imageView>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
-                                <constraint firstItem="Nhg-rA-7GM" firstAttribute="top" secondItem="xBD-I1-8ON" secondAttribute="bottom" constant="8" symbolic="YES" id="1Ax-U1-o44"/>
                                 <constraint firstAttribute="trailing" secondItem="Nhg-rA-7GM" secondAttribute="trailing" constant="8" id="5Xq-Td-X3i"/>
-                                <constraint firstItem="Nhg-rA-7GM" firstAttribute="top" secondItem="xBD-I1-8ON" secondAttribute="bottom" constant="8" id="6jC-1L-Uds"/>
-                                <constraint firstItem="xBD-I1-8ON" firstAttribute="centerX" secondItem="Nhg-rA-7GM" secondAttribute="centerX" id="B8W-Lu-gNQ"/>
-                                <constraint firstItem="xBD-I1-8ON" firstAttribute="centerY" secondItem="cKn-Qd-Gqg" secondAttribute="centerY" constant="-13" id="DbY-EH-lbL"/>
                                 <constraint firstItem="Nhg-rA-7GM" firstAttribute="leading" secondItem="cKn-Qd-Gqg" secondAttribute="leading" constant="8" id="Hiq-8w-7xS"/>
                                 <constraint firstItem="Nhg-rA-7GM" firstAttribute="centerY" secondItem="cKn-Qd-Gqg" secondAttribute="centerY" id="Nxe-lj-c2F"/>
-                                <constraint firstItem="xBD-I1-8ON" firstAttribute="centerX" secondItem="Nhg-rA-7GM" secondAttribute="centerX" id="OEe-uV-RIF"/>
-                                <constraint firstItem="xBD-I1-8ON" firstAttribute="top" secondItem="cKn-Qd-Gqg" secondAttribute="top" constant="23" id="PB0-lY-JOA"/>
+                                <constraint firstItem="Syo-e2-Kbi" firstAttribute="centerX" secondItem="cKn-Qd-Gqg" secondAttribute="centerX" id="QGc-LU-M8v"/>
                                 <constraint firstAttribute="bottom" secondItem="Nhg-rA-7GM" secondAttribute="bottom" constant="20" id="Uvx-Ea-C6y"/>
-                                <constraint firstItem="xBD-I1-8ON" firstAttribute="top" secondItem="cKn-Qd-Gqg" secondAttribute="top" constant="23" id="cw5-tt-F0h"/>
-                                <constraint firstAttribute="trailing" secondItem="xBD-I1-8ON" secondAttribute="trailing" constant="128" id="gDx-CL-Qkb"/>
+                                <constraint firstItem="Syo-e2-Kbi" firstAttribute="top" secondItem="cKn-Qd-Gqg" secondAttribute="top" constant="23" id="kOW-jz-kDe"/>
                                 <constraint firstAttribute="bottom" secondItem="Nhg-rA-7GM" secondAttribute="bottom" constant="20" id="r6Y-UV-HoM"/>
-                                <constraint firstItem="xBD-I1-8ON" firstAttribute="leading" secondItem="cKn-Qd-Gqg" secondAttribute="leading" constant="127" id="ycE-pM-fxt"/>
-                                <constraint firstItem="xBD-I1-8ON" firstAttribute="centerY" secondItem="cKn-Qd-Gqg" secondAttribute="centerY" id="zrg-c5-Q4u"/>
                             </constraints>
                             <variation key="default">
                                 <mask key="constraints">
-                                    <exclude reference="DbY-EH-lbL"/>
-                                    <exclude reference="OEe-uV-RIF"/>
-                                    <exclude reference="PB0-lY-JOA"/>
-                                    <exclude reference="gDx-CL-Qkb"/>
-                                    <exclude reference="ycE-pM-fxt"/>
-                                    <exclude reference="zrg-c5-Q4u"/>
-                                    <exclude reference="6jC-1L-Uds"/>
                                     <exclude reference="Nxe-lj-c2F"/>
                                     <exclude reference="r6Y-UV-HoM"/>
                                 </mask>
@@ -141,7 +120,7 @@
                     </tableView>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
-                        <outlet property="avatarImage" destination="xBD-I1-8ON" id="Kww-oJ-mi2"/>
+                        <outlet property="avatarImageButton" destination="Syo-e2-Kbi" id="lPo-O3-Bqx"/>
                         <outlet property="avatarNameLbl" destination="Nhg-rA-7GM" id="F6M-Lk-Lgy"/>
                         <outlet property="editAvatarLbl" destination="ai1-Iz-1M0" id="a1X-70-qoG"/>
                         <outlet property="logoutLbl" destination="PYS-oO-amc" id="hsw-QK-kDc"/>
@@ -165,7 +144,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8sU-rW-EG4">
-                                    <rect key="frame" x="205" y="128" width="30" height="30"/>
+                                    <rect key="frame" x="172" y="132" width="30" height="30"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="30" id="CT5-F2-zUv"/>
                                         <constraint firstAttribute="height" constant="30" id="OCH-Z4-W7I"/>
@@ -184,14 +163,14 @@
                             </subviews>
                             <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
-                                <constraint firstItem="8sU-rW-EG4" firstAttribute="top" secondItem="yNd-Mb-cov" secondAttribute="bottom" constant="-45" id="4QV-4N-Ywi"/>
+                                <constraint firstItem="8sU-rW-EG4" firstAttribute="top" secondItem="yNd-Mb-cov" secondAttribute="bottom" constant="-41" id="4QV-4N-Ywi"/>
                                 <constraint firstItem="8sU-rW-EG4" firstAttribute="top" secondItem="yNd-Mb-cov" secondAttribute="bottom" constant="-44" id="KL3-AJ-e3i"/>
                                 <constraint firstItem="8sU-rW-EG4" firstAttribute="top" secondItem="yNd-Mb-cov" secondAttribute="bottom" constant="-44" id="PUr-ed-7bV"/>
                                 <constraint firstItem="8sU-rW-EG4" firstAttribute="top" secondItem="yNd-Mb-cov" secondAttribute="bottom" constant="-44" id="TjW-8e-SBj"/>
                                 <constraint firstItem="8sU-rW-EG4" firstAttribute="leading" secondItem="yNd-Mb-cov" secondAttribute="trailing" constant="-44" id="UQV-Hv-vp3"/>
                                 <constraint firstItem="yNd-Mb-cov" firstAttribute="top" secondItem="QRf-Pg-zFc" secondAttribute="top" constant="23" id="YBu-S2-zXd"/>
                                 <constraint firstItem="yNd-Mb-cov" firstAttribute="centerX" secondItem="QRf-Pg-zFc" secondAttribute="centerX" id="Z1p-Bf-1h3"/>
-                                <constraint firstItem="8sU-rW-EG4" firstAttribute="leading" secondItem="yNd-Mb-cov" secondAttribute="trailing" constant="-42" id="dIq-Tn-itH"/>
+                                <constraint firstItem="8sU-rW-EG4" firstAttribute="leading" secondItem="yNd-Mb-cov" secondAttribute="trailing" constant="-75" id="dIq-Tn-itH"/>
                                 <constraint firstItem="yNd-Mb-cov" firstAttribute="centerY" secondItem="QRf-Pg-zFc" secondAttribute="centerY" constant="-13" id="dNN-WY-ybU"/>
                                 <constraint firstAttribute="trailing" secondItem="yNd-Mb-cov" secondAttribute="trailing" constant="128" id="fzj-0S-nhx"/>
                                 <constraint firstAttribute="bottom" secondItem="yNd-Mb-cov" secondAttribute="bottom" constant="49" id="pEo-vC-u24"/>
@@ -1247,7 +1226,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="391" height="118"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="36" contentMode="left" horizontalHuggingPriority="251" misplaced="YES" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pDN-Rg-JfL" customClass="ActiveLabel" customModule="ActiveLabel">
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="36" contentMode="left" horizontalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pDN-Rg-JfL" customClass="ActiveLabel" customModule="ActiveLabel">
                                                     <rect key="frame" x="61" y="72" width="311" height="21"/>
                                                     <attributedString key="attributedText">
                                                         <fragment content="commentContent">
@@ -1265,7 +1244,7 @@
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="39" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" misplaced="YES" text="commentTime" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kpp-pi-PpE">
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="39" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" text="commentTime" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kpp-pi-PpE">
                                                     <rect key="frame" x="61" y="32" width="305" height="32"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                                     <color key="textColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="calibratedRGB"/>
@@ -2042,11 +2021,11 @@
         <image name="selfordel" width="64" height="64"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="K1T-4J-Dfj"/>
-        <segue reference="K7P-Kb-tXj"/>
+        <segue reference="vkn-R5-Eqh"/>
         <segue reference="g0h-69-Pdz"/>
+        <segue reference="K7P-Kb-tXj"/>
+        <segue reference="K1T-4J-Dfj"/>
         <segue reference="IVH-9Q-YBp"/>
-        <segue reference="PKD-A5-g53"/>
         <segue reference="Y3h-AS-Iw1"/>
         <segue reference="Yon-P0-l0i"/>
     </inferredMetricsTieBreakers>

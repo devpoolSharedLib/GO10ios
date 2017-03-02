@@ -3,9 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>urlDomainHttp</key>
-	<string>http://go10webservice.au-syd.mybluemix.net/</string>
+	<string>http://go10.au-syd.mybluemix.net/</string>
 	<key>urlDomainHttps</key>
-	<string>https://go10webservice.au-syd.mybluemix.net/</string>
+	<string>https://go10.au-syd.mybluemix.net/</string>
+	<key>downloadObjectStorage</key>
+	<string>http://go10.au-syd.mybluemix.net/GO10WebService/DownloadServlet?imageName=</string>
+	<key>versionServer</key>
+	<string>v117104/</string>
+	<key>appID</key>
+	<string>dbc694b3-14cb-4e5b-9a56-f7c167572ccb</string>
 	<key>pathTopicService</key>
 	<string>GO10WebService/api/newtopic/</string>
 	<key>pathTopicServiceV2</key>
@@ -16,13 +22,13 @@
 	<string>GO10WebService/api/roomv1/</string>
 	<key>pathUserService</key>
 	<string>GO10WebService/api/user/</string>
-	<key>versionServer</key>
-	<string>v117104/</string>
 	<key>AppGUID</key>
 	<string>3c5e9860-be2b-4276-a53b-b12f0d3db6bb</string>
 	<key>clientSecret</key>
 	<string>f1b7da23-fe5e-40d4-99b5-ca39eaae8b35</string>
-	<key>appID</key>
+	<key>appID_Prd</key>
+	<string>dbc694b3-14cb-4e5b-9a56-f7c167572ccb</string>
+	<key>appID_Dev</key>
 	<string>fa8c76f3-acb7-4cae-8f89-b0b82c40b7ed</string>
 </dict>
 </plist>

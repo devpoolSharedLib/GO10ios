@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 import MRProgress
 import MRProgress.MRProgressOverlayView_AFNetworking
+import AlamofireImage
 
 class EditAvatarTableViewController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     
@@ -26,19 +27,21 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
     var getUserByTokenUrl: String!
     var updateUserUrl: String!
     var uploadServletUrl: String!
+    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
     var recieveformverify: String!
     var recieveStatusLogin: String!
     var backbtn: UIBarButtonItem!
     var submitBtn: UIBarButtonItem!
     var modelName: String!
     var ImagePicker = UIImagePickerController()
+//    var ImagePicker = UIImagePickerController()
     var avatatPic: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.getUserByTokenUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/getUserByToken?token="
-        self.updateUserUrl = "\\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/updateUser"
-        self.uploadServletUrl = "\(self.domainUrl)GO10WebService/UploadServlet"
+//        self.getUserByTokenUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/getUserByToken?token="
+//        self.updateUserUrl = "\\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/updateUser"
+//        self.uploadServletUrl = "\(self.domainUrl)GO10WebService/UploadServlet"
         modelName = UIDevice.currentDevice().modelName
         print("*** EditAvatarTableVC ViewDidLoad")
         if(modelName.rangeOfString("ipad Mini") != nil){
@@ -67,37 +70,81 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
                 self.navigationItem.rightBarButtonItems?.removeAtIndex(0)
             }
     }
+
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        print("*** EditAvatarTableVC ViewDidAppear ***")
+        MRProgressOverlayView.showOverlayAddedTo(self.editavatarTableView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
+        self.getUserByTokenUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/getUserByToken?token="
+        self.updateUserUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/updateUser"
+        self.uploadServletUrl = "\(self.domainUrl)GO10WebService/UploadServlet"
+        do{
+            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
+            let userPicAvatar = result[0].valueForKey("avatarPic") as! String
+            
+            let userNameAvatar = result[0].valueForKey("avatarName") as! String
+            print("\(NSDate().formattedISO8601) Data_Info :\(result)")
+            
+            let avatarImage = UIImage(named: userPicAvatar)
+            if(avatarImage != nil){
+                print("\(NSDate().formattedISO8601) avatarImage : \(userPicAvatar)")
+                avatarImageButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+                avatarImageButton.setImage(avatarImage, forState: .Normal)
+            }else{
+                print("\(NSDate().formattedISO8601) avatarImage : \(userPicAvatar)")
+                let picUrl = self.objectStorageUrl + userPicAvatar
+                let url = NSURL(string:picUrl)!
+        
+                self.avatarImageButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+                self.avatarImageButton.af_setImageForState(.Normal, URL: url)
+
+            }
+//            cameraImg.backgroundColor = UIColor.whiteColor()
+            cameraImg.image = UIImage(named: "camera")?.circle
+            
+
+            avatarImageButton.bringSubviewToFront(cameraImg)
+            avatarImageButton.addSubview(cameraImg)
+            
+            editAvatarLbl.text = userNameAvatar
+            MRProgressOverlayView.dismissOverlayForView(self.editavatarTableView, animated: true)
+        }catch{
+            print("\(NSDate().formattedISO8601) Error Reading Data")
+        }
+    }
     
     @IBAction func gotoSelectAvatarView(sender: AnyObject) {
-        self.performSegueWithIdentifier("gotoSelectAvatar", sender: nil)
-//                    let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-//        
-//                    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
-//                        // ...
-//                    }
-//                    alertController.addAction(cancelAction)
-//        
-//                    let uploadPhoto = UIAlertAction(title: "Upload Photo", style: .Default) { action in
-//                        print("Upload Photo")
-//                        self.ImagePicker.delegate = self
-//                        self.ImagePicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-//                        self.ImagePicker.allowsEditing = true
-//                        self.presentViewController(self.ImagePicker, animated: true, completion: nil)
-//                    }
-//        
-//                    let selectAvatar = UIAlertAction(title: "Select Avatar", style: .Default) { action in
-//                        print("Select Avatar")
-//                        self.performSegueWithIdentifier("gotoSelectAvatar", sender: nil)
-//                    }
-//        
-//                    alertController.addAction(uploadPhoto)
-//                    alertController.addAction(selectAvatar)
-//                    self.presentViewController(alertController, animated: true, completion: nil)
+//        self.performSegueWithIdentifier("gotoSelectAvatar", sender: nil)
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+//        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
+//            print("press cancle")
+//        }
+//        alertController.addAction(cancelAction)
+        
+        let uploadPhoto = UIAlertAction(title: "Upload Photo", style: .Default) { action in
+            print("Upload Photo")
+            self.ImagePicker.delegate = self
+            self.ImagePicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+            self.ImagePicker.allowsEditing = true
+            
+            self.presentViewController(self.ImagePicker, animated: true, completion: nil)
+        }
+        
+        let selectAvatar = UIAlertAction(title: "Select Avatar", style: .Default) { action in
+            print("Select Avatar")
+            self.performSegueWithIdentifier("gotoSelectAvatar", sender: nil)
+        }
+        
+        alertController.addAction(uploadPhoto)
+        alertController.addAction(selectAvatar)
+        self.presentViewController(alertController, animated: true, completion: nil)
         
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        //browse image from gallery
+//        //browse image from gallery
         var browseImg =  info[UIImagePickerControllerOriginalImage] as? UIImage
         browseImg = ImageUtil.resizeImage(browseImg!, modelName: modelName)
         uploadImage(browseImg!)
@@ -138,7 +185,8 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
         body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         request.HTTPBody = body
         let session = NSURLSession.sharedSession()
-        let MRProgressAF = MRProgressOverlayView.showOverlayAddedTo(self.editavatarTableView, animated: true)
+        let MRProgressAF = MRProgressOverlayView.showOverlayAddedTo(self.editavatarTableView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
+//        (self.boardContentView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             if error == nil {
                 do{
@@ -148,15 +196,9 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
                     dispatch_async(dispatch_get_main_queue(), {
                         // Show Image
                         print("\(NSDate().formattedISO8601) Show Image")
-//                        self.toolbar.editor?.insertImage(responseUrl,width: width,height: height,alt: "insertImageUrl")
-                        
-                        let url = NSURL(string:responseUrl)
-                        let data = NSData(contentsOfURL:url!)
-                        if data != nil {
-//                            self.avatarImageButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
-                            self.avatarImageButton.setImage(UIImage(data:data!), forState: .Normal)
-                        }
-                        self.avatatPic = responseUrl
+                        let theFileName = (responseUrl as NSString).lastPathComponent
+                        print("fileName : \(theFileName)")
+                        self.avatatPic = theFileName
                         self.updataData()
                         MRProgressOverlayView.dismissOverlayForView(self.editavatarTableView, animated: true)
                     })
@@ -171,31 +213,7 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
         task.resume()
         MRProgressAF.setModeAndProgressWithStateOfTask(task)
     }
-
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        print("*** EditAvatarTableVC ViewDidAppear ***")
-        MRProgressOverlayView.showOverlayAddedTo(self.editavatarTableView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
-        do{
-            let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
-            let userPicAvatar = result[0].valueForKey("avatarPic") as! String
-            let userNameAvatar = result[0].valueForKey("avatarName") as! String
-            print("\(NSDate().formattedISO8601) Data_Info :\(result)")
-            let avatarImage = UIImage(named: userPicAvatar)
-            if(avatarImage != nil){
-                print("\(NSDate().formattedISO8601) avatarImage : \(userPicAvatar)")
-                avatarImageButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
-                avatarImageButton.setImage(avatarImage, forState: .Normal)
-                cameraImg.image = UIImage(named: "camera")
-                avatarImageButton.addSubview(cameraImg)
-            }
-            editAvatarLbl.text = userNameAvatar
-            MRProgressOverlayView.dismissOverlayForView(self.editavatarTableView, animated: true)
-        }catch{
-            print("\(NSDate().formattedISO8601) Error Reading Data")
-        }
-    }
-
+    
     @IBAction func submitAvatar(sender: AnyObject) {
         print("\(NSDate().formattedISO8601) submitAvatar")
         if(recieveStatusLogin == "First Login" && recieveStatusLogin != nil){
@@ -243,6 +261,8 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
     
     func updataDataToDB(){
         do{
+            
+            print("\(NSDate().formattedISO8601) URL : \(self.updateUserUrl)")
             let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
             let _id = result[0].valueForKey("id_") as! String
             let _rev = result[0].valueForKey("rev_") as! String
@@ -278,6 +298,8 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
                 let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
                 print("\(NSDate().formattedISO8601) responseString = \(responseString)")
                 result[0].setValue(responseString, forKey: "rev_")
+                result[0].setValue(avatarPic, forKey: "avatarPic")
+                self.viewDidAppear(true)
             }
             request.resume()
         }catch{

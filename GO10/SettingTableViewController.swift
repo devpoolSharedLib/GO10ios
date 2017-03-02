@@ -12,7 +12,8 @@ import OneSignal
 
 class SettingTableViewController: UITableViewController {
     
-    @IBOutlet weak var avatarImage: UIImageView!
+    @IBOutlet weak var avatarImageButton: UIButton!
+//    @IBOutlet weak var avatarImage: UIImageView!
     @IBOutlet weak var avatarNameLbl: UILabel!
     @IBOutlet weak var logoutLbl: UILabel!
     @IBOutlet weak var editAvatarLbl: UILabel!
@@ -22,6 +23,7 @@ class SettingTableViewController: UITableViewController {
     var fetchReqRoomManageInfo = NSFetchRequest(entityName: "Room_Manage_Info")
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var modelName: String!
+    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,8 +39,8 @@ class SettingTableViewController: UITableViewController {
         }
         let singleTap = UITapGestureRecognizer(target: self, action:#selector(SettingTableViewController.tapDetected))
         singleTap.numberOfTapsRequired = 1
-        avatarImage.userInteractionEnabled = true
-        avatarImage.addGestureRecognizer(singleTap)
+        avatarImageButton.userInteractionEnabled = true
+        avatarImageButton.addGestureRecognizer(singleTap)
     }
     
     func tapDetected() {
@@ -54,10 +56,23 @@ class SettingTableViewController: UITableViewController {
             let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
             let userPicAvatar = result[0].valueForKey("avatarPic") as! String
             let userNameAvatar = result[0].valueForKey("avatarName") as! String
-            if(avatarImage != nil){
-                print("\(NSDate().formattedISO8601) avatarPicImage : \(userPicAvatar)")
-                avatarImage.image = UIImage(named: userPicAvatar)
+            
+            let avatarImageCheck = UIImage(named: userPicAvatar)
+            
+            if(avatarImageCheck != nil){
+                print("\(NSDate().formattedISO8601) avatarImage : \(userPicAvatar)")
+//                self.avatarImage.image = UIImage(named: userPicAvatar)
+                self.avatarImageButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+                self.avatarImageButton.setImage(avatarImageCheck, forState: .Normal)
+            }else{
+                print("\(NSDate().formattedISO8601) avatarImage : \(userPicAvatar)")
+                let picUrl = self.objectStorageUrl + userPicAvatar
+                let url = NSURL(string:picUrl)!
+//                self.avatarImage.af_setImageWithURL(url)
+                self.avatarImageButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+                self.avatarImageButton.af_setImageForState(.Normal, URL: url)
             }
+            
             if(avatarNameLbl != nil){
                 avatarNameLbl.text = userNameAvatar
             }
@@ -66,6 +81,7 @@ class SettingTableViewController: UITableViewController {
         }
     }
 
+    
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         print("index Path : \(indexPath.row)")
             if indexPath.row == 2{

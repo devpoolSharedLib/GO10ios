@@ -21,6 +21,9 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - Alamofire (3.5.1)
+  - AlamofireImage (2.5.0):
+    - Alamofire (~> 3.5)
   - BadgeSwift (4.0.0)
   - CarbonKit (2.1.7)
   - Crashlytics (3.7.0):
@@ -118,6 +121,7 @@ PODS:
 
 DEPENDENCIES:
   - ActiveLabel (~> 0.6.0)
+  - AlamofireImage (~> 2.0)
   - BadgeSwift (~> 4.0)
   - CarbonKit (~> 2.1)
   - Crashlytics
@@ -135,6 +139,8 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   ActiveLabel: ec8c7a0995ab2d789ab74b72b105397dc079ff97
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
+  Alamofire: 0dfba1184a543e2aa160f4e39cac4e8aba48d223
+  AlamofireImage: 2d34936e5201270bb17a316a786e90e83b4a249d
   BadgeSwift: b291cf8ca88674d61cd781f14988272988f4dff4
   CarbonKit: 88f90b6290af1306c82fd5ba8d2aa4dd19e08083
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
@@ -157,6 +163,6 @@ SPEC CHECKSUMS:
   Siren: a536a4fed41def10e540a9804b2a63a4b3634f6b
   Toucan: 0519c341148252ae114c5a657d2a85bb9ada9e40
 
-PODFILE CHECKSUM: 2609be421619cb3dd11da35da7173a09453909c7
+PODFILE CHECKSUM: 042a706f3518251a016ad4d5b921f4bfcbc6942c
 
 COCOAPODS: 1.1.1

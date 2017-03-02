@@ -25,6 +25,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var fetchReqApplication = NSFetchRequest(entityName: "Application")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
     var getRoomByIdUrl: String!
     var roomList = [NSDictionary]()
     var roomId: String!
@@ -43,14 +44,31 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
             super.viewDidLoad()
             print("*** RoomVC viewDidLoad ***")
             self.getRoomByIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/gettopiclistbyroom?"
-            roomId = receiveRoomList.valueForKey("_id") as! String
-            roomName = receiveRoomList.valueForKey("name") as! String
+            self.roomId = receiveRoomList.valueForKey("_id") as! String
+            self.roomName = receiveRoomList.valueForKey("name") as! String
             lblRoom.text = roomName
-            for item in  RoomModelUtil.roomImageName { // loop through data items
-                if(item.key as? String == roomId){
-                    self.imgView.image = item.value as? UIImage
-                }
+            
+            if(RoomModelUtil.roomImageName.valueForKey(roomId!) != nil){
+                self.imgView.image = RoomModelUtil.roomImageName.valueForKey(roomId!) as? UIImage
             }
+            else{
+                let picUrl = self.objectStorageUrl + roomId! + ".png"
+                let url = NSURL(string:picUrl)!
+                print("URL Pic :  \(url)")
+                //roomImg.af_setImageWithURL(url)
+                self.imgView.af_setImageRoomWithURL(url)
+            }
+            
+//            for item in  RoomModelUtil.roomImageName { // loop through data items
+//                if(item.key as? String == roomId){
+//                    self.imgView.image = item.value as? UIImage
+//                }else{
+//                    let picUrl = self.objectStorageUrl + self.roomId! + ".png"
+//                    let url = NSURL(string:picUrl)!
+////                    self.imgView.af_setImageWithURL(url)
+//                    self.imgView.af_setImageRoomWithURL(url)
+//                }
+//            }
             
             //get Value From Core Data
             self.getValuefromRoomManageInfo()
@@ -139,14 +157,11 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
       
         let statusRead: Bool!
         if (bean.valueForKey("statusRead") != nil){
-            print("statusRead != nil")
             statusRead = bean.valueForKey("statusRead") as! Bool
         }else{
-            print("statusRead = nil")
             statusRead = true
         }
         
-        print("StartusRead >>>>>>>> \(statusRead)")
         if (statusRead == false){
             cell.backgroundColor = ColorUtil.unreadTopicColor
         }else{
@@ -162,7 +177,16 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         dateTime.text = bean.valueForKey("date") as? String
         let picAvatar = bean.valueForKey("avatarPic") as? String
-        roomImg.image = UIImage(named: picAvatar!)
+        let avatarImageCheck = UIImage(named: picAvatar!)
+        if(avatarImageCheck != nil){
+             roomImg.image = UIImage(named: picAvatar!)
+        }else{
+            let picUrl = self.objectStorageUrl + picAvatar!
+            let url = NSURL(string:picUrl)!
+            roomImg.af_setImageWithURL(url)
+        }
+//        roomImg.image = UIImage(named: picAvatar!)
+        
         return cell
     }
     

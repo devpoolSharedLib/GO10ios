@@ -24,6 +24,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
     var getHotToppicByIdUrl: String!
     var checkIsLikeUrl: String!
     var updateLikeUrl: String!
@@ -276,7 +277,19 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             }
             
             let picAvatar = boardContentBean.valueForKey("avatarPic") as? String
-            hostImg.image = UIImage(named: picAvatar!)
+//            hostImg.image = UIImage(named: picAvatar!)
+            
+            let avatarImageCheck = UIImage(named: picAvatar!)
+            if(avatarImageCheck != nil){
+                print("\(NSDate().formattedISO8601) avatarImage : \(picAvatar!)")
+                hostImg.image = UIImage(named: picAvatar!)
+            }else{
+                print("\(NSDate().formattedISO8601) avatarImage : \(picAvatar!)")
+                let picUrl = self.objectStorageUrl + picAvatar!
+                let url = NSURL(string:picUrl)!
+                hostImg.af_setImageWithURL(url)
+            }
+
             hostNameLbl.text =  boardContentBean.valueForKey("avatarName") as? String
             hostTimeLbl.text =  boardContentBean.valueForKey("date") as? String
             
@@ -329,7 +342,19 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
             }
             let picAvatar = boardContentBean.valueForKey("avatarPic") as? String
-            commentImg.image = UIImage(named: picAvatar!)
+            
+//            commentImg.image = UIImage(named: picAvatar!)
+            let avatarImageCheck = UIImage(named: picAvatar!)
+            if(avatarImageCheck != nil){
+                print("\(NSDate().formattedISO8601) avatarImage : \(picAvatar!)")
+                commentImg.image = UIImage(named: picAvatar!)
+            }else{
+                print("\(NSDate().formattedISO8601) avatarImage : \(picAvatar!)")
+                let picUrl = self.objectStorageUrl + picAvatar!
+                let url = NSURL(string:picUrl)!
+                commentImg.af_setImageWithURL(url)
+            }
+            
             commentNameLbl.text =  boardContentBean.valueForKey("avatarName") as? String
             commentTimeLbl.text =  boardContentBean.valueForKey("date") as? String
         }else{
@@ -409,10 +434,10 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
-            // ...
-        }
-        alertController.addAction(cancelAction)
+//        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
+//            // ...
+//        }
+//        alertController.addAction(cancelAction)
         
         let deletePost = UIAlertAction(title: "Delete", style: .Default) { action in
             print("Press Delete Post")

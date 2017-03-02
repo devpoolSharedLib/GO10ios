@@ -18,6 +18,7 @@ target 'GO10' do
 	pod 'Siren', '0.9.5'
     pod 'BadgeSwift', '~> 4.0'
     pod 'OneSignal'
+    pod 'AlamofireImage', '~> 2.0'
 end
 
 target 'GO10Tests' do
