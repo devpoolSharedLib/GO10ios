@@ -241,10 +241,10 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
            
             if(boardContentBean.valueForKey("empEmail") as! String == self.empEmail){
                 print("This user is post topic")
+                 self.hostDeleteBtn.hidden = false
             }else{
                 print("This user isn't post topic")
                self.hostDeleteBtn.hidden = true
-                
             }
             
             //disabled comment Button if Ineligible
@@ -320,6 +320,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 
             if(boardContentBean.valueForKey("empEmail") as! String == self.empEmail){
                 print("This user is comment topic")
+                 self.commentDeleteBtn.hidden = false
             }else{
                 print("This user isn't comment topic")
                 self.commentDeleteBtn.hidden = true
