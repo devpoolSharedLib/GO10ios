@@ -24,7 +24,7 @@ class LoginViewController: UIViewController {
     var profile = [NSDictionary]()
     var modelName: String!
     var startDate: String!
-    var appId = PropertyUtil.getPropertyFromPlist("data",key: "appID")
+//    var appId = PropertyUtil.getPropertyFromPlist("data",key: "appID")
     @IBOutlet weak var emailLbl: UILabel!
     @IBOutlet weak var emailTxtField: UITextField!
     @IBOutlet weak var passwordLbl: UILabel!

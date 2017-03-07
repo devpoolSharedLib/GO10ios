@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
     var window: UIWindow?
     var signInType: String?
     var badgeCount: Int = 0
-    var appId = PropertyUtil.getPropertyFromPlist("data",key: "appID")
+    var appId = PropertyUtil.getPropertyFromPlist("data",key: "OneSignal_appID")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var getbadgenumbernotificationUrl: String!

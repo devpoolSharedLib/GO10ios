@@ -48,7 +48,6 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     
     func refreshPage(){
         getTopicWebService()
-        refreshTableView()
         refreshControl.endRefreshing()
     }
  
@@ -190,16 +189,6 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
             topicImg.af_setImageRoomWithURL(url)
         }
 
-//        for item in RoomModelUtil.roomImageName {
-//            if(item.key as? String == roomID){
-//                topicImg.image = item.value as? UIImage
-//            }else{
-//                let picUrl = self.objectStorageUrl + roomID + ".png"
-//                let url = NSURL(string:picUrl)!
-////                topicImg.af_setImageWithURL(url)
-//             topicImg.af_setImageRoomWithURL(url)
-//            }
-//        }
         dateTime.text = bean.valueForKey("date") as? String
         return cell
     }

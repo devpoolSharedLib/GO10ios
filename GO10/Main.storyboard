@@ -982,7 +982,7 @@
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.13" colorSpace="calibratedRGB"/>
                                 <color key="separatorColor" red="0.92960502099999998" green="0.92960502099999998" blue="0.92960502099999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="hostCell" rowHeight="249" id="seR-SB-76a">
+                                    <tableViewCell clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="hostCell" rowHeight="249" id="seR-SB-76a">
                                         <rect key="frame" x="0.0" y="28" width="391" height="249"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="seR-SB-76a" id="dFV-3M-F7M">
@@ -1219,7 +1219,7 @@
                                             <constraint firstItem="M9W-3W-9qq" firstAttribute="width" secondItem="seR-SB-76a" secondAttribute="width" id="L5z-E9-4Wg"/>
                                         </constraints>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="commentCell" rowHeight="118" id="ws5-za-KL6">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="commentCell" rowHeight="118" id="ws5-za-KL6">
                                         <rect key="frame" x="0.0" y="277" width="391" height="118"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ws5-za-KL6" id="xFp-oS-jQU">
@@ -2022,9 +2022,9 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="vkn-R5-Eqh"/>
-        <segue reference="g0h-69-Pdz"/>
+        <segue reference="GkO-V8-b6y"/>
+        <segue reference="5Eo-bp-Oia"/>
         <segue reference="K7P-Kb-tXj"/>
-        <segue reference="K1T-4J-Dfj"/>
         <segue reference="IVH-9Q-YBp"/>
         <segue reference="Y3h-AS-Iw1"/>
         <segue reference="Yon-P0-l0i"/>

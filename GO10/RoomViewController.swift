@@ -83,6 +83,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
             }
             
+            refreshControl.attributedTitle = NSAttributedString(string: "Reload")
             refreshControl.addTarget(self, action: #selector(SelectRoomViewController.refreshPage), forControlEvents: .ValueChanged)
             tableView.addSubview(refreshControl)
         }
@@ -98,7 +99,6 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func refreshPage(){
         getRoomByIdWebService()
-        refeshTableView()
         refreshControl.endRefreshing()
     }
     
@@ -185,8 +185,6 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
             let url = NSURL(string:picUrl)!
             roomImg.af_setImageWithURL(url)
         }
-//        roomImg.image = UIImage(named: picAvatar!)
-        
         return cell
     }
     
@@ -247,20 +245,5 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
             print("\(NSDate().formattedISO8601) Error Reading Data")
         }
     }
-
-    
-//    func checkPostBtn(roomId:String){
-//        let postUserArray = self.postUserCD.valueForKey(roomId) as! Array<String>
-//        if postUserArray.contains("all") {
-//            print("Find All Post User")
-//        }else if postUserArray.contains(self.empEmail) {
-//            print("Find Post User")
-//        }else{
-//            print("not Find Post User")
-////            postTopicBtn =  self.navigationItem.rightBarButtonItems![1]
-////            self.navigationItem.rightBarButtonItems?.removeAtIndex(0)
-//            self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
-//        }
-//    }
 
 }

@@ -118,10 +118,9 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
 //        self.performSegueWithIdentifier("gotoSelectAvatar", sender: nil)
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
-//        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
-//            print("press cancle")
-//        }
-//        alertController.addAction(cancelAction)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
+            alertController.dismissViewControllerAnimated(true, completion: nil)
+        }
         
         let uploadPhoto = UIAlertAction(title: "Upload Photo", style: .Default) { action in
             print("Upload Photo")
@@ -139,8 +138,25 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
         
         alertController.addAction(uploadPhoto)
         alertController.addAction(selectAvatar)
-        self.presentViewController(alertController, animated: true, completion: nil)
+        alertController.addAction(cancelAction)
         
+        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad )
+        {
+            if let currentPopoverpresentioncontroller = alertController.popoverPresentationController{
+                currentPopoverpresentioncontroller.sourceView = self.avatarImageButton
+                currentPopoverpresentioncontroller.sourceRect = self.avatarImageButton.bounds;
+                currentPopoverpresentioncontroller.permittedArrowDirections = UIPopoverArrowDirection.Up;
+                self.presentViewController(alertController, animated: true, completion: nil)
+            }
+        }else{
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    func alertControllerBackgroundTapped()
+    {
+        print("alertControllerBackgroundTapped")
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {

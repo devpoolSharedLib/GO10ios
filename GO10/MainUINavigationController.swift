@@ -35,6 +35,7 @@ class MainUINavigationController: UINavigationController {
                 checkUserActivation(self.empEmail)
             }else{
                 print("statusLogin false")
+                print("xxccvbxznvsznfvklnszkldfn;l")
                 self.performSegueWithIdentifier("gotoLoginPage", sender: nil)
             }
         }catch{

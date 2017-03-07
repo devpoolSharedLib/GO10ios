@@ -56,6 +56,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var hostDeleteBtn : UIButton!
     var commentDeleteBtn: UIButton!
     var roomName: String!
+    var refreshControl = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,6 +83,14 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             print("not Find Comment User")
             self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
         }
+        
+        refreshControl.addTarget(self, action: #selector(SelectRoomViewController.refreshPage), forControlEvents: .ValueChanged)
+        boardTableview.addSubview(refreshControl)
+    }
+    
+    func refreshPage(){
+        getBoardContentWebService()
+        refreshControl.endRefreshing()
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -230,14 +239,11 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             
             self.hostDeleteBtn = cell.viewWithTag(46) as! UIButton
            
-//            self.hostDeleteBtn.tag = indexPath.row
             if(boardContentBean.valueForKey("empEmail") as! String == self.empEmail){
                 print("This user is post topic")
-//                hostDeleteBtn.tag = indexPath.row
-//                hostDeleteBtn.addTarget(self, action: #selector(BoardcontentViewController.buttonDeletePressed(_:)), forControlEvents: .TouchUpInside)
             }else{
                 print("This user isn't post topic")
-                hostDeleteBtn.hidden = true
+               self.hostDeleteBtn.hidden = true
                 
             }
             
@@ -310,15 +316,13 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             let commentImg = cell.viewWithTag(37) as! UIImageView
             let commentNameLbl = cell.viewWithTag(38) as! UILabel
             let commentTimeLbl = cell.viewWithTag(39) as! UILabel
-            let commentDeleteBtn = cell.viewWithTag(45) as! UIButton
-//            commentDeleteBtn.tag = indexPath.row
+             self.commentDeleteBtn = cell.viewWithTag(45) as! UIButton
+
             if(boardContentBean.valueForKey("empEmail") as! String == self.empEmail){
                 print("This user is comment topic")
-//                commentDeleteBtn.tag = indexPath.row
-//                commentDeleteBtn.addTarget(self, action: #selector(BoardcontentViewController.buttonDeletePressed(_:)), forControlEvents: .TouchUpInside)
             }else{
                 print("This user isn't comment topic")
-                commentDeleteBtn.hidden = true
+                self.commentDeleteBtn.hidden = true
             }
             
             if(modelName.rangeOfString("ipad Mini") != nil){
@@ -400,60 +404,51 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         }
     }
     
-    //function must begin with small letter as per iOs naming convention
-//    @IBAction func buttonDeletePressed(sender: AnyObject) {
-//        //println("Called Action"). This method has been renamed to print() in Swift 2.0
-//        print("Called buttonDeletePressed")
-//        let index = sender.tag
-//        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-//        
-//        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
-//            // ...
-//        }
-//        alertController.addAction(cancelAction)
-//        
-//        let deletePost = UIAlertAction(title: "Delete", style: .Default) { action in
-//            print("Press Delete Post")
-//            self.getDeleteWS(self.BoardContentList[index])
-//        }
-//        alertController.addAction(deletePost)
-//        self.presentViewController(alertController, animated: true, completion: nil)
-//    }
-    
+
     @IBAction func hostSelectButton(sender: AnyObject) {
         if let superview = sender.superview, let cell = superview!.superview as? UITableViewCell {
             if let indexPath = boardTableview.indexPathForCell(cell) {
-                selectTypeManageTopic(indexPath.row)
-                print("IndexPath : \(indexPath.row)")
+                selectTypeManageTopic(indexPath.row,btn: self.hostDeleteBtn)
             }
         }
     }
     
-    func selectTypeManageTopic(indexPath: Int){
+    @IBAction func commentSelectButton(sender: AnyObject) {
+        if let superview = sender.superview, let cell = superview!.superview as? UITableViewCell {
+            if let indexPath = boardTableview.indexPathForCell(cell) {
+                selectTypeManageTopic(indexPath.row,btn:self.commentDeleteBtn)
+            }
+        }
+    }
+    
+    func selectTypeManageTopic(indexPath: Int,btn: UIButton){
         print("Called buttonDeletePressed")
         
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
-//        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
-//            // ...
-//        }
-//        alertController.addAction(cancelAction)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
+            // ...
+        }
         
         let deletePost = UIAlertAction(title: "Delete", style: .Default) { action in
             print("Press Delete Post")
             self.getDeleteWS(self.BoardContentList[indexPath])
         }
         alertController.addAction(deletePost)
-        self.presentViewController(alertController, animated: true, completion: nil)
-    }
-    
-    @IBAction func commentSelectButton(sender: AnyObject) {
-        if let superview = sender.superview, let cell = superview!.superview as? UITableViewCell {
-            if let indexPath = boardTableview.indexPathForCell(cell) {
-                print("IndexPath : \(indexPath.row)")
-                selectTypeManageTopic(indexPath.row)
+        alertController.addAction(cancelAction)
+        //        self.presentViewController(alertController, animated: true, completion: nil)
+        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad )
+        {
+            if let currentPopoverpresentioncontroller = alertController.popoverPresentationController{
+                currentPopoverpresentioncontroller.sourceView = btn
+                currentPopoverpresentioncontroller.sourceRect = btn.bounds;
+                currentPopoverpresentioncontroller.permittedArrowDirections = UIPopoverArrowDirection.Right;
+                self.presentViewController(alertController, animated: true, completion: nil)
             }
+        }else{
+            self.presentViewController(alertController, animated: true, completion: nil)
         }
+        
     }
     
     func getDeleteWS(boardContentBean: NSDictionary){
