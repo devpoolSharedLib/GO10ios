@@ -68,6 +68,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         self.updateDisLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/updateDisLike"
         self.newLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/newLike"
         self.deletObjUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/deleteObj"
+
+        self.readTopicUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/readtopic?"
         self.modelName = UIDevice.currentDevice().modelName
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
         self.roomId = receiveBoardContentList.valueForKey("roomId") as! String
@@ -75,12 +77,12 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         //get Value From Core Data
         getValuefromUserInfo()
         getValuefromRoomManageInfo()
-        
+        self.readTopicWebservice(self.empEmail, topicId: self.topicId)
         self.commentUserArray = self.commentUserCD.valueForKey(roomId) as! Array<String>
         if(RoomAdminUtil.checkAccess(self.commentUserArray, empEmail: self.empEmail)){
-            print("Find Comment User")
+            print("User Can Comment")
         }else{
-            print("not Find Comment User")
+            print("User Can't Comment")
             self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
         }
         
@@ -95,7 +97,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
+                MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
         print("*** BoardContentVC viewDidAppear ***")
         self.modelName = UIDevice.currentDevice().modelName
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
@@ -223,7 +225,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let boardContentBean = self.BoardContentList[indexPath.row]
-        print(boardContentBean)
+//        print(boardContentBean)
         let cell: UITableViewCell
         if boardContentBean.valueForKey("type") as! String == "host" {
             cell = tableView.dequeueReusableCellWithIdentifier("hostCell", forIndexPath: indexPath)
@@ -306,9 +308,9 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             }
             
             if(boardContentBean.valueForKey("countRead") != nil){
-                print(">>>>> count read >>>> \(boardContentBean.valueForKey("countRead"))")
+                print(">>>>> count read this topic>>>> \(boardContentBean.valueForKey("countRead"))")
             }else{
-                print(">>>>> count read >>>> 0)")
+                print(">>>>> count read this topic >>>> 0)")
             }
         }else if boardContentBean.valueForKey("type") as! String == "comment" {
             cell = tableView.dequeueReusableCellWithIdentifier("commentCell", forIndexPath: indexPath)
@@ -610,6 +612,31 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         request.resume()
     }
 
+    func readTopicWebservice(empEmail: String,topicId: String){
+        print("\(NSDate().formattedISO8601) readTopic")
+        
+        let urlWs = NSURL(string: "\(self.readTopicUrl)empEmail=\(empEmail)&topicId=\(topicId)")
+        print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+        let request = NSMutableURLRequest(URL: urlWs!)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        let urlsession = NSURLSession.sharedSession()
+        let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
+            guard error == nil && data != nil else {
+                print("\(NSDate().formattedISO8601) error=\(error)")
+                return
+            }
+            
+            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 201 {
+                print("\(NSDate().formattedISO8601) statusCode should be 201, but is \(httpStatus.statusCode)")
+                print("\(NSDate().formattedISO8601) response = \(response)")
+            }else{
+                let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                print("\(NSDate().formattedISO8601) responseString = \(responseString!)")
+            }
+        }
+        requestSent.resume()
+    }
+    
     @IBAction func likeButton(sender: AnyObject) {
         checkPushButton = true
         if(self.isLike == false){

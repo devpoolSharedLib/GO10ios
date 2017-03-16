@@ -18,13 +18,14 @@ class LoginViewController: UIViewController {
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var fetchReqApplication = NSFetchRequest(entityName: "Application")
     var domainUrlHttps = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var getUserByUserPasswordUrl: String!
+    var accessAppUrl: String!
     var checkRoomNotificationModel: String!
     var profile = [NSDictionary]()
     var modelName: String!
     var startDate: String!
-//    var appId = PropertyUtil.getPropertyFromPlist("data",key: "appID")
     @IBOutlet weak var emailLbl: UILabel!
     @IBOutlet weak var emailTxtField: UITextField!
     @IBOutlet weak var passwordLbl: UILabel!
@@ -86,7 +87,6 @@ class LoginViewController: UIViewController {
     func checkLogin(empEmail:String,password:String){
         print("\(NSDate().formattedISO8601) getLoginWebservice")
         let url = "\(self.getUserByUserPasswordUrl)email=\(empEmail)&password=\(password)"
-        print("url : \(url)")
         let strUrlEncode = url.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet())
         let urlWs = NSURL(string: strUrlEncode!)
         let req = NSMutableURLRequest(URL: urlWs!)
@@ -121,7 +121,6 @@ class LoginViewController: UIViewController {
                         self.gotoSetAvatar()
                     }else{
                         MRProgressOverlayView.dismissOverlayForView(self.loginView, animated: true)
-                        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> \(empEmail)")
                         self.callRoomNotification(empEmail)
                         self.setUserInfoToCoredata()
                         self.registerNotification(empEmail)
@@ -152,7 +151,7 @@ class LoginViewController: UIViewController {
                 print("\(NSDate().formattedISO8601) response = \(response)")
             }
             let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            print("\(NSDate().formattedISO8601) responseString = \(responseString!)")
+            print("\(NSDate().formattedISO8601) responseString (startDate) = \(responseString!)")
             self.startDate = responseString as! String
             self.setStartDateToCoreDate()
         }
@@ -201,7 +200,6 @@ class LoginViewController: UIViewController {
                 result[0].setValue(self.startDate, forKey: "startDate")
             }else{
                 print("set New User")
-                print("startDate >>>> \(self.startDate)")
                 let newUser = NSEntityDescription.insertNewObjectForEntityForName("Application", inManagedObjectContext: context)
                 newUser.setValue(self.startDate, forKey: "startDate")
             }

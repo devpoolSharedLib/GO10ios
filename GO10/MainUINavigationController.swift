@@ -22,20 +22,22 @@ class MainUINavigationController: UINavigationController {
     var accountId: String!
     var statusLogin: Bool!
     var empEmail: String!
+    var accessAppUrl: String!
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("*** MainVC ViewDidAppear ***")
         self.getUserByAccountIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/checkUserActivation?empEmail="
+        self.accessAppUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/accessapp?"
         do{
             if(checkStatusLogin()){
                 print("statusLogin true")
                 let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
                 self.empEmail = result[0].valueForKey("empEmail") as! String
                 checkUserActivation(self.empEmail)
+                self.accessAppWebservice(self.empEmail)
             }else{
                 print("statusLogin false")
-                print("xxccvbxznvsznfvklnszkldfn;l")
                 self.performSegueWithIdentifier("gotoLoginPage", sender: nil)
             }
         }catch{
@@ -46,12 +48,11 @@ class MainUINavigationController: UINavigationController {
     func checkStatusLogin() -> BooleanType{
         do{
             let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
-            print("count Results : \(result.count)")
             if(result.count == 0){
                 print("No data in coredata")
                 return false
             }else if((result[0].valueForKey("statusLogin")) as! Bool == false){
-                  return false
+                return false
             }else{
                 for results in result as [NSManagedObject] {
                     print("\(NSDate().formattedISO8601) results : \(results)")
@@ -105,4 +106,30 @@ class MainUINavigationController: UINavigationController {
         }
         request.resume()
     }
+    
+    func accessAppWebservice(empEmail: String){
+        print("\(NSDate().formattedISO8601) accessAppWebservice")
+        
+        let urlWs = NSURL(string: "\(self.accessAppUrl)empEmail=\(empEmail)")
+        print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+        let request = NSMutableURLRequest(URL: urlWs!)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        let urlsession = NSURLSession.sharedSession()
+        let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
+            guard error == nil && data != nil else {
+                print("\(NSDate().formattedISO8601) error=\(error)")
+                return
+            }
+            
+            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 201 {
+                print("\(NSDate().formattedISO8601) statusCode should be 201, but is \(httpStatus.statusCode)")
+                print("\(NSDate().formattedISO8601) response = \(response)")
+            }else{
+                let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                print("\(NSDate().formattedISO8601) responseString = \(responseString!)")
+            }
+        }
+        requestSent.resume()
+    }
+    
 }

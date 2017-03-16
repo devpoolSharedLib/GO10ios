@@ -9,7 +9,7 @@
 	<key>downloadObjectStorage</key>
 	<string>http://go10.au-syd.mybluemix.net/GO10WebService/DownloadServlet?imageName=</string>
 	<key>versionServer</key>
-	<string>v117104/</string>
+	<string>v120110/</string>
 	<key>OneSignal_appID</key>
 	<string>dbc694b3-14cb-4e5b-9a56-f7c167572ccb</string>
 	<key>pathTopicService</key>

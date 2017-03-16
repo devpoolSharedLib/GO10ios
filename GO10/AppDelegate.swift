@@ -37,8 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
     
     func application(application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        print("UUID : \(UIDevice.currentDevice().identifierForVendor?.UUIDString)")
-        print("appID : \(self.appId)")
+        print("** App Delegate **)")
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         
         OneSignal.initWithLaunchOptions(launchOptions, appId: self.appId, handleNotificationReceived: { (notification) in
@@ -97,6 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
         requestSent.resume()
 
     }
+    
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         print("xxxxxx didReceiveRemoteNotification xxxxxx")
 
@@ -153,7 +153,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
         siren.minorUpdateAlertType = .Option
         siren.patchUpdateAlertType = .Option
         siren.revisionUpdateAlertType = .Option
-        print("XXXXXXXXXXXXXXX : setupSiren")
         siren.checkVersion(.Immediately)
     }
     
@@ -180,8 +179,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
         UIApplicationState.Inactive
         UIApplicationWillTerminateNotification
     }
-    
-    
+        
     func getValuefromUserInfo(){
         
         do{

@@ -214,7 +214,6 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         }
         let roomID = beanRoom.valueForKey("_id") as? String
         let badgeNumber = beanRoom.valueForKey("badgeNumber") as? Int
-        print("roomId : \(roomID) roomName : \(beanRoom.valueForKey("name") as? String) badgeNumber : \(badgeNumber!)")
         if(badgeNumber<1){
             badgeNumberLbl.hidden = true
         }else if(badgeNumber>99){
@@ -232,7 +231,6 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         else{
             let picUrl = self.objectStorageUrl + roomID! + ".png"
             let url = NSURL(string:picUrl)!
-            print("URL Pic :  \(url)")
             //roomImg.af_setImageWithURL(url)
             roomImg.af_setImageRoomWithURL(url)
             roomTitle.text = beanRoom.valueForKey("name") as? String

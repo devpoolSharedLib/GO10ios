@@ -26,6 +26,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
     var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
+    var readRooomUrl: String!
     var getRoomByIdUrl: String!
     var roomList = [NSDictionary]()
     var roomId: String!
@@ -44,6 +45,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
             super.viewDidLoad()
             print("*** RoomVC viewDidLoad ***")
             self.getRoomByIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/gettopiclistbyroom?"
+            self.readRooomUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/readroom?"
             self.roomId = receiveRoomList.valueForKey("_id") as! String
             self.roomName = receiveRoomList.valueForKey("name") as! String
             lblRoom.text = roomName
@@ -74,12 +76,13 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.getValuefromRoomManageInfo()
             self.getValuefromUserInfo()
             self.getvaluefromApplicationCD()
+            self.readRoomWebservice(self.empEmail, roomId: self.roomId)
             
             let postUserArray = self.postUserCD.valueForKey(roomId) as! Array<String>
             if(RoomAdminUtil.checkAccess(postUserArray, empEmail: self.empEmail)){
-                print("Find Post User")
+                print("User Can Post")
             }else{
-                print("not Find Post User")
+                print("User Can Comment")
                 self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
             }
             
@@ -246,4 +249,28 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
 
+    func readRoomWebservice(empEmail: String,roomId: String){
+        print("\(NSDate().formattedISO8601) readRoomWebservice")
+        
+        let urlWs = NSURL(string: "\(self.readRooomUrl)empEmail=\(empEmail)&roomId=\(roomId)")
+        print("\(NSDate().formattedISO8601) URL : \(urlWs)")
+        let request = NSMutableURLRequest(URL: urlWs!)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        let urlsession = NSURLSession.sharedSession()
+        let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
+            guard error == nil && data != nil else {
+                print("\(NSDate().formattedISO8601) error=\(error)")
+                return
+            }
+            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 201 {
+                print("\(NSDate().formattedISO8601) statusCode should be 201, but is \(httpStatus.statusCode)")
+                print("\(NSDate().formattedISO8601) response = \(response)")
+            }else{
+                let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                print("\(NSDate().formattedISO8601) responseString = \(responseString!)")
+            }
+        }
+        requestSent.resume()
+    }
+    
 }
