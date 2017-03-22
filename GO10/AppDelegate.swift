@@ -23,7 +23,7 @@ import IQKeyboardManagerSwift
 import Siren
 import OneSignal
 
-@UIApplicationMain
+@UIApplicationMain	
 class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
     var window: UIWindow?
     var signInType: String?
