@@ -17,6 +17,9 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     @IBOutlet weak var boardTableview: UITableView!
     @IBOutlet weak var commentBtnInCell: UIButton!
     @IBOutlet var boardContentView: UIView!
+
+    @IBOutlet weak var goPollBtn: UIButton!
+    
     
     //    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
@@ -32,30 +35,40 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var newLikeUrl: String!
     var readTopicUrl: String!
     var deletObjUrl: String!
+    var topicId: String!
+    var empEmail: String!
+    var receiveFromPage: String!
+    var modelName: String!
+    var _id: String!
+    var _rev: String!
+    var roomId: String!
+    var roomName: String!
     var isLike: Bool!
+    var statusLike: Bool!
+    var checkPushButton = false
+    
     var countLikeLbl: UILabel!
     var likeBtn: UIButton!
     var likeWithNoCommentBtn: UIButton!
-    var BoardContentList = [NSDictionary]()
-    var LikeModelList = [NSDictionary]()
-    var topicId: String!
-    var empEmail: String!
-    var receiveBoardContentList: NSDictionary!
-    var receiveRoomList: NSDictionary!
-    var receiveFromPage: String!
-    var modelName: String!
-    let cache = NSCache.init()
-    var _id: String!
-    var _rev: String!
-    var statusLike: Bool!
-    var checkPushButton = false
-    var postUserCD: NSMutableDictionary = NSMutableDictionary()
-    var commentUserCD: NSMutableDictionary = NSMutableDictionary()
-    var roomId: String!
-    var commentUserArray: Array<String>!
     var hostDeleteBtn : UIButton!
     var commentDeleteBtn: UIButton!
-    var roomName: String!
+    var countAcceptPollImg: UIImageView!
+    var countAcceptPollLbl: UILabel!
+    
+    var BoardContentList = [NSDictionary]()
+    var pollModel: AnyObject!
+    var LikeModelList = [NSDictionary]()
+    var getTopicById = [NSDictionary]()
+    var receiveBoardContentList: NSDictionary!
+    var receiveRoomList: NSDictionary!
+    var postUserCD: NSMutableDictionary = NSMutableDictionary()
+    var commentUserCD: NSMutableDictionary = NSMutableDictionary()
+    var commentUserArray: Array<String>!
+    
+    var countAcceptPoll: AnyObject!
+    var donePoll: Bool!
+    let cache = NSCache.init()
+   
     var refreshControl = UIRefreshControl()
     
     override func viewDidLoad() {
@@ -74,6 +87,13 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
         self.roomId = receiveBoardContentList.valueForKey("roomId") as! String
         
+        
+//        let image = UIImage(named: "poll") as UIImage?
+//        self.goPollBtn.setImage(nil, forState: UIControlState.Normal)
+        self.goPollBtn.hidden = true
+        self.goPollBtn.enabled = true
+        
+        self.boardContentView.bringSubviewToFront(self.goPollBtn)
         //get Value From Core Data
         getValuefromUserInfo()
         getValuefromRoomManageInfo()
@@ -85,6 +105,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             print("User Can't Comment")
             self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
         }
+        
         
         refreshControl.addTarget(self, action: #selector(SelectRoomViewController.refreshPage), forControlEvents: .ValueChanged)
         boardTableview.addSubview(refreshControl)
@@ -172,7 +193,60 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         let urlsession = NSURLSession.sharedSession()
         let requestSent = urlsession.dataTaskWithRequest(request) { (data, response, error) in
             do{
-                self.BoardContentList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
+//                self.BoardContentList = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
+                
+                self.getTopicById = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! [NSDictionary]
+                
+                self.BoardContentList = self.getTopicById[0].valueForKey("boardContentList") as! [NSDictionary];()
+                if (self.getTopicById[0].valueForKey("pollModel")  == nil){
+                    self.pollModel = nil
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                      self.goPollBtn.hidden = true
+                    }
+                    
+                }else{
+                    self.pollModel = self.getTopicById[0].valueForKey("pollModel") as! [NSDictionary];()
+                    print("ppppppppppppp")
+                    self.donePoll = self.getTopicById[0].valueForKey("donePoll") as! Bool
+                    print("DONE POLL : \(self.donePoll)")
+                    
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                        if((self.donePoll) == true){
+                            let image = UIImage(named: "donePoll") as UIImage?
+                            self.goPollBtn.setImage(image, forState: UIControlState.Normal)
+                            self.goPollBtn.enabled = false
+                        }else{
+                            let image = UIImage(named: "poll") as UIImage?
+                            self.goPollBtn.setImage(image, forState: UIControlState.Normal)
+                            self.goPollBtn.enabled = true
+                        }
+                        self.goPollBtn.hidden = false
+                    }
+//                   print("POLL MODEL xx : \(self.pollModel)")
+//                    print("XXX : \(self.pollModel.valueForKey("empEmailPoll") as! Array<String>)")
+//                    let empEmailPoll = self.pollModel.valueForKey("empEmailPoll") as! Array<String>
+//                    if(RoomAdminUtil.checkAccess(empEmailPoll, empEmail: self.empEmail)){
+//                        print("User has poll")
+//                         self.goPollBtn.hidden = false
+//                    }else{
+//                        print("User hasn't poll")
+//                    }
+
+                }
+                
+                if(self.getTopicById[0].valueForKey("countAcceptPoll") == nil){
+                    self.countAcceptPoll = nil
+                    
+                }else{
+                    self.countAcceptPoll = self.getTopicById[0].valueForKey("countAcceptPoll") as! Int
+                   
+                }
+                
+                print("BOARD CONTENT LIST : \(self.BoardContentList)")
+                 print("POLL MODEL : \(self.pollModel)")
+                 print("COUNT ACCEPT POLL : \(self.countAcceptPoll)")
+                
+               
                 self.checkIsLikeWebservice()
                 self.refreshTableView()
             }catch let error as NSError{
@@ -240,7 +314,24 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             self.commentBtnInCell = cell.viewWithTag(42) as! UIButton
             
             self.hostDeleteBtn = cell.viewWithTag(46) as! UIButton
-           
+            self.countAcceptPollImg = cell.viewWithTag(47) as! UIImageView
+            self.countAcceptPollLbl = cell.viewWithTag(48) as! UILabel
+            
+            
+            if(self.pollModel == nil){
+                self.countAcceptPollImg.hidden = true
+                self.countAcceptPollLbl.hidden = true
+            }else{
+                self.countAcceptPollImg.hidden = false
+                self.countAcceptPollLbl.hidden = false
+                
+                self.countAcceptPollLbl.text = String(self.countAcceptPoll as! NSNumber)
+                
+            }
+
+            
+            
+            
             if(boardContentBean.valueForKey("empEmail") as! String == self.empEmail){
                 print("This user is post topic")
                  self.hostDeleteBtn.hidden = false
@@ -667,8 +758,21 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             destVC.receiveRoomList = self.receiveRoomList  //send room Model (room_id , room_name)
         }else if segue.identifier == "unwindToSelectRoomVCID" {
             segue.destinationViewController as! SelectRoomViewController
+        }else if segue.identifier == "gotoPoll" {
+            let destVC = segue.destinationViewController as! PollViewController
+            destVC.receivePollModel = self.pollModel as! [NSDictionary]
         }
+
+        
     }
+    
+    
+    
+    @IBAction func gotoPoll(sender: AnyObject) {
+        print("GOGOGO")
+        self.performSegueWithIdentifier("gotoPoll", sender:nil)
+    }
+    
     
     @IBAction func unwindToBoardVC(segue: UIStoryboardSegue){
         print("\(NSDate().formattedISO8601) unwindToBoardVC")
