@@ -46,6 +46,7 @@ class PollViewController: UIViewController,UITableViewDataSource,UITableViewDele
         self.questionMasterModel = self.receivePollModel[0].valueForKey("questionMaster") as! [NSDictionary]
         self.pollId = self.receivePollModel[0].valueForKey("_id") as! String
 
+        
         self.pollTableView.estimatedSectionHeaderHeight = 50.0
         self.pollTableView.sectionHeaderHeight = UITableViewAutomaticDimension;
         
@@ -113,7 +114,8 @@ class PollViewController: UIViewController,UITableViewDataSource,UITableViewDele
             let selectedIndexPath = selected["s\(indexPath.section)"];
             print("selectedIndexPath \(selectedIndexPath?.section) \(selectedIndexPath?.row)")
             if (indexPath == selectedIndexPath) {
-                cell.contentView.backgroundColor = UIColor.redColor()
+//                cell.contentView.backgroundColor = UIColor.redColor()
+                cell.contentView.backgroundColor = ColorUtil.selectChoiceColor
                 cell.accessoryType = .Checkmark
             }else
             {
@@ -142,10 +144,12 @@ class PollViewController: UIViewController,UITableViewDataSource,UITableViewDele
         
         let questionTitle = UITextView(frame: CGRectMake(0, 0, self.pollTableView.bounds.size.width,self.pollTableView.sectionHeaderHeight))
 
-        questionTitle.backgroundColor = UIColor.lightGrayColor()
+//        questionTitle.backgroundColor = UIColor.lightGrayColor()
         questionTitle.textAlignment = .Left
         questionTitle.sizeToFit()
+        questionTitle.editable = false
         questionTitle.scrollEnabled = false
+        questionTitle.backgroundColor = ColorUtil.questionPollColor
         questionTitle.font = UIFont(name:"Helvetica Neue", size:17)
         questionTitle.textContainerInset = UIEdgeInsetsMake(10,10, 10, 10) //top left bottom right
         questionTitle.attributedText  = attrString
@@ -187,7 +191,8 @@ class PollViewController: UIViewController,UITableViewDataSource,UITableViewDele
                 previusSelectedCell?.accessoryType = .None
                 previusSelectedCell!.userInteractionEnabled = true
                 
-                cell.contentView.backgroundColor = UIColor.redColor()
+//                cell.contentView.backgroundColor = UIColor.redColor()
+                cell.contentView.backgroundColor = ColorUtil.selectChoiceColor
                 tableView.deselectRowAtIndexPath(previusSelectedCellIndexPath!, animated: true);
                 cell.accessoryType = .Checkmark
                 
@@ -201,7 +206,8 @@ class PollViewController: UIViewController,UITableViewDataSource,UITableViewDele
         {
             //set for reuse cell in tableviewcell
             selected["s\(indexPath.section)"]=indexPath;
-            cell.contentView.backgroundColor = UIColor.redColor()
+//            cell.contentView.backgroundColor = UIColor.redColor()
+            cell.contentView.backgroundColor = ColorUtil.selectChoiceColor
             cell.accessoryType = .Checkmark
         }
         
