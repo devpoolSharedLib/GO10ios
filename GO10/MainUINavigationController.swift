@@ -16,6 +16,7 @@ class MainUINavigationController: UINavigationController {
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var getUserByAccountIdUrl: String!
     var profile = [NSDictionary]()
     var status: Bool!
@@ -27,8 +28,8 @@ class MainUINavigationController: UINavigationController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("*** MainVC ViewDidAppear ***")
-        self.getUserByAccountIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/checkUserActivation?empEmail="
-        self.accessAppUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/accessapp?"
+        self.getUserByAccountIdUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)user/checkUserActivation?empEmail="
+        self.accessAppUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/accessapp?"
         do{
             if(checkStatusLogin()){
                 print("statusLogin true")

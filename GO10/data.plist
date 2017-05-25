@@ -3,11 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>urlDomainHttp</key>
-	<string>http://localhost:9080/</string>
+	<string>http://go10webservice.au-syd.mybluemix.net/</string>
 	<key>urlDomainHttps</key>
-	<string>http://localhost:9080/</string>
+	<string>https://go10webservice.au-syd.mybluemix.net/</string>
 	<key>downloadObjectStorage</key>
 	<string>http://localhost:9080/GO10WebService/DownloadServlet?imageName=</string>
+	<key>contexroot</key>
+	<string>GO10WebService/</string>
 	<key>versionServer</key>
 	<string>v130120/</string>
 	<key>OneSignal_appID</key>

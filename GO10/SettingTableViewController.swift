@@ -22,11 +22,16 @@ class SettingTableViewController: UITableViewController {
     var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     var fetchReqRoomManageInfo = NSFetchRequest(entityName: "Room_Manage_Info")
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
+    var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
+    var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var modelName: String!
-    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
+//    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
+    var downloadObjectStorageUrl: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+         self.downloadObjectStorageUrl = "\(self.domainUrl)\(contexroot)DownloadServlet?imageName="
          modelName = UIDevice.currentDevice().modelName
         if(modelName.rangeOfString("ipad Mini") != nil){
             logoutLbl.font = FontUtil.ipadminiPainText
@@ -66,7 +71,7 @@ class SettingTableViewController: UITableViewController {
                 self.avatarImageButton.setImage(avatarImageCheck, forState: .Normal)
             }else{
                 print("\(NSDate().formattedISO8601) avatarImage : \(userPicAvatar)")
-                let picUrl = self.objectStorageUrl + userPicAvatar
+                let picUrl = self.downloadObjectStorageUrl + userPicAvatar
                 let url = NSURL(string:picUrl)!
 //                self.avatarImage.af_setImageWithURL(url)
                 self.avatarImageButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit

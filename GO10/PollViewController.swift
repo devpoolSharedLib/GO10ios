@@ -19,6 +19,7 @@ class PollViewController: UIViewController,UITableViewDataSource,UITableViewDele
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var savePollUrl: String!
     
     var receivePollModel = [NSDictionary]()
@@ -41,7 +42,7 @@ class PollViewController: UIViewController,UITableViewDataSource,UITableViewDele
         print("POLL VIEW CONTROLLER")
         print("POLL MODEL : \(self.receivePollModel)")
         
-        self.savePollUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)poll/savePoll"
+        self.savePollUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)poll/savePoll"
         
         self.questionMasterModel = self.receivePollModel[0].valueForKey("questionMaster") as! [NSDictionary]
         self.pollId = self.receivePollModel[0].valueForKey("_id") as! String

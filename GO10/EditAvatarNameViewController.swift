@@ -18,6 +18,7 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var updateUserUrl: String!
     var checkAvatarNameUrl: String!
     var modelName: String!
@@ -25,8 +26,8 @@ class EditAvatarNameViewController: UIViewController,UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.updateUserUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/updateUser"
-        self.checkAvatarNameUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/checkAvatarName?avatarName="
+        self.updateUserUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)user/updateUser"
+        self.checkAvatarNameUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)user/checkAvatarName?avatarName="
         avatarNametxt.delegate = self
         modelName = UIDevice.currentDevice().modelName
         if(modelName.rangeOfString("ipad Mini") != nil){

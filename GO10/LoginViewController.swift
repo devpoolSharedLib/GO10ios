@@ -20,6 +20,7 @@ class LoginViewController: UIViewController {
     var domainUrlHttps = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttps")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var getUserByUserPasswordUrl: String!
     var accessAppUrl: String!
     var checkRoomNotificationModel: String!
@@ -36,8 +37,8 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.getUserByUserPasswordUrl = "\(self.domainUrlHttps)GO10WebService/api/\(self.versionServer)user/getUserByUserPassword?"
-        self.checkRoomNotificationModel = "\(self.domainUrlHttps)GO10WebService/api/\(self.versionServer)user/checkRoomNotificationModel?"
+        self.getUserByUserPasswordUrl = "\(self.domainUrlHttps)\(contexroot)api/\(self.versionServer)user/getUserByUserPassword?"
+        self.checkRoomNotificationModel = "\(self.domainUrlHttps)\(contexroot)api/\(self.versionServer)user/checkRoomNotificationModel?"
         print("*** LoginVC ViewDidLoad ***")
         modelName = UIDevice.currentDevice().modelName
         self.loginBtn.layer.cornerRadius = 5

@@ -24,6 +24,7 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var postCommentUrl: String!
     var uploadServletUrl: String!
     var toolbar: RichEditorToolbar!
@@ -39,8 +40,8 @@ class CommentViewController: UIViewController, UIImagePickerControllerDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** CommentVC ViewDidiLoad ***")
-        self.postCommentUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/post"
-        self.uploadServletUrl = "\(self.domainUrl)GO10WebService/UploadServlet"
+        self.postCommentUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/post"
+        self.uploadServletUrl = "\(self.domainUrl)\(contexroot)UploadServlet"
         topicId = receiveComment.valueForKey("_id") as! String
         roomId = receiveComment.valueForKey("roomId") as! String
         print("\(NSDate().formattedISO8601) topic id : \(topicId) room id : \(roomId)")

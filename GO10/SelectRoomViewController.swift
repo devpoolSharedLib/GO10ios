@@ -25,9 +25,12 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
     var fetchReqApplication = NSFetchRequest(entityName: "Application")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
+    
     var getHotToppicUrl:String!
     var getRoomUrl:String!
-    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
+    var downloadObjectStorageUrl: String!
+//    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
     var topicList = [NSDictionary]()
     var roomList = [NSDictionary]()
     var modelName: String!
@@ -55,8 +58,9 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
         super.viewDidAppear(animated)
         self.getValuefromUserInfo()
         self.getvaluefromApplicationCD()
-        self.getHotToppicUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/gethottopiclist?"
-        self.getRoomUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)room/get?empEmail=\(self.empEmail)"
+        self.getHotToppicUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/gethottopiclist?"
+        self.getRoomUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)room/get?empEmail=\(self.empEmail)"
+        self.downloadObjectStorageUrl = "\(self.domainUrl)\(contexroot)DownloadServlet?imageName="
         modelName = UIDevice.currentDevice().modelName
         print("*** SelectRoomVC ViewDidAppear ***")
         MRProgressOverlayView.showOverlayAddedTo(self.selectroomView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
@@ -182,7 +186,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
             topicImg.image = RoomModelUtil.roomImageName.valueForKey(roomID) as? UIImage
         }
         else{
-            let picUrl = self.objectStorageUrl + roomID + ".png"
+            let picUrl = self.downloadObjectStorageUrl + roomID + ".png"
             let url = NSURL(string:picUrl)!
             print("URL Pic :  \(url)")
             //roomImg.af_setImageWithURL(url)
@@ -229,7 +233,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
             roomTitle.text = beanRoom.valueForKey("name") as? String
         }
         else{
-            let picUrl = self.objectStorageUrl + roomID! + ".png"
+            let picUrl = self.downloadObjectStorageUrl + roomID! + ".png"
             let url = NSURL(string:picUrl)!
             //roomImg.af_setImageWithURL(url)
             roomImg.af_setImageRoomWithURL(url)

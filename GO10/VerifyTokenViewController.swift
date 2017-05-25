@@ -23,6 +23,7 @@ class VerifyTokenViewController: UIViewController {
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var getUserByToken:String!
     var profile = [NSDictionary]()
     var activate: Bool!
@@ -31,7 +32,7 @@ class VerifyTokenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** VerifyTokenVC Viewdidload ***")
-        self.getUserByToken =  "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/getUserByToken?"
+        self.getUserByToken =  "\(self.domainUrl)\(contexroot)api/\(self.versionServer)user/getUserByToken?"
         
         //Radius verify textview Border
         tokenTxtV.layer.cornerRadius = 5

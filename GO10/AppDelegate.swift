@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
     var appId = PropertyUtil.getPropertyFromPlist("data",key: "OneSignal_appID")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var getbadgenumbernotificationUrl: String!
     var empEmail: String!
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
@@ -70,7 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
     
     func getBadgeNumberNotification() {
         print("\(NSDate().formattedISO8601) getBadgeNumberNotification empEmail : \(self.empEmail)")
-        self.getbadgenumbernotificationUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/getbadgenumbernotification?"
+        self.getbadgenumbernotificationUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/getbadgenumbernotification?"
         let urlWs = NSURL(string: "\(self.getbadgenumbernotificationUrl)empEmail=\(self.empEmail)")
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let request = NSMutableURLRequest(URL: urlWs!)
@@ -109,7 +110,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NSURLSessionDelegate {
                     self.getValuefromUserInfo()
             //        self.getBadgeNumberNotification()
                     print("\(NSDate().formattedISO8601) getBadgeNumberNotification empEmail : \(self.empEmail)")
-                    self.getbadgenumbernotificationUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/getbadgenumbernotification?"
+                    self.getbadgenumbernotificationUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/getbadgenumbernotification?"
                     let urlWs = NSURL(string: "\(self.getbadgenumbernotificationUrl)empEmail=\(self.empEmail)")
                     print("\(NSDate().formattedISO8601) URL : \(urlWs)")
                     let request = NSMutableURLRequest(URL: urlWs!)

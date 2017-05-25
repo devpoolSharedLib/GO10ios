@@ -27,7 +27,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
+//    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
     var getHotToppicByIdUrl: String!
     var checkIsLikeUrl: String!
     var updateLikeUrl: String!
@@ -35,6 +36,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var newLikeUrl: String!
     var readTopicUrl: String!
     var deletObjUrl: String!
+    var downloadObjectStorageUrl : String!
     var topicId: String!
     var empEmail: String!
     var receiveFromPage: String!
@@ -75,14 +77,14 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         super.viewDidLoad()
         self.navigationItem.leftItemsSupplementBackButton = true
         print("*** BoardContentVC viewDidLoad ***")
-        self.getHotToppicByIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/gettopicbyid?"
-        self.checkIsLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/checkLikeTopic?"
-        self.updateLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/updateLike"
-        self.updateDisLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/updateDisLike"
-        self.newLikeUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/newLike"
-        self.deletObjUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/deleteObj"
-
-        self.readTopicUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/readtopic?"
+        self.getHotToppicByIdUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/gettopicbyid?"
+        self.checkIsLikeUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/checkLikeTopic?"
+        self.updateLikeUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/updateLike"
+        self.updateDisLikeUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/updateDisLike"
+        self.newLikeUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/newLike"
+        self.deletObjUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/deleteObj"
+        self.readTopicUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/readtopic?"
+        self.downloadObjectStorageUrl = "\(self.domainUrl)\(contexroot)DownloadServlet?imageName="
         self.modelName = UIDevice.currentDevice().modelName
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
         self.roomId = receiveBoardContentList.valueForKey("roomId") as! String
@@ -384,7 +386,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 hostImg.image = UIImage(named: picAvatar!)
             }else{
                 print("\(NSDate().formattedISO8601) avatarImage : \(picAvatar!)")
-                let picUrl = self.objectStorageUrl + picAvatar!
+                let picUrl = self.downloadObjectStorageUrl + picAvatar!
                 let url = NSURL(string:picUrl)!
                 hostImg.af_setImageWithURL(url)
             }
@@ -448,7 +450,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 commentImg.image = UIImage(named: picAvatar!)
             }else{
                 print("\(NSDate().formattedISO8601) avatarImage : \(picAvatar!)")
-                let picUrl = self.objectStorageUrl + picAvatar!
+                let picUrl = self.downloadObjectStorageUrl + picAvatar!
                 let url = NSURL(string:picUrl)!
                 commentImg.af_setImageWithURL(url)
             }

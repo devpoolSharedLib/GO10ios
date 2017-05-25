@@ -25,9 +25,11 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var fetchReqApplication = NSFetchRequest(entityName: "Application")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
-    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
+//    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var readRooomUrl: String!
     var getRoomByIdUrl: String!
+    var downloadObjectStorageUrl: String!
     var roomList = [NSDictionary]()
     var roomId: String!
     var roomName: String!
@@ -44,8 +46,9 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         override func viewDidLoad() {
             super.viewDidLoad()
             print("*** RoomVC viewDidLoad ***")
-            self.getRoomByIdUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/gettopiclistbyroom?"
-            self.readRooomUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)topic/readroom?"
+            self.getRoomByIdUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/gettopiclistbyroom?"
+            self.readRooomUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/readroom?"
+            self.downloadObjectStorageUrl = "\(self.domainUrl)\(contexroot)DownloadServlet?imageName="
             self.roomId = receiveRoomList.valueForKey("_id") as! String
             self.roomName = receiveRoomList.valueForKey("name") as! String
             lblRoom.text = roomName
@@ -54,7 +57,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 self.imgView.image = RoomModelUtil.roomImageName.valueForKey(roomId!) as? UIImage
             }
             else{
-                let picUrl = self.objectStorageUrl + roomId! + ".png"
+                let picUrl = self.downloadObjectStorageUrl + roomId! + ".png"
                 let url = NSURL(string:picUrl)!
                 print("URL Pic :  \(url)")
                 //roomImg.af_setImageWithURL(url)
@@ -184,7 +187,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if(avatarImageCheck != nil){
              roomImg.image = UIImage(named: picAvatar!)
         }else{
-            let picUrl = self.objectStorageUrl + picAvatar!
+            let picUrl = self.downloadObjectStorageUrl + picAvatar!
             let url = NSURL(string:picUrl)!
             roomImg.af_setImageWithURL(url)
         }

@@ -24,10 +24,12 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
     var fetchReqUserInfo = NSFetchRequest(entityName: "User_Info")
     var domainUrl = PropertyUtil.getPropertyFromPlist("data",key: "urlDomainHttp")
     var versionServer = PropertyUtil.getPropertyFromPlist("data",key: "versionServer")
+    var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var getUserByTokenUrl: String!
     var updateUserUrl: String!
     var uploadServletUrl: String!
-    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
+    var downloadObjectStorageUrl: String!
+//    var objectStorageUrl = PropertyUtil.getPropertyFromPlist("data",key: "downloadObjectStorage")
     var recieveformverify: String!
     var recieveStatusLogin: String!
     var backbtn: UIBarButtonItem!
@@ -39,9 +41,9 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        self.getUserByTokenUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/getUserByToken?token="
-//        self.updateUserUrl = "\\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/updateUser"
-//        self.uploadServletUrl = "\(self.domainUrl)GO10WebService/UploadServlet"
+//        self.getUserByTokenUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)user/getUserByToken?token="
+//        self.updateUserUrl = "\\(self.domainUrl)\(contexroot)api/\(self.versionServer)user/updateUser"
+//        self.uploadServletUrl = "\(self.domainUrl)\(contexroot)UploadServlet"
         modelName = UIDevice.currentDevice().modelName
         print("*** EditAvatarTableVC ViewDidLoad")
         if(modelName.rangeOfString("ipad Mini") != nil){
@@ -76,9 +78,10 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
         super.viewDidAppear(animated)
         print("*** EditAvatarTableVC ViewDidAppear ***")
         MRProgressOverlayView.showOverlayAddedTo(self.editavatarTableView, title: "Processing", mode: MRProgressOverlayViewMode.Indeterminate, animated: true)
-        self.getUserByTokenUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/getUserByToken?token="
-        self.updateUserUrl = "\(self.domainUrl)GO10WebService/api/\(self.versionServer)user/updateUser"
-        self.uploadServletUrl = "\(self.domainUrl)GO10WebService/UploadServlet"
+        self.getUserByTokenUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)user/getUserByToken?token="
+        self.updateUserUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)user/updateUser"
+        self.uploadServletUrl = "\(self.domainUrl)\(contexroot)UploadServlet"
+        self.downloadObjectStorageUrl = "\(self.domainUrl)\(contexroot)DownloadServlet?imageName="
         do{
             let result = try self.context.executeFetchRequest(self.fetchReqUserInfo) as! [NSManagedObject]
             let userPicAvatar = result[0].valueForKey("avatarPic") as! String
@@ -93,7 +96,7 @@ class EditAvatarTableViewController: UITableViewController, UIImagePickerControl
                 avatarImageButton.setImage(avatarImage, forState: .Normal)
             }else{
                 print("\(NSDate().formattedISO8601) avatarImage : \(userPicAvatar)")
-                let picUrl = self.objectStorageUrl + userPicAvatar
+                let picUrl = self.downloadObjectStorageUrl + userPicAvatar
                 let url = NSURL(string:picUrl)!
         
                 self.avatarImageButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
