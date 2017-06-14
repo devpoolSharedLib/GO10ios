@@ -3,27 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>urlDomainHttp</key>
-	<string>http://go10webservice.au-syd.mybluemix.net/</string>
+	<string>http://localhost:9080/</string>
 	<key>urlDomainHttps</key>
-	<string>https://go10webservice.au-syd.mybluemix.net/</string>
-	<key>downloadObjectStorage</key>
-	<string>http://localhost:9080/GO10WebService/DownloadServlet?imageName=</string>
+	<string>http://localhost:9080/</string>
 	<key>contexroot</key>
 	<string>GO10WebService/</string>
 	<key>versionServer</key>
 	<string>v130120/</string>
 	<key>OneSignal_appID</key>
 	<string>fa8c76f3-acb7-4cae-8f89-b0b82c40b7ed</string>
-	<key>pathTopicService</key>
-	<string>GO10WebService/api/newtopic/</string>
-	<key>pathTopicServiceV2</key>
-	<string>GO10WebService/api/topicv2/</string>
-	<key>pathRoomService</key>
-	<string>GO10WebService/api/room/</string>
-	<key>pathRoomServiceV1</key>
-	<string>GO10WebService/api/roomv1/</string>
-	<key>pathUserService</key>
-	<string>GO10WebService/api/user/</string>
 	<key>AppGUID</key>
 	<string>3c5e9860-be2b-4276-a53b-b12f0d3db6bb</string>
 	<key>clientSecret</key>
