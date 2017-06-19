@@ -10,24 +10,27 @@ import UIKit
 
 class AboutPageViewController: UIViewController {
 
-    @IBOutlet weak var aboutTxtView: UITextView!
+    @IBOutlet weak var appNameLbl: UILabel!
+    @IBOutlet weak var versionNameLbl: UILabel!
+    @IBOutlet weak var copyRightsTxtView: UITextView!
+    @IBOutlet weak var gotoTermBtn: UIButton!
     
     var modelName: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let dictionary = NSBundle.mainBundle().infoDictionary!
+        let version = dictionary["CFBundleShortVersionString"] as! String
+        let build = dictionary["CFBundleVersion"] as! String
+        print("version : \(version) build : \(build)")
+        versionNameLbl.text = version
         modelName = UIDevice.currentDevice().modelName
-        aboutTxtView.font = FontUtil.ipadminiHotTopicNameAvatar
-        let linespace = NSMutableParagraphStyle()
-        linespace.lineSpacing = 10
-        var fontAtt = FontUtil.iphonepainText
         if(modelName.rangeOfString("ipad Mini") != nil){
-            fontAtt = FontUtil.ipadminiPainText
-        }else{
-            fontAtt = FontUtil.iphonepainText
+            appNameLbl.font = UIFont(name:"Helvetica Neue", size:20)
+            versionNameLbl.font = UIFont(name:"Helvetica Neue", size:17)
+            copyRightsTxtView.font = UIFont(name:"Helvetica Neue", size:17)
+            gotoTermBtn.titleLabel?.font = UIFont(name:"Helvetica Neue", size:17)
         }
-        let attributes = [NSParagraphStyleAttributeName : linespace,NSFontAttributeName: fontAtt!]
-        aboutTxtView.attributedText = NSAttributedString(string: aboutTxtView.text, attributes:attributes)
     }
 
 

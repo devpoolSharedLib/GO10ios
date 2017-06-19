@@ -89,7 +89,7 @@ class SettingTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         print("index Path : \(indexPath.row)")
-            if indexPath.row == 3{
+            if indexPath.row == 2{
 //            let storyboard = UIStoryboard(name: "Main", bundle: nil)
 //            let loginVC =  storyboard.instantiateViewControllerWithIdentifier("mainVCID")
 //            self.presentViewController(loginVC, animated: true, completion: nil)
