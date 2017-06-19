@@ -124,6 +124,7 @@ class RoomViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 self.refeshTableView()
             }catch let error as NSError{
                 print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
+                MRProgressOverlayView.dismissOverlayForView(self.roomView, animated: true)
             }
         }
         requestSent.resume()

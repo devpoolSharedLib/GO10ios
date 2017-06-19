@@ -97,6 +97,7 @@ class SelectRoomViewController: UIViewController,UITableViewDataSource ,UITableV
                 self.refreshTableView()
             }catch let error as NSError{
                 print("\(NSDate().formattedISO8601) error : \(error.localizedDescription)")
+                MRProgressOverlayView.dismissOverlayForView(self.selectroomView, animated: true)
             }
         }
         requestSent.resume()

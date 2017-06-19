@@ -253,6 +253,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 self.refreshTableView()
             }catch let error as NSError{
                 print("\(NSDate().formattedISO8601)  error : \(error.localizedDescription)")
+                MRProgressOverlayView.dismissOverlayForView(self.boardContentView, animated: true)
             }
         }
         requestSent.resume()
@@ -519,7 +520,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     
     func selectTypeManageTopic(indexPath: Int,btn: UIButton){
         print("Called buttonDeletePressed")
-        
+        print("QQQQQQQQQQQQQQQQQQ \(self.BoardContentList)")
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
@@ -550,6 +551,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     func getDeleteWS(boardContentBean: NSDictionary){
          let MRProgressAF = MRProgressOverlayView.showOverlayAddedTo(self.boardContentView, animated: true)
         print("\(NSDate().formattedISO8601) getDeleteWS")
+        
         let urlWs = NSURL(string: self.deletObjUrl)
         print("\(NSDate().formattedISO8601) URL : \(urlWs)")
         let requestPost = NSMutableURLRequest(URL: urlWs!)
@@ -559,8 +561,11 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         let empEmail = boardContentBean.valueForKey("empEmail") as! String
         let avatarName = boardContentBean.valueForKey("avatarName") as! String
         let avatarPic = boardContentBean.valueForKey("avatarPic") as! String
-        let content = boardContentBean.valueForKey("content") as! String
-       
+
+        
+        let content = boardContentBean.valueForKey("content") as? String
+        let contentReplace = content!.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
+        
         let date = boardContentBean.valueForKey("date") as! String
         let type = boardContentBean.valueForKey("type") as! String
         let roomId = boardContentBean.valueForKey("roomId") as! String
@@ -574,8 +579,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             subject = ""
             topicId = boardContentBean.valueForKey("topicId") as! String
         }
-
-        let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"topicId\":\"\(topicId)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"content\":\"\(content)\",\"subject\":\"\(subject)\",\"date\":\"\(date)\",\"type\":\"\(type)\",\"roomId\":\"\(roomId)\"}"
+        let jsonObj = "{\"_id\":\"\(_id)\",\"_rev\":\"\(_rev)\",\"topicId\":\"\(topicId)\",\"empEmail\":\"\(empEmail)\",\"avatarName\":\"\(avatarName)\",\"avatarPic\":\"\(avatarPic)\",\"content\":\"\(contentReplace)\",\"subject\":\"\(subject)\",\"date\":\"\(date)\",\"type\":\"\(type)\",\"roomId\":\"\(roomId)\"}"
      
         print("\(NSDate().formattedISO8601) Json Obj : \(jsonObj)")
         
@@ -771,7 +775,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     
     
     @IBAction func gotoPoll(sender: AnyObject) {
-        print("GOGOGO")
         self.performSegueWithIdentifier("gotoPoll", sender:nil)
     }
     

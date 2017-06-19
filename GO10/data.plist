@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>urlDomainHttp</key>
-	<string>http://localhost:9080/</string>
+	<string>http://go10webservice.au-syd.mybluemix.net/</string>
 	<key>urlDomainHttps</key>
-	<string>http://localhost:9080/</string>
+	<string>http://go10webservice.au-syd.mybluemix.net/</string>
 	<key>contexroot</key>
 	<string>GO10WebService/</string>
 	<key>versionServer</key>

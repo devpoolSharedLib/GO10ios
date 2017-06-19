@@ -93,8 +93,27 @@
                                             <segue destination="f6b-FO-v9m" kind="show" id="lXe-eX-eoR"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="PYS-oO-amc" style="IBUITableViewCellStyleDefault" id="ZoX-7Q-R87">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Yir-gP-5Q3">
                                         <rect key="frame" x="0.0" y="310" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Yir-gP-5Q3" id="F0q-nl-D5Q">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="About" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7OD-ag-gTp" userLabel="About">
+                                                    <rect key="frame" x="18" y="0.0" width="345" height="43.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="iHU-0P-M2g" kind="show" id="LWK-Qg-rFV"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="PYS-oO-amc" style="IBUITableViewCellStyleDefault" id="ZoX-7Q-R87">
+                                        <rect key="frame" x="0.0" y="354" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZoX-7Q-R87" id="IC6-T7-VDb">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -255,7 +274,7 @@
                         <viewControllerLayoutGuide type="bottom" id="u3M-vi-Ph9"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Iqb-OK-iAg">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u6a-iP-aMD">
@@ -771,6 +790,25 @@
             </objects>
             <point key="canvasLocation" x="2780.5" y="-644.5"/>
         </scene>
+        <!--About-->
+        <scene sceneID="GmT-ru-g7k">
+            <objects>
+                <viewController title="About" id="iHU-0P-M2g" customClass="AboutPageViewController" customModule="GO10" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="5Dh-Nd-dZr"/>
+                        <viewControllerLayoutGuide type="bottom" id="8SW-75-ctp"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="d0g-CZ-Rg3">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rNw-7h-TWl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1325.5" y="-1431.5"/>
+        </scene>
         <!--Rules-->
         <scene sceneID="cCk-Kh-iZa">
             <objects>
@@ -1254,7 +1292,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="391" height="118"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="39" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" misplaced="YES" text="commentTime" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kpp-pi-PpE">
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="39" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" text="commentTime" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kpp-pi-PpE">
                                                     <rect key="frame" x="61" y="32" width="305" height="32"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                                     <color key="textColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="calibratedRGB"/>
@@ -1299,7 +1337,7 @@
                                                         <action selector="commentSelectButton:" destination="ZJu-wa-f5d" eventType="touchUpInside" id="UBk-7a-LSy"/>
                                                     </connections>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="36" contentMode="left" horizontalHuggingPriority="251" misplaced="YES" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pDN-Rg-JfL" customClass="ActiveLabel" customModule="ActiveLabel">
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="36" contentMode="left" horizontalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pDN-Rg-JfL" customClass="ActiveLabel" customModule="ActiveLabel">
                                                     <rect key="frame" x="61" y="72" width="311" height="21"/>
                                                     <attributedString key="attributedText">
                                                         <fragment content="commentContent">
@@ -1738,102 +1776,6 @@
             </objects>
             <point key="canvasLocation" x="1176.5" y="964.5"/>
         </scene>
-        <!--Terms & Conditons-->
-        <scene sceneID="kaQ-1l-wGo">
-            <objects>
-                <viewController title="Terms &amp; Conditons" id="GQs-na-88j" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="bze-pF-NvM"/>
-                        <viewControllerLayoutGuide type="bottom" id="XeE-ZV-9gm"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="ha8-A1-IKi">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6b4-GT-asW">
-                                <rect key="frame" x="6" y="77" width="362" height="577"/>
-                                <subviews>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="nTz-HC-J9c">
-                                        <rect key="frame" x="8" y="8" width="346" height="561"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                    </textView>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="nTz-HC-J9c" secondAttribute="trailing" constant="8" id="0I6-5p-fub"/>
-                                    <constraint firstItem="nTz-HC-J9c" firstAttribute="top" secondItem="6b4-GT-asW" secondAttribute="top" constant="8" id="8Gf-5q-Efd"/>
-                                    <constraint firstItem="nTz-HC-J9c" firstAttribute="centerX" secondItem="6b4-GT-asW" secondAttribute="centerX" id="C04-bV-V6A"/>
-                                    <constraint firstItem="nTz-HC-J9c" firstAttribute="leading" secondItem="6b4-GT-asW" secondAttribute="leading" constant="8" id="PHh-Hz-4t2"/>
-                                    <constraint firstAttribute="bottom" secondItem="nTz-HC-J9c" secondAttribute="bottom" constant="8" id="Qqs-DF-eTs"/>
-                                    <constraint firstItem="nTz-HC-J9c" firstAttribute="centerY" secondItem="6b4-GT-asW" secondAttribute="centerY" id="hXl-YA-kfh"/>
-                                </constraints>
-                            </scrollView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="6b4-GT-asW" secondAttribute="trailing" constant="-20" id="7nY-mL-Epz"/>
-                            <constraint firstItem="XeE-ZV-9gm" firstAttribute="top" secondItem="6b4-GT-asW" secondAttribute="bottom" id="Ale-oT-JyS"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="6b4-GT-asW" secondAttribute="trailing" constant="-9" id="IyC-DD-AAa"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="top" secondItem="bze-pF-NvM" secondAttribute="bottom" id="L8J-FS-Mr2"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="leading" secondItem="ha8-A1-IKi" secondAttribute="leadingMargin" constant="-10" id="LnR-iW-i3X"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="centerY" secondItem="ha8-A1-IKi" secondAttribute="centerY" constant="32" id="MUb-jE-lP4"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="6b4-GT-asW" secondAttribute="trailing" constant="-9" id="Pre-qe-ok5"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="top" secondItem="bze-pF-NvM" secondAttribute="bottom" id="QJM-zt-g1u"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="leading" secondItem="ha8-A1-IKi" secondAttribute="leadingMargin" constant="-20" id="TO8-o1-Z6Y"/>
-                            <constraint firstItem="XeE-ZV-9gm" firstAttribute="top" secondItem="6b4-GT-asW" secondAttribute="bottom" id="TfV-mk-yhY"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="6b4-GT-asW" secondAttribute="trailing" constant="-20" id="TjW-y8-yxy"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="centerY" secondItem="ha8-A1-IKi" secondAttribute="centerY" constant="32" id="VEH-Eo-0iS"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="leading" secondItem="ha8-A1-IKi" secondAttribute="leadingMargin" constant="-20" id="aM9-Vg-TiK"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="leading" secondItem="ha8-A1-IKi" secondAttribute="leadingMargin" constant="-20" id="buW-tY-fHE"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="top" secondItem="bze-pF-NvM" secondAttribute="bottom" id="eHO-vZ-fGx"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="centerX" secondItem="ha8-A1-IKi" secondAttribute="centerX" id="eNs-le-GtL"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="centerX" secondItem="ha8-A1-IKi" secondAttribute="centerX" id="fAp-Tu-HDR"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="centerX" secondItem="ha8-A1-IKi" secondAttribute="centerX" id="flX-5X-SWU"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="6b4-GT-asW" secondAttribute="trailing" constant="-20" id="gM2-jW-pwV"/>
-                            <constraint firstItem="XeE-ZV-9gm" firstAttribute="top" secondItem="6b4-GT-asW" secondAttribute="bottom" id="h4U-n0-7NT"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="top" secondItem="bze-pF-NvM" secondAttribute="bottom" constant="13" id="i3Z-uO-5U2"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="centerY" secondItem="ha8-A1-IKi" secondAttribute="centerY" constant="32" id="iZT-8g-6xr"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="top" secondItem="bze-pF-NvM" secondAttribute="bottom" id="nql-me-91n"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="leading" secondItem="ha8-A1-IKi" secondAttribute="leadingMargin" id="rx0-lQ-fkp"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="leading" secondItem="ha8-A1-IKi" secondAttribute="leadingMargin" constant="-10" id="ue6-jW-LI2"/>
-                            <constraint firstItem="XeE-ZV-9gm" firstAttribute="top" secondItem="6b4-GT-asW" secondAttribute="bottom" constant="13" id="wNT-9o-yqI"/>
-                            <constraint firstItem="6b4-GT-asW" firstAttribute="leading" secondItem="ha8-A1-IKi" secondAttribute="leadingMargin" constant="-20" id="xRq-Pm-qkR"/>
-                        </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="7nY-mL-Epz"/>
-                                <exclude reference="L8J-FS-Mr2"/>
-                                <exclude reference="MUb-jE-lP4"/>
-                                <exclude reference="Pre-qe-ok5"/>
-                                <exclude reference="QJM-zt-g1u"/>
-                                <exclude reference="TO8-o1-Z6Y"/>
-                                <exclude reference="TjW-y8-yxy"/>
-                                <exclude reference="VEH-Eo-0iS"/>
-                                <exclude reference="aM9-Vg-TiK"/>
-                                <exclude reference="buW-tY-fHE"/>
-                                <exclude reference="eHO-vZ-fGx"/>
-                                <exclude reference="fAp-Tu-HDR"/>
-                                <exclude reference="flX-5X-SWU"/>
-                                <exclude reference="gM2-jW-pwV"/>
-                                <exclude reference="nql-me-91n"/>
-                                <exclude reference="rx0-lQ-fkp"/>
-                                <exclude reference="ue6-jW-LI2"/>
-                                <exclude reference="xRq-Pm-qkR"/>
-                                <exclude reference="Ale-oT-JyS"/>
-                                <exclude reference="TfV-mk-yhY"/>
-                                <exclude reference="h4U-n0-7NT"/>
-                            </mask>
-                        </variation>
-                    </view>
-                    <navigationItem key="navigationItem" title="Terms &amp; Conditions" id="M0C-0J-IpX"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="o5X-lU-Ux9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-594.5" y="165.5"/>
-        </scene>
         <!--Login-->
         <scene sceneID="wFv-l9-xlG">
             <objects>
@@ -2142,12 +2084,12 @@
         <image name="selfordel" width="64" height="64"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="K1T-4J-Dfj"/>
-        <segue reference="K7P-Kb-tXj"/>
-        <segue reference="g0h-69-Pdz"/>
-        <segue reference="vkn-R5-Eqh"/>
         <segue reference="Yon-P0-l0i"/>
-        <segue reference="Xau-Sn-SRF"/>
         <segue reference="Y3h-AS-Iw1"/>
+        <segue reference="IVH-9Q-YBp"/>
+        <segue reference="g0h-69-Pdz"/>
+        <segue reference="K7P-Kb-tXj"/>
+        <segue reference="K1T-4J-Dfj"/>
+        <segue reference="vkn-R5-Eqh"/>
     </inferredMetricsTieBreakers>
 </document>
