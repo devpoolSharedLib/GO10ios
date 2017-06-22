@@ -3,15 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>urlDomainHttp</key>
-	<string>http://go10webservice.au-syd.mybluemix.net/</string>
+	<string>http://go10.au-syd.mybluemix.net/</string>
 	<key>urlDomainHttps</key>
-	<string>http://go10webservice.au-syd.mybluemix.net/</string>
+	<string>https://go10.au-syd.mybluemix.net/</string>
 	<key>contexroot</key>
 	<string>GO10WebService/</string>
 	<key>versionServer</key>
 	<string>v130120/</string>
 	<key>OneSignal_appID</key>
-	<string>fa8c76f3-acb7-4cae-8f89-b0b82c40b7ed</string>
+	<string>dbc694b3-14cb-4e5b-9a56-f7c167572ccb</string>
 	<key>AppGUID</key>
 	<string>3c5e9860-be2b-4276-a53b-b12f0d3db6bb</string>
 	<key>clientSecret</key>
