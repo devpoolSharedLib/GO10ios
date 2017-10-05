@@ -11,8 +11,9 @@ import ActiveLabel
 import MRProgress
 import CoreData
 
-class BoardcontentViewController: UIViewController,UITableViewDataSource,UITableViewDelegate{
+class BoardcontentViewController: UIViewController,UITableViewDataSource,UITableViewDelegate,UIWebViewDelegate{
     
+    @IBOutlet weak var contentWebView: UIWebView!
     @IBOutlet weak var goCommentBtn: UIButton!
     @IBOutlet weak var boardTableview: UITableView!
     @IBOutlet weak var commentBtnInCell: UIButton!
@@ -48,6 +49,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     var isLike: Bool!
     var statusLike: Bool!
     var checkPushButton = false
+    var webHeight: CGFloat!
     
     var countLikeLbl: UILabel!
     var likeBtn: UIButton!
@@ -89,7 +91,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         self.topicId = receiveBoardContentList.valueForKey("_id") as! String
         self.roomId = receiveBoardContentList.valueForKey("roomId") as! String
         
-        
 //        let image = UIImage(named: "poll") as UIImage?
 //        self.goPollBtn.setImage(nil, forState: UIControlState.Normal)
         self.goPollBtn.hidden = true
@@ -107,7 +108,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             print("User Can't Comment")
             self.navigationItem.rightBarButtonItems?.removeAtIndex(1)
         }
-        
         
         refreshControl.addTarget(self, action: #selector(SelectRoomViewController.refreshPage), forControlEvents: .ValueChanged)
         boardTableview.addSubview(refreshControl)
@@ -295,7 +295,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         }
         requestSent.resume()
     }
-
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return BoardContentList.count
     }
@@ -307,7 +307,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         if boardContentBean.valueForKey("type") as! String == "host" {
             cell = tableView.dequeueReusableCellWithIdentifier("hostCell", forIndexPath: indexPath)
             let hostSubjectLbl = cell.viewWithTag(31) as! UILabel
-            let hostContentLbl = cell.viewWithTag(32) as! ActiveLabel
+            let hostContentLbl = cell.viewWithTag(32) as! UIWebView
             let hostImg = cell.viewWithTag(33) as! UIImageView
             let hostNameLbl = cell.viewWithTag(34) as! UILabel
             let hostTimeLbl = cell.viewWithTag(35) as! UILabel
@@ -327,13 +327,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             }else{
                 self.countAcceptPollImg.hidden = false
                 self.countAcceptPollLbl.hidden = false
-                
                 self.countAcceptPollLbl.text = String(self.countAcceptPoll as! NSNumber)
-                
             }
-
-            
-            
             
             if(boardContentBean.valueForKey("empEmail") as! String == self.empEmail){
                 print("This user is post topic")
@@ -364,21 +359,15 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             }
             
             hostSubjectLbl.text =  boardContentBean.valueForKey("subject") as? String
+//            print("hostSubAfter : \(hostSubjectLbl)")
             let htmlData = boardContentBean.valueForKey("content") as? String
             let htmlReplace = htmlData!.stringByReplacingOccurrencesOfString("\\\"", withString: "\"")
-            print("\(NSDate().formattedISO8601) htmlReplace : \(htmlReplace)")
-            do{
-                let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
-                                    NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
-                hostContentLbl.numberOfLines = 0
-                hostContentLbl.lineSpacing = 20
-                hostContentLbl.attributedText = strNS
-                openLink(hostContentLbl)
-            }catch let error as NSError{
-                print("error : \(error.localizedDescription)")
-            }
+                print("\(NSDate().formattedISO8601) htmlReplace : \(htmlReplace)")
+            hostContentLbl.loadHTMLString(htmlReplace,baseURL:nil)
+            webHeight = hostContentLbl.scrollView.contentSize.height+180
+            hostContentLbl.delegate = self
             
-            let picAvatar = boardContentBean.valueForKey("avatarPic") as? String
+             let picAvatar = boardContentBean.valueForKey("avatarPic") as? String
 //            hostImg.image = UIImage(named: picAvatar!)
             
             let avatarImageCheck = UIImage(named: picAvatar!)
@@ -390,8 +379,8 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
                 let picUrl = self.downloadObjectStorageUrl + picAvatar!
                 let url = NSURL(string:picUrl)!
                 hostImg.af_setImageWithURL(url)
-            }
-
+                }
+            
             hostNameLbl.text =  boardContentBean.valueForKey("avatarName") as? String
             hostTimeLbl.text =  boardContentBean.valueForKey("date") as? String
             
@@ -435,7 +424,7 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
             do{
                 let strNS = try NSAttributedString(data: htmlReplace.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!, options: [
                     NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
-                commentContentLbl.lineSpacing = 20
+                commentContentLbl.lineSpacing = 10
                 commentContentLbl.numberOfLines = 0
                 commentContentLbl.attributedText = strNS
                 openLink(commentContentLbl)
@@ -461,11 +450,31 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
         }else{
             cell = tableView.dequeueReusableCellWithIdentifier("noCell", forIndexPath: indexPath)
         }
+        print("cell : \(cell)")
         return cell
     }
     
+    func webViewDidFinishLoad(webView: UIWebView) {
+        print("finished loading webview")
+        webView.scrollView.scrollEnabled = false
+        webView.delegate = self
+        webHeight = webView.scrollView.contentSize.height
+        MRProgressOverlayView.dismissOverlayForView(self.boardContentView, animated: true)
+    }
+    
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return UITableViewAutomaticDimension
+        print("heightForRowAtIndexPath :\(indexPath)")
+        if indexPath.row == 0 {
+            if webHeight==nil{
+                print("IF ==> heightForRowAtIndexPath webHeight : \(webHeight)")
+                refreshPage()
+                return 0}
+            else {
+                print("ELSE ==> heightForRowAtIndexPath webHeight : \(webHeight)")
+                return webHeight}
+        }else{
+            return UITableViewAutomaticDimension
+        }
     }
     
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -520,7 +529,6 @@ class BoardcontentViewController: UIViewController,UITableViewDataSource,UITable
     
     func selectTypeManageTopic(indexPath: Int,btn: UIButton){
         print("Called buttonDeletePressed")
-        print("QQQQQQQQQQQQQQQQQQ \(self.BoardContentList)")
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in

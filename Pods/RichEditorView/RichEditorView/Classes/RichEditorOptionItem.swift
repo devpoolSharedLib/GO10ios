@@ -101,6 +101,7 @@ public enum RichEditorOptions: RichEditorOption {
     case AlignRight
     case Image
     case Link
+    case Video
     
     
     public static func all() -> [RichEditorOption] {
@@ -111,7 +112,7 @@ public enum RichEditorOptions: RichEditorOption {
             TextColor, TextBackgroundColor,
             Header(1), Header(2), Header(3), Header(4), Header(5), Header(6),
             Indent, Outdent, OrderedList, UnorderedList,
-            AlignLeft, AlignCenter, AlignRight, Image, Link
+            AlignLeft, AlignCenter, AlignRight, Image, Link, Video,
         ]
     }
     
@@ -141,6 +142,7 @@ public enum RichEditorOptions: RichEditorOption {
         case .AlignRight: name = "justify_right"
         case .Image: name = "insert_image"
         case .Link: name = "insert_link"
+        case .Video: name = "Youtube-icon copy" 
         }
         
         let bundle = NSBundle(forClass: RichEditorToolbar.self)
@@ -170,6 +172,7 @@ public enum RichEditorOptions: RichEditorOption {
         case .AlignRight: return NSLocalizedString("Right", comment: "")
         case .Image: return NSLocalizedString("Image", comment: "")
         case .Link: return NSLocalizedString("Link", comment: "")
+        case .Video: return NSLocalizedString("Video", comment: "")
         }
     }
     
@@ -198,6 +201,7 @@ public enum RichEditorOptions: RichEditorOption {
             case .AlignRight: toolbar.editor?.alignRight()
             case .Image: toolbar.delegate?.richEditorToolbarInsertImage?(toolbar)
             case .Link: toolbar.delegate?.richEditorToolbarInsertLink?(toolbar)
+            case .Video: toolbar.delegate?.richEditorToolbarInsertVideo?(toolbar)
             }
         }
     }

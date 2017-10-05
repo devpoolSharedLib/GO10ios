@@ -28,6 +28,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     var contexroot = PropertyUtil.getPropertyFromPlist("data",key: "contexroot")
     var postTopicUrl: String!
     var uploadServletUrl: String!
+    var uploadVideoServletUrl: String!
     var receiveNewTopic: NSDictionary!
     var empEmail: String!
     var userNameAvatar: String!
@@ -36,14 +37,17 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     var strEncodeBase64: String!
     var strDecodeBase64: String!
     var ImagePicker = UIImagePickerController()
+    var VideoPicker = UIImagePickerController()
     var modelName: String!
     var toolbar: RichEditorToolbar!
-    
+    var videoPath: NSURL? = nil
+
     override func viewDidLoad() {
         super.viewDidLoad()
         print("*** NewTopicVC ViewDidLoad ***")
         self.postTopicUrl = "\(self.domainUrl)\(contexroot)api/\(self.versionServer)topic/post"
         self.uploadServletUrl = "\(self.domainUrl)\(contexroot)UploadServlet"
+        self.uploadVideoServletUrl = "\(self.domainUrl)\(contexroot)UploadVideoServlet"
         
         //set other button side back button
         self.navigationItem.leftItemsSupplementBackButton = true
@@ -78,6 +82,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         //set toolbar by RichEditorViewUtil
         toolbar = RichEditorUtil.setToolbar(self.view.bounds.width,height: 44,editor: self.editor)
         //set toolbar to editor
+        toolbar.options.append(RichEditorOptions.Video)
         toolbar.delegate = self
         toolbar.editor = self.editor
         editor.delegate = self
@@ -128,10 +133,78 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         //browse image from gallery
         var browseImg =  info[UIImagePickerControllerOriginalImage] as? UIImage
+        let mediaType = info[UIImagePickerControllerMediaType] as! NSString
+        let url = browseImg
+        print("browseImg : \(url) browseVid : \(mediaType)");
+        if mediaType.isEqualToString("public.movie") {
+            self.videoPath = info[UIImagePickerControllerMediaURL] as? NSURL
+            print("vid path : \(videoPath?.relativePath)");
+            self.uploadVideo(videoPath!)
+        }else{
         browseImg = ImageUtil.resizeImage(browseImg!, modelName: modelName)
-        self.uploadImage(browseImg!)
+            self.uploadImage(browseImg!)
+        }
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
+    
+
+    func uploadVideo(vidPath: NSURL){
+        print("UploadVid : \(vidPath)")
+        let request = NSMutableURLRequest(URL: NSURL(string: self.uploadVideoServletUrl)!)
+        let boundary = "Boundary-\(NSUUID().UUIDString)"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.HTTPMethod = "POST"
+        //change movie path to file
+        var movieData: NSData?
+            do {
+                movieData = try NSData(contentsOfFile: (videoPath?.relativePath)!, options: NSDataReadingOptions.DataReadingMappedAlways)
+                print("movieData : \(movieData)")
+            } catch _ {
+                movieData = nil
+                return
+                }
+        //add movie to request
+        let fileName = "uploadedVideo.mp4"
+        let mimeType = "video/mp4"
+        let body = NSMutableData()
+        body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("Content-Disposition:form-data; name=\"file\"; filename=\"\(fileName)\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("Content-Type: \(mimeType)\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData(movieData!)
+        body.appendData("\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        request.HTTPBody = body
+        //send data to server
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
+            guard error == nil && data != nil else {                                                          // check for fundamental networking error
+                print("error=\(error)")
+                return
+            }
+            
+            if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {           // check for http errors
+                print("statusCode should be 200, but is \(httpStatus.statusCode)")
+                print("response = \(response)")
+            }
+            do{
+                dispatch_async(dispatch_get_main_queue(), {let responseString = String(data: data!, encoding: NSUTF8StringEncoding)
+                print("responseString = \(responseString)")
+                if let vidURL = responseString{
+                    print("vidURL :  \(vidURL)")
+                    let vidTag = "<video width=\"240\" height=\"180\" controls><source src=\"\(vidURL)\" type=\"video/mp4\">" +
+                    "Your browser does not support the video tag.</video><br>"
+                    print("vidTag : \(vidTag)")
+                    self.toolbar.editor?.insertVideo(vidTag)
+                }
+
+                })
+            }catch let error as NSError{
+                print("\(NSDate().formattedISO8601) JSON Error: \(error.localizedDescription)")
+            }
+        
+        }
+        task.resume()
+    }
+
     
     func uploadImage(objImage: UIImage) {
         print("\(NSDate().formattedISO8601) width : \(objImage.size.width) height :\(objImage.size.height)")
@@ -147,7 +220,6 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
         print("\(NSDate().formattedISO8601) url request image : \(url)")
         let request = NSMutableURLRequest(URL: url!)
         request.HTTPMethod = "POST"
-        
         // Define the multipart request type
         let boundary = "Boundary-\(NSUUID().UUIDString)"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
@@ -215,6 +287,7 @@ class NewTopicViewController: UIViewController , UIImagePickerControllerDelegate
                             width = 295
                             height = 295
                         }
+                        print("responseURL : \(responseUrl)")
                         self.toolbar.editor?.insertImage(responseUrl,width: width,height: height,alt: "insertImageUrl")
                         MRProgressOverlayView.dismissOverlayForView(self.newTopicView, animated: true)
                     })
@@ -330,5 +403,14 @@ extension NewTopicViewController: RichEditorToolbarDelegate {
 //        let strUrl = toolbar.editor?.runJS(("document.getSelection().getRangeAt(0).toString()"))
         toolbar.editor?.insertLink()
         }
+    }
+    
+    func richEditorToolbarInsertVideo(toolbar: RichEditorToolbar) {
+        print("Insert Video")
+        VideoPicker.delegate = self
+        VideoPicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+        VideoPicker.mediaTypes = ["public.movie"]
+        VideoPicker.allowsEditing = true
+        self.presentViewController(VideoPicker, animated: true, completion: nil)
     }
 }

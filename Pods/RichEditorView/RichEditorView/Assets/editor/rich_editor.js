@@ -213,6 +213,12 @@ RE.insertImage = function(url, width,height,alt) {
     RE.callback("input");
 };
 
+RE.insertVideo = function(vidTag) {
+    var vidTag = vidTag;
+    RE.insertHTML(vidTag);
+    RE.callback("input");
+};
+
 RE.setBlockquote = function() {
     document.execCommand('formatBlock', false, '<blockquote>');
 };

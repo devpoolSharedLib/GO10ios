@@ -33,6 +33,7 @@ import UIKit
     */
     optional func richEditorToolbarInsertLink(toolbar: RichEditorToolbar)
     
+    optional func richEditorToolbarInsertVideo(toolbar: RichEditorToolbar)
  
 //    /**
 //     Called when the Bold toolbar item is pressed.

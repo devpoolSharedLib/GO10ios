@@ -324,6 +324,11 @@ extension RichEditorView {
         runJS("RE.insertLink();")
     }
     
+    public func insertVideo(vidTag: String) {
+        runJS("RE.prepareInsert();")
+        runJS("RE.insertVideo('\(vidTag)');")
+    }
+    
 //    public func insertLink(href: String, title: String) {
 //        runJS("RE.prepareInsert();")
 //        runJS("RE.insertLink('\(escape(href))', '\(escape(title))');")
